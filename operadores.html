@@ -1,0 +1,133 @@
+<<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Operadores – Inventário Híbrido</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Biblioteca de gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- BOTÃO TEMA -->
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+
+  <!-- HERO REDUZIDO -->
+  <header class="hero small-hero">
+    <div class="hero-content">
+      <h1 class="glow-title">Operadores</h1>
+      <p class="glow-subtitle">Produtividade e desempenho da equipe</p>
+      <a href="index.html" class="btn-neon">Voltar ao Início</a>
+    </div>
+  </header>
+
+  <!-- CARDS DE OPERADORES -->
+  <section class="section dark-section">
+    <h2 class="section-title">Equipe de Operadores</h2>
+
+    <div class="grid-3">
+
+      <div class="neon-card operador-card">
+        <img src="card/operador1.jpg" class="foto-operador">
+        <h3>João Silva</h3>
+        <p>Produtividade: <strong>82%</strong></p>
+      </div>
+
+      <div class="neon-card operador-card">
+        <img src="card/operador2.jpg" class="foto-operador">
+        <h3>Maria Santos</h3>
+        <p>Produtividade: <strong>91%</strong></p>
+      </div>
+
+      <div class="neon-card operador-card">
+        <img src="card/operador3.jpg" class="foto-operador">
+        <h3>Carlos Almeida</h3>
+        <p>Produtividade: <strong>76%</strong></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GRÁFICO DE PRODUTIVIDADE -->
+  <section class="section">
+    <h2 class="section-title">Produtividade por Operador</h2>
+    <canvas id="graficoProdutividade" class="chart"></canvas>
+  </section>
+
+  <!-- TABELA DETALHADA -->
+  <section class="section dark-section">
+    <h2 class="section-title">Detalhamento de Atividades</h2>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Operador</th>
+          <th>Itens Coletados</th>
+          <th>Erros</th>
+          <th>Tempo (min)</th>
+          <th>Eficiência</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>João Silva</td>
+          <td>450</td>
+          <td>12</td>
+          <td>180</td>
+          <td>82%</td>
+        </tr>
+
+        <tr>
+          <td>Maria Santos</td>
+          <td>520</td>
+          <td>5</td>
+          <td>170</td>
+          <td>91%</td>
+        </tr>
+
+        <tr>
+          <td>Carlos Almeida</td>
+          <td>390</td>
+          <td>18</td>
+          <td>200</td>
+          <td>76%</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Inventário Híbrido – Operadores</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    /* ============================
+       GRÁFICO DE PRODUTIVIDADE
+    ============================ */
+    new Chart(document.getElementById("graficoProdutividade"), {
+      type: "bar",
+      data: {
+        labels: ["João", "Maria", "Carlos"],
+        datasets: [{
+          label: "Produtividade (%)",
+          data: [82, 91, 76],
+          backgroundColor: ["#00aaff", "#00ffff", "#0077ff"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#fff" } } },
+        scales: {
+          x: { ticks: { color: "#fff" } },
+          y: { ticks: { color: "#fff" } }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>a href="operadores.html" class="btn-neon">Operadores</a>

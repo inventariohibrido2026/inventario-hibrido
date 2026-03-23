@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil – Inventário Híbrido</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MENU FUTURISTA -->
+  <nav class="menu-futurista">
+    <div class="menu-logo">IH</div>
+    <ul class="menu-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventario.html">Inventário</a></li>
+      <li><a href="setores.html">Setores</a></li>
+      <li><a href="operadores.html">Operadores</a></li>
+      <li><a href="relatorios.html">Relatórios</a></li>
+      <li><a href="configuracoes.html">Configurações</a></li>
+      <li><a href="usuarios.html">Usuários</a></li>
+      <li><a href="auditoria.html">Auditoria</a></li>
+      <li><a href="perfil.html">Perfil</a></li>
+    </ul>
+    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <!-- BOTÃO TEMA -->
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+
+  <!-- HERO -->
+  <header class="hero small-hero">
+    <div class="hero-content">
+      <h1 class="glow-title">Meu Perfil</h1>
+      <p class="glow-subtitle">Informações pessoais e personalização</p>
+    </div>
+  </header>
+
+  <!-- PERFIL -->
+  <section class="section dark-section">
+    <h2 class="section-title">Informações do Usuário</h2>
+
+    <div class="perfil-card neon-card">
+
+      <!-- AVATAR -->
+      <div class="avatar-container">
+        <img id="avatarPreview" class="avatar-img" src="https://i.imgur.com/4ZQZ4ZC.png">
+        <input type="file" id="avatarInput" accept="image/*">
+      </div>
+
+      <!-- CAMPOS -->
+      <input type="text" id="perfilNome" class="perfil-input" placeholder="Seu nome">
+      <select id="perfilNivel" class="perfil-input">
+        <option value="Admin">Admin</option>
+        <option value="Supervisor">Supervisor</option>
+        <option value="Operador">Operador</option>
+      </select>
+
+      <button class="btn-neon" onclick="salvarPerfil()">Salvar Perfil</button>
+
+      <p id="perfilMsg" class="perfil-msg"></p>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Inventário Híbrido – Perfil do Usuário</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    /* ============================
+       CARREGAR PERFIL
+    ============================ */
+    const nome = document.getElementById("perfilNome");
+    const nivel = document.getElementById("perfilNivel");
+    const avatarPreview = document.getElementById("avatarPreview");
+
+    nome.value = localStorage.getItem("perfilNome") || "";
+    nivel.value = localStorage.getItem("perfilNivel") || "Operador";
+    avatarPreview.src = localStorage.getItem("perfilAvatar") || "https://i.imgur.com/4ZQZ4ZC.png";
+
+    /* ============================
+       UPLOAD DO AVATAR
+    ============================ */
+    document.getElementById("avatarInput").addEventListener("change", function() {
+      const file = this.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        avatarPreview.src = e.target.result;
+        localStorage.setItem("perfilAvatar", e.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /* ============================
+       SALVAR PERFIL
+    ============================ */
+    function salvarPerfil() {
+      localStorage.setItem("perfilNome", nome.value);
+      localStorage.setItem("perfilNivel", nivel.value);
+
+      const msg = document.getElementById("perfilMsg");
+      msg.textContent = "Perfil atualizado!";
+      msg.style.color = "#00ff99";
+
+      setTimeout(() => msg.textContent = "", 1500);
+    }
+  </script>
+
+</body>
+</html>

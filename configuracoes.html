@@ -1,0 +1,125 @@
+<a href="configuracoes.html" class="btn-neon">Configurações</a>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurações – Inventário Híbrido</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- BOTÃO TEMA -->
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+
+  <!-- HERO REDUZIDO -->
+  <header class="hero small-hero">
+    <div class="hero-content">
+      <h1 class="glow-title">Configurações</h1>
+      <p class="glow-subtitle">Personalize o sistema ao seu estilo</p>
+      <a href="index.html" class="btn-neon">Voltar ao Início</a>
+    </div>
+  </header>
+
+  <!-- CONFIGURAÇÕES -->
+  <section class="section dark-section">
+    <h2 class="section-title">Preferências do Sistema</h2>
+
+    <div class="config-container">
+
+      <!-- Tema -->
+      <div class="config-card neon-card">
+        <h3>Tema do Sistema</h3>
+        <label class="switch">
+          <input type="checkbox" id="temaSistema">
+          <span class="slider"></span>
+        </label>
+        <p>Alterna entre modo claro e escuro.</p>
+      </div>
+
+      <!-- Partículas -->
+      <div class="config-card neon-card">
+        <h3>Partículas Neon</h3>
+        <label class="switch">
+          <input type="checkbox" id="particulasSistema">
+          <span class="slider"></span>
+        </label>
+        <p>Ativa ou desativa o fundo animado.</p>
+      </div>
+
+      <!-- Animações -->
+      <div class="config-card neon-card">
+        <h3>Animações 3D</h3>
+        <label class="switch">
+          <input type="checkbox" id="animacoesSistema">
+          <span class="slider"></span>
+        </label>
+        <p>Ativa ou desativa efeitos 3D nos cards.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONFIGURAÇÕES AVANÇADAS -->
+  <section class="section">
+    <h2 class="section-title">Configurações Avançadas</h2>
+
+    <div class="config-container">
+
+      <div class="config-card neon-card">
+        <h3>Nome da Empresa</h3>
+        <input type="text" id="nomeEmpresa" class="config-input" placeholder="Digite o nome...">
+      </div>
+
+      <div class="config-card neon-card">
+        <h3>Cor Primária</h3>
+        <input type="color" id="corPrimaria" class="config-input">
+      </div>
+
+      <div class="config-card neon-card">
+        <h3>Tempo de Atualização</h3>
+        <input type="number" id="tempoAtualizacao" class="config-input" placeholder="Em segundos">
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Inventário Híbrido – Configurações</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    /* ============================
+       CARREGAR CONFIGURAÇÕES
+    ============================ */
+    document.getElementById("temaSistema").checked =
+      localStorage.getItem("temaSistema") === "on";
+
+    document.getElementById("particulasSistema").checked =
+      localStorage.getItem("particulasSistema") === "on";
+
+    document.getElementById("animacoesSistema").checked =
+      localStorage.getItem("animacoesSistema") === "on";
+
+    document.getElementById("nomeEmpresa").value =
+      localStorage.getItem("nomeEmpresa") || "";
+
+    document.getElementById("corPrimaria").value =
+      localStorage.getItem("corPrimaria") || "#00aaff";
+
+    document.getElementById("tempoAtualizacao").value =
+      localStorage.getItem("tempoAtualizacao") || "";
+
+    /* ============================
+       SALVAR CONFIGURAÇÕES
+    ============================ */
+    document.querySelectorAll("input").forEach(input => {
+      input.addEventListener("change", () => {
+        localStorage.setItem(input.id, input.type === "checkbox" ? (input.checked ? "on" : "off") : input.value);
+      });
+    });
+  </script>
+
+</body>
+</html>

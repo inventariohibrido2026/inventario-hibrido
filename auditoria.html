@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Auditoria – Inventário Híbrido</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MENU FUTURISTA -->
+  <nav class="menu-futurista">
+    <div class="menu-logo">IH</div>
+    <ul class="menu-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventario.html">Inventário</a></li>
+      <li><a href="setores.html">Setores</a></li>
+      <li><a href="operadores.html">Operadores</a></li>
+      <li><a href="relatorios.html">Relatórios</a></li>
+      <li><a href="configuracoes.html">Configurações</a></li>
+      <li><a href="usuarios.html">Usuários</a></li>
+      <li><a href="auditoria.html">Auditoria</a></li>
+    </ul>
+    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <!-- BOTÃO TEMA -->
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+
+  <!-- HERO -->
+  <header class="hero small-hero">
+    <div class="hero-content">
+      <h1 class="glow-title">Auditoria do Sistema</h1>
+      <p class="glow-subtitle">Registro completo de ações e eventos</p>
+    </div>
+  </header>
+
+  <!-- FILTROS -->
+  <section class="section">
+    <h2 class="section-title">Filtros</h2>
+
+    <div class="filtros-container">
+      <input type="text" id="filtroUsuario" class="filtro-input" placeholder="Filtrar por usuário...">
+      <input type="text" id="filtroAcao" class="filtro-input" placeholder="Filtrar por ação...">
+    </div>
+  </section>
+
+  <!-- TABELA DE AUDITORIA -->
+  <section class="section dark-section">
+    <h2 class="section-title">Log de Ações</h2>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Data/Hora</th>
+          <th>Usuário</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+
+      <tbody id="tabelaAuditoria"></tbody>
+    </table>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Inventário Híbrido – Auditoria</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    /* ============================
+       AUDITORIA (LOCALSTORAGE)
+    ============================ */
+
+    let auditoria = JSON.parse(localStorage.getItem("auditoriaSistema")) || [
+      { data: "2026-03-20 14:22", usuario: "Admin Master", acao: "Login no sistema" },
+      { data: "2026-03-20 14:25", usuario: "João Silva", acao: "Alterou item 001245" },
+      { data: "2026-03-20 14:30", usuario: "Maria Santos", acao: "Gerou relatório de estoque" }
+    ];
+
+    function salvarAuditoria() {
+      localStorage.setItem("auditoriaSistema", JSON.stringify(auditoria));
+    }
+
+    function renderizarAuditoria() {
+      const tabela = document.getElementById("tabelaAuditoria");
+      tabela.innerHTML = "";
+
+      auditoria.forEach(log => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${log.data}</td>
+            <td>${log.usuario}</td>
+            <td>${log.acao}</td>
+          </tr>
+        `;
+      });
+    }
+
+    /* ============================
+       FILTROS
+    ============================ */
+    const filtroUsuario = document.getElementById("filtroUsuario");
+    const filtroAcao = document.getElementById("filtroAcao");
+
+    function filtrarAuditoria() {
+      const user = filtroUsuario.value.toLowerCase();
+      const acao = filtroAcao.value.toLowerCase();
+
+      const linhas = document.querySelectorAll("#tabelaAuditoria tr");
+
+      linhas.forEach(linha => {
+        const usuario = linha.cells[1].innerText.toLowerCase();
+        const acaoTxt = linha.cells[2].innerText.toLowerCase();
+
+        const matchUser = usuario.includes(user);
+        const matchAcao = acaoTxt.includes(acao);
+
+        linha.style.display = matchUser && matchAcao ? "" : "none";
+      });
+    }
+
+    filtroUsuario.addEventListener("input", filtrarAuditoria);
+    filtroAcao.addEventListener("input", filtrarAuditoria);
+
+    renderizarAuditoria();
+  </script>
+
+</body>
+</html>

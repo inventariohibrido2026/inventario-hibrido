@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – Inventário Híbrido</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- BOTÃO TEMA -->
+  <button id="theme-toggle" class="theme-btn">🌙</button>
+
+  <!-- CONTAINER DO LOGIN -->
+  <div class="login-container">
+
+    <div class="login-card neon-card">
+      <h1 class="login-title">Acessar Sistema</h1>
+
+      <input type="text" id="usuario" class="login-input" placeholder="Usuário">
+
+      <input type="password" id="senha" class="login-input" placeholder="Senha">
+
+      <button class="btn-neon login-btn" onclick="login()">Entrar</button>
+
+      <p class="login-msg" id="loginMsg"></p>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    /* ============================
+       LOGIN SIMPLES (DEMO)
+    ============================ */
+    function login() {
+      const user = document.getElementById("usuario").value;
+      const pass = document.getElementById("senha").value;
+      const msg = document.getElementById("loginMsg");
+
+      if (user === "admin" && pass === "123") {
+        msg.style.color = "#00ff99";
+        msg.textContent = "Login realizado!";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 800);
+      } else {
+        msg.style.color = "#ff0044";
+        msg.textContent = "Usuário ou senha incorretos";
+      }
+    }
+  </script>
+
+</body>
+</html>

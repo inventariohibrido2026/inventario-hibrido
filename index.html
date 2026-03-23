@@ -1,86 +1,253 @@
 <index.html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Inventário Híbrido</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
-    .hero { background:#004aad; color:#fff; padding:60px 20px; text-align:center; }
-    .hero h1 { font-size:42px; margin-bottom:20px; }
-    .hero p { font-size:20px; margin-bottom:30px; }
-    .section { padding:60px 20px; max-width:1200px; margin:auto; }
-    .grid-3, .grid-2 { display:grid; gap:30px; }
-    .grid-3 { grid-template-columns:repeat(3,1fr); }
-    .grid-2 { grid-template-columns:repeat(2,1fr); }
-    .card { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-    .card h3 { margin-bottom:15px; color:#004aad; }
-    .contact { background:#004aad; color:#fff; text-align:center; padding:40px 20px; }
-    .contact h2 { margin-bottom:20px; }
-    .contact-icons { display:flex; justify-content:center; gap:40px; font-size:28px; }
-    .contact-icons a { color:#fff; text-decoration:none; display:flex; align-items:center; gap:10px; }
-    .contact-icons a:hover { color:#ffd700; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventário Híbrido Profissional</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#0B5ED7;
+  --secondary:#FFC107;
+  --dark:#0F172A;
+  --light:#F8FAFC;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--light);
+  color:#333;
+}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#0B5ED7,#003f9e);
+  color:#fff;
+  padding:90px 20px;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:44px;
+  margin-bottom:20px;
+}
+
+.hero p{
+  font-size:20px;
+  max-width:700px;
+  margin:0 auto 30px;
+}
+
+.btn-cta{
+  background:var(--secondary);
+  color:#000;
+  padding:16px 40px;
+  border-radius:40px;
+  font-size:18px;
+  font-weight:bold;
+  text-decoration:none;
+  transition:.3s;
+}
+
+.btn-cta:hover{
+  background:#ffb300;
+  transform:scale(1.05);
+}
+
+/* SEÇÕES */
+.section{
+  padding:70px 20px;
+  max-width:1200px;
+  margin:auto;
+}
+
+.section h2{
+  text-align:center;
+  font-size:34px;
+  color:var(--primary);
+  margin-bottom:50px;
+}
+
+/* GRID */
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:30px;
+}
+
+/* CARDS */
+.card{
+  background:#fff;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.card h3{
+  color:var(--primary);
+  margin-bottom:12px;
+}
+
+/* DASHBOARD */
+.dashboard img{
+  height:320px;
+}
+
+/* PARA QUEM É */
+.audience{
+  background:#fff;
+  border-radius:20px;
+  padding:40px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.audience ul{
+  list-style:none;
+  padding:0;
+}
+
+.audience li{
+  font-size:18px;
+  padding:12px 0;
+}
+
+.audience i{
+  color:var(--primary);
+  margin-right:10px;
+}
+
+/* CONTATO */
+.contact{
+  background:var(--dark);
+  color:#fff;
+  text-align:center;
+  padding:70px 20px;
+}
+
+.contact h2{
+  margin-bottom:10px;
+}
+
+.contact p{
+  margin-bottom:30px;
+  font-size:18px;
+}
+
+.contact a{
+  display:inline-block;
+  background:#25D366;
+  color:#fff;
+  padding:16px 36px;
+  border-radius:40px;
+  font-size:18px;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+.contact a:hover{
+  background:#1ebe5d;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .hero h1{font-size:32px}
+  .hero p{font-size:18px}
+}
+</style>
 </head>
+
 <body>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>Inventários rápidos, padronizados e inteligentes</h1>
-    <p>Mesmo sem internet, com coleta offline, desktop e dashboard integrados.</p>
-  </section>
+<!-- HERO -->
+<section class="hero">
+  <h1>Inventário Híbrido Profissional</h1>
+  <p>Coleta offline, processamento inteligente e relatórios padronizados para empresas, auditorias e patrimônio.</p>
+  <a href="https://wa.me/5562993747844" class="btn-cta">Solicitar Demonstração</a>
+</section>
 
-  <!-- EQUIPAMENTOS -->
-  <section class="section">
-    <h2 style="text-align:center; font-size:32px; color:#004aad;">💡 Investimento Baixo, Grande Resultado</h2>
-    <div class="grid-3" style="margin-top:40px;">
-      <div class="card">
-        <img src="card/smartphone.jpg" alt="Smartphone Android" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-        <h3>📱 Mobile (Coleta)</h3>
-        <p>Smartphones Android simples (Samsung A03, Motorola E22). Baixo custo e alta eficiência.</p>
-      </div>
-      <div class="card">
-        <img src="card/notebook.jpg" alt="Notebook Windows" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-        <h3>💻 Desktop (Processamento)</h3>
-        <p>Qualquer notebook com Windows 10+. Configuração básica já garante relatórios completos.</p>
-      </div>
-      <div class="card">
-        <img src="card/servidor.jpg" alt="Servidor Cloud" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-        <h3>🌐 Servidor (Opcional)</h3>
-        <p>Planos em nuvem (AWS, Azure, Hostinger) com baixo custo mensal para histórico e BI.</p>
-      </div>
-    </div>
-  </section>
+<!-- EQUIPAMENTOS -->
+<section class="section">
+<h2>💡 Baixo Investimento, Alto Retorno</h2>
 
-  <!-- DASHBOARD -->
-  <section class="section">
-    <h2 style="text-align:center; font-size:32px; color:#004aad;">📊 Dashboard Integrado</h2>
-    <div class="card" style="text-align:center;">
-      <img src="card/dashboard.jpg" alt="Dashboard BI" style="width:100%; height:300px; object-fit:cover; border-radius:8px;">
-      <p>Visualize relatórios completos e padronizados em tempo real.</p>
-    </div>
-  </section>
+<div class="grid-3">
 
-  <!-- CONTATO -->
-  <section class="contact">
-    <h2>📞 Fale Conosco</h2>
-    <div class="contact-icons">
-      <a href="https://wa.me/5562993747844" target="_blank">
-        <img src="card/whatsapp.png" alt="WhatsApp" style="width:60px;"> (062) 99374-7844
-      </a>
-      <a href="mailto:viniciuseroseamerico@outlook.com">
-        <img src="card/email.png" alt="Email" style="width:60px;"> viniciuseroseamerico@outlook.com
-      </a>
-      <a href="mailto:claudiovinicius48@gmail.com">
-        <img src="card/email.png" alt="Email" style="width:60px;"> claudiovinicius48@gmail.com
-      </a>
-    </div>
-  </section>
+  <div class="card">
+    <img src="smartphone.jpg" alt="Coleta Mobile">
+    <h3>📱 Coleta Mobile</h3>
+    <p>Inventário rápido e padronizado usando smartphones Android, mesmo sem internet.</p>
+  </div>
 
-</body>
-</html>
-    </p>
-  </section>
+  <div class="card">
+    <img src="notebook.jpg" alt="Processamento Desktop">
+    <h3>💻 Processamento Desktop</h3>
+    <p>Processamento local em notebooks Windows com geração automática de relatórios.</p>
+  </div>
+
+  <div class="card">
+    <img src="servidor.jpg" alt="Servidor em Nuvem">
+    <h3>🌐 Servidor Opcional</h3>
+    <p>Centralização dos dados, histórico e dashboards com baixo custo mensal.</p>
+  </div>
+
+</div>
+</section>
+</div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="section dashboard">
+<h2>📊 Dashboard Inteligente</h2>
+
+<div class="card" style="text-align:center">
+  <img src="dashboard.jpg" alt="Dashboard BI">
+  <p>
+    <strong>Visualização clara e confiável.</strong><br>
+    Relatórios prontos para auditorias, patrimônio e tomada de decisão.
+  </p>
+</div>
+</section>
+
+<!-- PARA QUEM É -->
+<section class="section">
+<h2>🎯 Para Quem é Esta Solução</h2>
+
+<div class="audience">
+<ul>
+  <li><i class="fa-solid fa-check"></i> Empresas privadas</li>
+  <li><i class="fa-solid fa-check"></i> Prefeituras e órgãos públicos</li>
+  <li><i class="fa-solid fa-check"></i> Inventários patrimoniais</li>
+  <li><i class="fa-solid fa-check"></i> Auditorias e controle de ativos</li>
+</ul>
+</div>
+</section>
+
+<!-- CONTATO -->
+<section class="contact">
+<h2>Fale com um Especialista</h2>
+<p>Atendimento rápido e direto pelo WhatsApp</p>
+
+<a href="https://wa.me/5562993747844">
+  <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
+</a>
+</section>
 
 </body>
 </html>

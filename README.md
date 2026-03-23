@@ -141,15 +141,30 @@ A especificação da API está disponível em:
 
 ## 📊 Diagramas UML
 
-### Casos de Uso
-![Casos de Uso](Documentação/UML/casos_de_uso.png)
+# Inventário Híbrido
 
-### Diagrama de Sequência
-![Sequência](Documentação/UML/sequencia.png)
+Este repositório contém os principais diagramas do sistema de inventário híbrido.
+# Inventário Híbrido
 
-### Diagrama de Classes
-![Classes](Documentação/UML/classes.png)
+Este repositório contém os principais diagramas do sistema de inventário híbrido.
 
+## Diagrama de Fluxo
+![Diagrama de fluxo](./Diagramas/diagrama-de-fluxo-in.png)
+
+## Casos de Uso UML
+![Casos de uso UML](./Diagramas/casos-de-uso-uml.png)
+
+## Modelo de Dados ERD
+![Modelo de dados ERD](./Diagramas/modelo-de-dados-erd.png)
+
+---
+
+## Status do Projeto
+- ✅ Diagrama de fluxo concluído
+- ⚠️ Casos de uso em revisão
+- ⏳ Modelo de dados aguardando validação
+
+---
 
 ## 🗄 Modelo ERD
 ![ERD](Documentação/ERD/erd.png)

@@ -148,6 +148,10 @@ Este repositório contém os principais diagramas do sistema de inventário híb
 
 Este repositório contém os principais diagramas do sistema de inventário híbrido.
 
+# Inventário Híbrido
+
+Este repositório contém os principais diagramas do sistema de inventário híbrido.
+
 ## Diagrama de Fluxo
 ![Diagrama de fluxo](./Diagramas/diagrama-de-fluxo-in.png)
 
@@ -155,7 +159,7 @@ Este repositório contém os principais diagramas do sistema de inventário híb
 ![Casos de uso UML](./Diagramas/casos-de-uso-uml.png)
 
 ## Modelo de Dados ERD
-![Modelo de dados ERD](./Diagramas/modelo-de-dados-erd.png)
+![Modelo de dados ERD](./Diagramas/modelo-dados-erd.png)
 
 ---
 
@@ -163,7 +167,6 @@ Este repositório contém os principais diagramas do sistema de inventário híb
 - ✅ Diagrama de fluxo concluído
 - ⚠️ Casos de uso em revisão
 - ⏳ Modelo de dados aguardando validação
-
 ---
 
 ## 🗄 Modelo ERD

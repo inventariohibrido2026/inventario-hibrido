@@ -112,13 +112,13 @@ Authorization: Bearer <token>
 # Inventário Híbrido
 
 ## Diagrama de fluxo
-![Diagrama de fluxo](Diagrama%20de%20fluxo%20in.png)
+![Diagrama de fluxo](diagrama-fluxo-in.png)
 
 ## Casos de uso UML
-![Casos de uso UML](casos-de-uso-UML.png)
+![Casos de uso UML](casos-de-uso-uml.png)
 
 ## Modelo de dados ERD
-![Modelo de dados ERD](modelo-de-dados-ERD.png)
+![Modelo de dados ERD](modelo-dados-erd.png)
 # 📦 Inventário Híbrido MVP
 
 Este projeto é um MVP (Minimum Viable Product) para gerenciamento de inventário híbrido, com documentação técnica completa.

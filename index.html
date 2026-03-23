@@ -99,6 +99,7 @@ body{
   object-fit:cover;
   border-radius:12px;
   margin-bottom:20px;
+  filter: contrast(1.05) brightness(1.05);
 }
 
 .card h3{
@@ -147,12 +148,14 @@ body{
 }
 
 .contact p{
-  margin-bottom:30px;
+  margin-bottom:20px;
   font-size:18px;
 }
 
 .contact a{
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
   background:#25D366;
   color:#fff;
   padding:16px 36px;
@@ -188,7 +191,6 @@ body{
 <h2>💡 Baixo Investimento, Alto Retorno</h2>
 
 <div class="grid-3">
-
   <div class="card">
     <img src="smartphone.jpg" alt="Coleta Mobile">
     <h3>📱 Coleta Mobile</h3>
@@ -206,9 +208,6 @@ body{
     <h3>🌐 Servidor Opcional</h3>
     <p>Centralização dos dados, histórico e dashboards com baixo custo mensal.</p>
   </div>
-
-</div>
-</section>
 </div>
 </section>
 
@@ -218,10 +217,8 @@ body{
 
 <div class="card" style="text-align:center">
   <img src="dashboard.jpg" alt="Dashboard BI">
-  <p>
-    <strong>Visualização clara e confiável.</strong><br>
-    Relatórios prontos para auditorias, patrimônio e tomada de decisão.
-  </p>
+  <p><strong>Visualização clara e confiável.</strong><br>
+  Relatórios prontos para auditorias, patrimônio e tomada de decisão.</p>
 </div>
 </section>
 
@@ -242,11 +239,17 @@ body{
 <!-- CONTATO -->
 <section class="contact">
 <h2>Fale com um Especialista</h2>
-<p>Atendimento rápido e direto pelo WhatsApp</p>
+<p>Atendimento rápido e direto</p>
 
 <a href="https://wa.me/5562993747844">
-  <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
+  <img src="watsapp.jpg" alt="WhatsApp" style="width:26px">
+  Chamar no WhatsApp
 </a>
+
+<p style="margin-top:20px">
+  <img src="email.jpg" style="width:20px;vertical-align:middle">
+  viniciuseroseamerico@outlook.com
+</p>
 </section>
 
 </body>

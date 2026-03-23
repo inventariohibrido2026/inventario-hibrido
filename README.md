@@ -36,6 +36,7 @@ Sistema completo para gestão de inventários no varejo, projetado para velocida
 - ⚙️ [Instalação e Execução](#-instalação-e-execução)
 - ▶️ [Exemplos de Uso](#-exemplos-de-uso)
 - 📌 [Observações](#-observações)
+-  🛠️ [Equipamentos Necessários](#-equipamentos-necessários)
 
 ---
 
@@ -124,4 +125,53 @@ npm start
 • 	Funciona 100% offline
 • 	Arquivos de entrada/saída: OUT.csv / RETORNO.csv
 • 	Relatórios automáticos e painel de progresso
+
+---
+
+# 🛠️ Equipamentos Necessários
+
+## 📱 Coleta (Mobile)
+- Android 8.0 ou superior  
+- 2 GB RAM  
+- 16 GB armazenamento  
+- Tela 5" ou maior  
+- Bluetooth (opcional)  
+- Leitor de código de barras (opcional)  
+
+**Modelos recomendados:**  
+- Samsung A03 / A14  
+- Motorola E22 / G13  
+- Coletores profissionais: Zebra, Gertec, Honeywell  
+
+---
+
+## 💻 Processamento (Desktop)
+- Windows 10 ou superior  
+- Processador i3 ou equivalente  
+- 4 GB RAM  
+- 10 GB livres  
+- Porta USB (para importar arquivos)  
+
+**Recomendado:**  
+- Processador i5  
+- 8 GB RAM  
+- SSD  
+
+---
+
+## 🌐 Servidor (Opcional)
+Para histórico e dashboard online:
+
+- Linux ou Windows Server  
+- 2 vCPUs  
+- 4 GB RAM  
+- Banco MySQL  
+- Firewall configurado  
+- HTTPS habilitado  
+
+**Plataformas recomendadas:**  
+- Azure  
+- AWS  
+- Hostinger  
+- DigitalOcean  
 

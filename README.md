@@ -1,4 +1,27 @@
-# Inventário Híbrido — README Técnico
+<div align="center">
+
+# 🚀 Inventário Híbrido  
+### Coleta Offline • Processamento Local • Análise Inteligente
+
+Sistema completo para gestão de inventários no varejo, projetado para velocidade, precisão e escalabilidade.
+
+---
+
+### 📞 Contato  
+💬 **WhatsApp:** https://wa.me/5562993747844
+📧 **E-mail:** claudio.vinicius48@gmail.com  
+
+---
+
+<p align="center">
+  <img src="https://img.shields.io/badge/status-em%20desenvolvimento-blue" />
+  <img src="https://img.shields.io/badge/mobile-offline-green" />
+  <img src="https://img.shields.io/badge/desktop-.NET%20C%23-purple" />
+  <img src="https://img.shields.io/badge/dashboard-react-blueviolet" />
+  <img src="https://img.shields.io/badge/licenciamento-loja-orange" />
+</p>
+
+</div>
 
 ## 📦 Visão Geral
 Sistema completo para gestão de inventários no varejo, com coleta offline, processamento local e análise inteligente.

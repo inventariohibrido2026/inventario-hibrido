@@ -109,16 +109,16 @@ Authorization: Bearer <token>
 • 	Relatórios automáticos e painel de progresso
 💡 Esse README agora está **completo e prático**: serve como guia para desenvolvedores, administradores e operadores.  
 
-## 📊 Diagramas UML
+# Inventário Híbrido
 
-### Casos de Uso
-![Casos de Uso](Diagramas/casos-de-uso-UML.png)
+## Diagrama de fluxo
+![Diagrama de fluxo](Diagrama%20de%20fluxo%20in.png)
 
-### Diagrama de Fluxo
-![Fluxo](Diagramas/Diagrama-de-fluxo-in.png)
+## Casos de uso UML
+![Casos de uso UML](casos-de-uso-UML.png)
 
-### Modelo de Dados ERD
-![ERD](Diagramas/modelo-de-dados-ERD.png)
+## Modelo de dados ERD
+![Modelo de dados ERD](modelo-de-dados-ERD.png)
 # 📦 Inventário Híbrido MVP
 
 Este projeto é um MVP (Minimum Viable Product) para gerenciamento de inventário híbrido, com documentação técnica completa.
@@ -150,7 +150,6 @@ A especificação da API está disponível em:
 ### Diagrama de Classes
 ![Classes](Documentação/UML/classes.png)
 
----
 
 ## 🗄 Modelo ERD
 ![ERD](Documentação/ERD/erd.png)

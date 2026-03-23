@@ -77,7 +77,7 @@ Sistema completo para gestão de inventários no varejo, com coleta offline, pro
 ![Casos de uso UML](./Diagramas/casos-de-uso-uml.png)
 
 ### 🗄 Modelo de Dados ERD
-![Modelo de dados ERD](./Diagramas/modelo-dados-erd.png)
+![Modelo de dados ERD](./Diagramas/modelo-de-dados-erd.png)
 
 ---
 

@@ -112,13 +112,13 @@ Authorization: Bearer <token>
 ## 📊 Diagramas UML
 
 ### Casos de Uso
-![Casos de Uso](Documentação/UML/casos_de_uso.png)
+![Casos de Uso](Diagramas/casos-de-uso-UML.png)
 
-### Diagrama de Sequência
-![Sequência](Documentação/UML/sequencia.png)
+### Diagrama de Fluxo
+![Fluxo](Diagramas/Diagrama-de-fluxo-in.png)
 
-### Diagrama de Classes
-![Classes](Documentação/UML/classes.png)
+### Modelo de Dados ERD
+![ERD](Diagramas/modelo-de-dados-ERD.png)
 # 📦 Inventário Híbrido MVP
 
 Este projeto é um MVP (Minimum Viable Product) para gerenciamento de inventário híbrido, com documentação técnica completa.

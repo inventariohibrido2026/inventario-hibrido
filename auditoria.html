@@ -1,72 +1,242 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditoria - Inventário Híbrido</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="menu-futurista">
-    <div class="menu-logo">IH</div>
-    <ul class="menu-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="auditoria.html">Auditoria</a></li>
-      <li><a href="relatorios.html">Relatórios</a></li>
-    </ul>
-    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
-  </nav>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="operadores.html">Operadores</a></li>
+                <li><a href="auditoria.html" class="active">Auditoria</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
 
-  <header class="hero small-hero">
-    <div class="hero-content">
-      <h1 class="glow-title">Módulo de Auditoria</h1>
-      <p class="glow-subtitle">Validação de contagens e conferência de ativos</p>
+    <!-- Conteúdo Principal -->
+    <main class="audit-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Log de Auditoria</h1>
+                    <p>Registro completo de todas as atividades e alterações do sistema</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="exportAuditLog">
+                        <i class="fas fa-download"></i> Exportar Log
+                    </button>
+                    <button class="btn btn-secondary" id="refreshLog">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="audit-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Eventos</h3>
+                        <div class="stat-value" id="totalEvents">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Usuários Ativos Hoje</h3>
+                        <div class="stat-value" id="activeUsersToday">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Alterações Hoje</h3>
+                        <div class="stat-value" id="changesToday">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Alertas Críticos</h3>
+                        <div class="stat-value" id="criticalAlerts">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros Avançados -->
+            <div class="audit-filters">
+                <div class="filters-header">
+                    <h3><i class="fas fa-filter"></i> Filtros Avançados</h3>
+                    <button class="btn-icon" id="toggleFilters">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+                <div class="filters-content" id="filtersContent">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Período</label>
+                            <select id="periodFilter" class="form-select">
+                                <option value="today">Hoje</option>
+                                <option value="yesterday">Ontem</option>
+                                <option value="last7">Últimos 7 dias</option>
+                                <option value="last30">Últimos 30 dias</option>
+                                <option value="custom">Personalizado</option>
+                            </select>
+                        </div>
+                        <div class="filter-group custom-date" style="display: none;">
+                            <label>Data Início</label>
+                            <input type="date" id="startDate" class="form-input">
+                        </div>
+                        <div class="filter-group custom-date" style="display: none;">
+                            <label>Data Fim</label>
+                            <input type="date" id="endDate" class="form-input">
+                        </div>
+                        <div class="filter-group">
+                            <label>Tipo de Evento</label>
+                            <select id="eventTypeFilter" class="form-select">
+                                <option value="all">Todos</option>
+                                <option value="login">Login</option>
+                                <option value="logout">Logout</option>
+                                <option value="create">Criação</option>
+                                <option value="update">Atualização</option>
+                                <option value="delete">Exclusão</option>
+                                <option value="export">Exportação</option>
+                                <option value="import">Importação</option>
+                                <option value="error">Erro</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Módulo</label>
+                            <select id="moduleFilter" class="form-select">
+                                <option value="all">Todos</option>
+                                <option value="dashboard">Dashboard</option>
+                                <option value="inventario">Inventário</option>
+                                <option value="relatorios">Relatórios</option>
+                                <option value="usuarios">Usuários</option>
+                                <option value="operadores">Operadores</option>
+                                <option value="configuracoes">Configurações</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Usuário</label>
+                            <input type="text" id="userFilter" class="form-input" placeholder="Digite o nome do usuário">
+                        </div>
+                        <div class="filter-group">
+                            <label>IP/Origem</label>
+                            <input type="text" id="ipFilter" class="form-input" placeholder="Endereço IP">
+                        </div>
+                    </div>
+                    <div class="filters-actions">
+                        <button class="btn-primary" id="applyFilters">Aplicar Filtros</button>
+                        <button class="btn-secondary" id="clearFilters">Limpar Filtros</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Logs -->
+            <div class="audit-table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-list"></i> Registros de Auditoria</h3>
+                    <div class="table-info">
+                        <span id="recordsCount">Mostrando 0 registros</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Usuário</th>
+                                <th>Tipo</th>
+                                <th>Módulo</th>
+                                <th>Ação</th>
+                                <th>Detalhes</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" id="pagination">
+                        <!-- Paginação será inserida via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos de Atividades -->
+            <div class="audit-charts">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-line"></i> Atividades por Dia</h3>
+                    <canvas id="activitiesChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Distribuição por Tipo</h3>
+                    <canvas id="typeChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Detalhes do Evento -->
+    <div id="eventDetailModal" class="modal">
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h3>Detalhes do Evento</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="eventDetailContent">
+                <!-- Conteúdo será inserido via JavaScript -->
+            </div>
+        </div>
     </div>
-  </header>
 
-  <section class="section">
-    <div class="filtros-container">
-      <input type="text" class="filtro-input" placeholder="ID do Ativo ou Local...">
-      <select class="filtro-input">
-        <option value="">Status de Auditoria</option>
-        <option value="divergente">Divergente</option>
-        <option value="confirmado">Confirmado</option>
-      </select>
-      <button class="btn-neon">Buscar</button>
-    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
 
-    <div style="overflow-x: auto;">
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th>Ativo</th>
-            <th>Qtd. Sistema</th>
-            <th>Qtd. Coletada</th>
-            <th>Diferença</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Notebook Dell G15</td>
-            <td>15</td>
-            <td>14</td>
-            <td style="color: #ff4444; font-weight: bold;">-1</td>
-            <td><button class="btn-neon" style="font-size: 12px; padding: 5px;">Recontar</button></td>
-          </tr>
-          <tr>
-            <td>Monitor LG 29"</td>
-            <td>20</td>
-            <td>20</td>
-            <td style="color: #00ff00;">0</td>
-            <td><button class="btn-neon" style="font-size: 12px; padding: 5px;">Validar</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

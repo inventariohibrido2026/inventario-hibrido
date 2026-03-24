@@ -2,54 +2,41 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Login – Inventário Híbrido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Inventário Híbrido</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-body">
 
-  <!-- BOTÃO TEMA -->
-  <button id="theme-toggle" class="theme-btn">🌙</button>
-
-  <!-- CONTAINER DO LOGIN -->
   <div class="login-container">
-
-    <div class="login-card neon-card">
-      <h1 class="login-title">Acessar Sistema</h1>
-
-      <input type="text" id="usuario" class="login-input" placeholder="Usuário">
-
-      <input type="password" id="senha" class="login-input" placeholder="Senha">
-
-      <button class="btn-neon login-btn" onclick="login()">Entrar</button>
-
-      <p class="login-msg" id="loginMsg"></p>
+    <div class="login-card">
+      <div class="menu-logo" style="margin-bottom: 20px;">IH</div>
+      <h2 class="login-title">Acesso ao Sistema</h2>
+      
+      <form id="loginForm">
+        <input type="text" id="username" class="login-input" placeholder="Usuário" required>
+        <input type="password" id="password" class="login-input" placeholder="Senha" required>
+        
+        <button type="submit" class="btn-neon login-btn">Entrar</button>
+      </form>
+      
+      <p id="loginMessage" class="login-msg"></p>
     </div>
-
   </div>
 
   <script src="script.js"></script>
-
   <script>
-    /* ============================
-       LOGIN SIMPLES (DEMO)
-    ============================ */
-    function login() {
-      const user = document.getElementById("usuario").value;
-      const pass = document.getElementById("senha").value;
-      const msg = document.getElementById("loginMsg");
-
-      if (user === "admin" && pass === "123") {
-        msg.style.color = "#00ff99";
-        msg.textContent = "Login realizado!";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 800);
-      } else {
-        msg.style.color = "#ff0044";
-        msg.textContent = "Usuário ou senha incorretos";
-      }
-    }
+    // Lógica simples de redirecionamento para teste
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const msg = document.getElementById('loginMessage');
+      msg.style.color = "#00ff00";
+      msg.textContent = "Acesso autorizado! Redirecionando...";
+      
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    });
   </script>
-
 </body>
 </html>

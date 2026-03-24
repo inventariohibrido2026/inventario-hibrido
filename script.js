@@ -1,29 +1,4 @@
 /* ============================
-   MENU MOBILE (CORRIGIDO)
-============================ */
-function toggleMenu() {
-  const menu = document.querySelector(".menu-links");
-  menu.classList.toggle("show-menu");
-}
-
-/* ============================
-   MODO CLARO / ESCURO
-============================ */
-const toggleBtn = document.getElementById("theme-toggle");
-
-if (localStorage.getItem("theme") === "light") {
-  document.body.classList.add("light-mode");
-  toggleBtn.textContent = "☀️";
-}
-
-toggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  const isLight = document.body.classList.contains("light-mode");
-  toggleBtn.textContent = isLight ? "☀️" : "🌙";
-  localStorage.setItem("theme", isLight ? "light" : "dark");
-});
-
-/* ============================
    ANIMAÇÃO DE PARTÍCULAS
 ============================ */
 const canvas = document.createElement("canvas");
@@ -54,7 +29,7 @@ const particles = Array.from({ length: 80 }, () => ({
   glow: Math.random() * 15 + 5
 }));
 
-function animate() {
+function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach(p => {
     ctx.beginPath();
@@ -63,17 +38,6 @@ function animate() {
     ctx.shadowBlur = p.glow;
     ctx.shadowColor = "#00aaff";
     ctx.fill();
-    p.x += p.speedX;
-    p.y += p.speedY;
-    if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-  });
-  requestAnimationFrame(animate);
-}
-animate();    ctx.fillStyle = "#00aaff";
-    ctx.shadowBlur = p.glow;
-    ctx.shadowColor = "#00aaff";
-    ctx.fill();
 
     p.x += p.speedX;
     p.y += p.speedY;
@@ -81,18 +45,43 @@ animate();    ctx.fillStyle = "#00aaff";
     if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
     if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
   });
-
   requestAnimationFrame(animateParticles);
 }
 animateParticles();
 
 /* ============================
-   ANIMAÇÃO DE ENTRADA SUAVE
+   MENU MOBILE
 ============================ */
+function toggleMenu() {
+  const menu = document.querySelector(".menu-links");
+  if (menu) {
+    menu.classList.toggle("show-menu");
+  }
+}
 
-const elements = document.querySelectorAll(
-  ".section, .neon-card, .tech-card, .equip-card, .dashboard-box"
-);
+/* ============================
+   MODO CLARO / ESCURO
+============================ */
+const toggleBtn = document.getElementById("theme-toggle");
+
+if (toggleBtn) {
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    toggleBtn.textContent = "☀️";
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+    toggleBtn.textContent = isLight ? "☀️" : "🌙";
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
+}
+
+/* ============================
+   ANIMAÇÃO DE ENTRADA SUAVE (Intersection Observer)
+============================ */
+const elements = document.querySelectorAll(".section, .neon-card, .tech-card, .equip-card, .dashboard-box");
 
 if (elements.length) {
   const observer = new IntersectionObserver(entries => {
@@ -109,57 +98,38 @@ if (elements.length) {
 /* ============================
    EFEITO DE BRILHO NO TÍTULO
 ============================ */
-
 const title = document.querySelector(".glow-title");
 
 if (title) {
   setInterval(() => {
-    title.style.textShadow = `
-      0 0 10px #00aaff,
-      0 0 20px #00aaff,
-      0 0 40px #00aaff
-    `;
+    title.style.textShadow = "0 0 10px #00aaff, 0 0 20px #00aaff, 0 0 40px #00aaff";
     setTimeout(() => {
-      title.style.textShadow = `
-        0 0 5px #00aaff,
-        0 0 10px #00aaff
-      `;
+      title.style.textShadow = "0 0 5px #00aaff, 0 0 10px #00aaff";
     }, 500);
   }, 2000);
 }
 
 /* ============================
-   MODO CLARO / ESCURO
+   LÓGICA DE PESQUISA UNIVERSAL
 ============================ */
+const inputBusca = document.querySelector('.filtro-input');
 
-const toggleBtn = document.getElementById("theme-toggle");
+if (inputBusca) {
+  inputBusca.addEventListener('keyup', function() {
+    const termo = inputBusca.value.toLowerCase();
+    
+    // Filtro para Tabelas
+    const linhas = document.querySelectorAll('.report-table tbody tr');
+    linhas.forEach(linha => {
+      const texto = linha.innerText.toLowerCase();
+      linha.style.display = texto.includes(termo) ? '' : 'none';
+    });
 
-if (toggleBtn) {
-  if (localStorage.getItem("theme") === "light") {
-    document.body.classList.add("light-mode");
-    toggleBtn.textContent = "☀️";
-  }
-
-  toggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-
-    if (document.body.classList.contains("light-mode")) {
-      toggleBtn.textContent = "☀️";
-      localStorage.setItem("theme", "light");
-    } else {
-      toggleBtn.textContent = "🌙";
-      localStorage.setItem("theme", "dark");
-    }
+    // Filtro para Cards
+    const cards = document.querySelectorAll('.neon-card');
+    cards.forEach(card => {
+      const nome = card.querySelector('h3')?.innerText.toLowerCase() || "";
+      card.style.display = nome.includes(termo) ? '' : 'none';
+    });
   });
-}
-
-/* ============================
-   MENU MOBILE
-============================ */
-
-function toggleMenu() {
-  const menu = document.querySelector(".menu-links");
-  if (menu) {
-    menu.classList.toggle("show-menu");
-  }
 }

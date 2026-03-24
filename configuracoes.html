@@ -1,37 +1,430 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurações - Inventário Híbrido</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="menu-futurista">
-    <div class="menu-logo">IH</div>
-    <ul class="menu-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="configuracoes.html">Configurações</a></li>
-    </ul>
-    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
-  </nav>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html" class="active">Configurações</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
 
-  <section class="section">
-    <h2 class="section-title">Ajustes do Sistema</h2>
-    <div class="card neon-card" style="max-width: 600px; margin: auto; text-align: left;">
-      <label>Nome da Empresa:</label>
-      <input type="text" class="filtro-input" style="width: 100%; margin-bottom: 20px;" placeholder="Ex: Logística X">
-      
-      <label>Notificações de Inventário:</label>
-      <select class="filtro-input" style="width: 100%; margin-bottom: 20px;">
-        <option>Ativadas</option>
-        <option>Desativadas</option>
-      </select>
+    <!-- Conteúdo Principal -->
+    <main class="settings-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Configurações do Sistema</h1>
+                    <p>Personalize e gerencie as preferências do inventário</p>
+                </div>
+                <button class="btn btn-primary" id="saveAllSettings">
+                    <i class="fas fa-save"></i> Salvar Todas
+                </button>
+            </div>
 
-      <button class="btn-neon" style="width: 100%;">Salvar Alterações</button>
-    </div>
-  </section>
+            <!-- Tabs de Configurações -->
+            <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="perfil">
+                    <i class="fas fa-user"></i> Perfil
+                </button>
+                <button class="tab-btn" data-tab="empresa">
+                    <i class="fas fa-building"></i> Empresa
+                </button>
+                <button class="tab-btn" data-tab="notificacoes">
+                    <i class="fas fa-bell"></i> Notificações
+                </button>
+                <button class="tab-btn" data-tab="seguranca">
+                    <i class="fas fa-shield-alt"></i> Segurança
+                </button>
+                <button class="tab-btn" data-tab="backup">
+                    <i class="fas fa-database"></i> Backup
+                </button>
+                <button class="tab-btn" data-tab="integracao">
+                    <i class="fas fa-plug"></i> Integração
+                </button>
+            </div>
 
-  <script src="script.js"></script>
+            <!-- Conteúdo das Tabs -->
+            <div class="settings-content">
+                <!-- Tab Perfil -->
+                <div class="tab-pane active" id="perfil">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user-circle"></i> Informações Pessoais</h3>
+                        <form id="perfilForm" class="settings-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome Completo</label>
+                                    <input type="text" id="nomeCompleto" class="form-input" placeholder="Seu nome completo" value="Vinicius Erose Américo">
+                                </div>
+                                <div class="form-group">
+                                    <label>E-mail</label>
+                                    <input type="email" id="email" class="form-input" placeholder="seu@email.com" value="viniciuseroseamerico@outlook.com">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Cargo</label>
+                                    <input type="text" id="cargo" class="form-input" placeholder="Seu cargo" value="Administrador">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefone</label>
+                                    <input type="tel" id="telefone" class="form-input" placeholder="(00) 00000-0000" value="(62) 99374-7844">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Avatar</label>
+                                <div class="avatar-upload">
+                                    <div class="avatar-preview" id="avatarPreview">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div class="avatar-actions">
+                                        <button type="button" class="btn-secondary" id="uploadAvatarBtn">
+                                            <i class="fas fa-upload"></i> Alterar Foto
+                                        </button>
+                                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Salvar Alterações</button>
+                                <button type="button" class="btn-secondary" id="cancelPerfil">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab Empresa -->
+                <div class="tab-pane" id="empresa">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-building"></i> Dados da Empresa</h3>
+                        <form id="empresaForm" class="settings-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Razão Social</label>
+                                    <input type="text" id="razaoSocial" class="form-input" placeholder="Razão Social" value="Inventário Híbrido Sistemas Ltda">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nome Fantasia</label>
+                                    <input type="text" id="nomeFantasia" class="form-input" placeholder="Nome Fantasia" value="Inventário Híbrido">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>CNPJ</label>
+                                    <input type="text" id="cnpj" class="form-input" placeholder="00.000.000/0001-00" value="12.345.678/0001-90">
+                                </div>
+                                <div class="form-group">
+                                    <label>Inscrição Estadual</label>
+                                    <input type="text" id="ie" class="form-input" placeholder="Inscrição Estadual" value="123.456.789">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Endereço</label>
+                                <input type="text" id="endereco" class="form-input" placeholder="Endereço completo" value="Av. Paulista, 1000 - Bela Vista, São Paulo - SP">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <input type="text" id="cidade" class="form-input" placeholder="Cidade" value="São Paulo">
+                                </div>
+                                <div class="form-group">
+                                    <label>Estado</label>
+                                    <select id="estado" class="form-select">
+                                        <option value="SP" selected>SP - São Paulo</option>
+                                        <option value="RJ">RJ - Rio de Janeiro</option>
+                                        <option value="MG">MG - Minas Gerais</option>
+                                        <option value="GO">GO - Goiás</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-calculator"></i> Configurações Financeiras</h3>
+                        <form id="financeiroForm" class="settings-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Moeda Padrão</label>
+                                    <select id="moeda" class="form-select">
+                                        <option value="BRL" selected>BRL - Real Brasileiro (R$)</option>
+                                        <option value="USD">USD - Dólar Americano (US$)</option>
+                                        <option value="EUR">EUR - Euro (€)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Formato de Data</label>
+                                    <select id="formatoData" class="form-select">
+                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota de Imposto Padrão (%)</label>
+                                <input type="number" id="imposto" class="form-input" step="0.01" value="18.00">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab Notificações -->
+                <div class="tab-pane" id="notificacoes">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-envelope"></i> Notificações por E-mail</h3>
+                        <div class="settings-options">
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifEstoqueBaixo" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Alerta de Estoque Baixo</strong>
+                                    <p>Receber notificação quando itens atingirem o estoque mínimo</p>
+                                </div>
+                            </div>
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifInventario">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Relatórios de Inventário</strong>
+                                    <p>Receber relatórios semanais de inventário</p>
+                                </div>
+                            </div>
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifBackup" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Backup Realizado</strong>
+                                    <p>Receber confirmação de backups realizados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-mobile-alt"></i> Notificações Push</h3>
+                        <div class="settings-options">
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="pushAlertas" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Alertas em Tempo Real</strong>
+                                    <p>Receber alertas instantâneos no navegador</p>
+                                </div>
+                            </div>
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="pushAtualizacoes" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Atualizações do Sistema</strong>
+                                    <p>Receber novidades sobre atualizações</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Segurança -->
+                <div class="tab-pane" id="seguranca">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-key"></i> Alterar Senha</h3>
+                        <form id="senhaForm" class="settings-form">
+                            <div class="form-group">
+                                <label>Senha Atual</label>
+                                <input type="password" id="senhaAtual" class="form-input" placeholder="Digite sua senha atual">
+                            </div>
+                            <div class="form-group">
+                                <label>Nova Senha</label>
+                                <input type="password" id="novaSenha" class="form-input" placeholder="Digite a nova senha">
+                                <span class="password-strength" id="senhaStrength"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirmar Nova Senha</label>
+                                <input type="password" id="confirmarSenha" class="form-input" placeholder="Confirme a nova senha">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Alterar Senha</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-fingerprint"></i> Autenticação em Dois Fatores</h3>
+                        <div class="two-factor">
+                            <div class="two-factor-info">
+                                <i class="fas fa-shield-alt"></i>
+                                <div>
+                                    <strong>Proteção adicional para sua conta</strong>
+                                    <p>Adicione uma camada extra de segurança</p>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" id="enable2FA">Ativar 2FA</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-history"></i> Sessões Ativas</h3>
+                        <div class="sessions-list" id="sessionsList">
+                            <div class="session-item">
+                                <i class="fas fa-laptop"></i>
+                                <div>
+                                    <strong>Este dispositivo</strong>
+                                    <p>Chrome - Windows • São Paulo, SP</p>
+                                    <small>Ativo agora</small>
+                                </div>
+                                <button class="btn-icon disabled" disabled><i class="fas fa-check"></i> Atual</button>
+                            </div>
+                        </div>
+                        <button class="btn-secondary" id="logoutAllDevices">Encerrar Todas as Sessões</button>
+                    </div>
+                </div>
+
+                <!-- Tab Backup -->
+                <div class="tab-pane" id="backup">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-cloud-upload-alt"></i> Backup Automático</h3>
+                        <div class="settings-options">
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="backupAuto" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Backup Automático Diário</strong>
+                                    <p>Realizar backup todos os dias às 23:59</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="backup-schedule">
+                            <label>Horário do Backup</label>
+                            <input type="time" id="backupTime" class="form-input" value="23:59">
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-download"></i> Backup Manual</h3>
+                        <div class="backup-actions">
+                            <button class="btn-primary" id="backupNow">
+                                <i class="fas fa-database"></i> Realizar Backup Agora
+                            </button>
+                            <button class="btn-secondary" id="restoreBackup">
+                                <i class="fas fa-upload"></i> Restaurar Backup
+                            </button>
+                            <input type="file" id="restoreFile" accept=".json,.zip" style="display: none;">
+                        </div>
+                        <div class="backup-history">
+                            <h4>Últimos Backups</h4>
+                            <ul id="backupHistoryList">
+                                <li><i class="fas fa-check-circle"></i> 24/03/2026 23:59 - Backup completo</li>
+                                <li><i class="fas fa-check-circle"></i> 23/03/2026 23:59 - Backup completo</li>
+                                <li><i class="fas fa-check-circle"></i> 22/03/2026 23:59 - Backup completo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Integração -->
+                <div class="tab-pane" id="integracao">
+                    <div class="settings-card">
+                        <h3><i class="fab fa-whatsapp"></i> Integração WhatsApp</h3>
+                        <div class="integration-form">
+                            <div class="form-group">
+                                <label>Número WhatsApp para Notificações</label>
+                                <input type="tel" id="whatsappNumber" class="form-input" placeholder="(00) 00000-0000" value="5562993747844">
+                            </div>
+                            <div class="option-item">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="whatsappNotif" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div class="option-info">
+                                    <strong>Receber notificações via WhatsApp</strong>
+                                    <p>Alertas de estoque e relatórios diretamente no seu WhatsApp</p>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="testWhatsapp">
+                                <i class="fab fa-whatsapp"></i> Testar Conexão
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-cloud"></i> API e Webhooks</h3>
+                        <div class="api-config">
+                            <div class="form-group">
+                                <label>API Key</label>
+                                <div class="api-key-display">
+                                    <input type="text" id="apiKey" class="form-input" value="ih_2026_abc123def456" readonly>
+                                    <button class="btn-icon" id="copyApiKey"><i class="fas fa-copy"></i></button>
+                                    <button class="btn-icon" id="generateApiKey"><i class="fas fa-sync-alt"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Webhook URL</label>
+                                <input type="url" id="webhookUrl" class="form-input" placeholder="https://seuservidor.com/webhook">
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-primary" id="saveApiSettings">Salvar Configurações</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

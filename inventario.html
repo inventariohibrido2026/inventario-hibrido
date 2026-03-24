@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventário | Sistema de Gestão</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="inventario.html" class="active">Inventário</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="setores.html">Setores</a></li>
+                <li><a href="operadores.html">Operadores</a></li>
+                <li><a href="equipamentos.html">Equipamentos</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="auditoria.html">Auditoria</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="inventory-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Gestão de Inventário</h1>
+                    <p>Controle completo de produtos, estoque e movimentações</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="openItemModal">
+                        <i class="fas fa-plus"></i> Novo Item
+                    </button>
+                    <button class="btn btn-secondary" id="importItemsBtn">
+                        <i class="fas fa-upload"></i> Importar
+                    </button>
+                    <button class="btn btn-secondary" id="exportItemsBtn">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="inventory-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Itens</h3>
+                        <div class="stat-value" id="totalItemsCount">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Valor Total Estoque</h3>
+                        <div class="stat-value" id="totalValue">R$ 0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Estoque Baixo</h3>
+                        <div class="stat-value" id="lowStockCount">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Giro de Estoque</h3>
+                        <div class="stat-value" id="turnoverRate">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros e Busca -->
+            <div class="inventory-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchItem" placeholder="Buscar por código, nome ou categoria...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterCategory" class="form-select">
+                        <option value="all">Todas categorias</option>
+                        <option value="Eletrônicos">Eletrônicos</option>
+                        <option value="Periféricos">Periféricos</option>
+                        <option value="Móveis">Móveis</option>
+                        <option value="Componentes">Componentes</option>
+                        <option value="Alimentos">Alimentos</option>
+                        <option value="Vestuário">Vestuário</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterSector" class="form-select">
+                        <option value="all">Todos setores</option>
+                        <option value="Almoxarifado Central">Almoxarifado Central</option>
+                        <option value="Setor de Produção">Setor de Produção</option>
+                        <option value="Expedição">Expedição</option>
+                        <option value="Estoque Matéria Prima">Estoque Matéria Prima</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterStatus" class="form-select">
+                        <option value="all">Todos status</option>
+                        <option value="normal">Normal</option>
+                        <option value="low">Estoque Baixo</option>
+                        <option value="out">Esgotado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabela de Inventário -->
+            <div class="inventory-table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-list"></i> Lista de Produtos</h3>
+                    <div class="table-info">
+                        <span id="recordsCount">Mostrando 0 registros</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Setor</th>
+                                <th>Quantidade</th>
+                                <th>Valor Unit.</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                        <tfoot id="inventoryTableFoot">
+                            <!-- Totais serão inseridos via JavaScript -->
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" id="pagination">
+                        <!-- Paginação será inserida via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Cadastro/Edição de Item -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Novo Item</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Código do Produto *</label>
+                            <input type="text" id="itemCodigo" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Código de Barras</label>
+                            <input type="text" id="itemBarcode" class="form-input" placeholder="789...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome do Produto *</label>
+                            <input type="text" id="itemNome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria *</label>
+                            <select id="itemCategoria" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <option value="Eletrônicos">Eletrônicos</option>
+                                <option value="Periféricos">Periféricos</option>
+                                <option value="Móveis">Móveis</option>
+                                <option value="Componentes">Componentes</option>
+                                <option value="Alimentos">Alimentos</option>
+                                <option value="Vestuário">Vestuário</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Setor *</label>
+                            <select id="itemSetor" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <option value="Almoxarifado Central">Almoxarifado Central</option>
+                                <option value="Setor de Produção">Setor de Produção</option>
+                                <option value="Expedição">Expedição</option>
+                                <option value="Estoque Matéria Prima">Estoque Matéria Prima</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fornecedor</label>
+                            <input type="text" id="itemFornecedor" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantidade *</label>
+                            <input type="number" id="itemQuantidade" class="form-input" value="0" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estoque Mínimo</label>
+                            <input type="number" id="itemMinimo" class="form-input" value="10">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor Unitário *</label>
+                            <input type="number" id="itemValor" class="form-input" step="0.01" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor de Custo</label>
+                            <input type="number" id="itemCusto" class="form-input" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Localização</label>
+                            <input type="text" id="itemLocalizacao" class="form-input" placeholder="Prateleira, corredor...">
+                        </div>
+                        <div class="form-group">
+                            <label>Unidade de Medida</label>
+                            <select id="itemUnidade" class="form-select">
+                                <option value="UN">UN - Unidade</option>
+                                <option value="KG">KG - Quilograma</option>
+                                <option value="LT">LT - Litro</option>
+                                <option value="CX">CX - Caixa</option>
+                                <option value="PC">PC - Peça</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea id="itemDescricao" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar Item</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Movimentação de Estoque -->
+    <div id="movementModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Movimentação de Estoque</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="movementForm">
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <input type="text" id="movementProductName" class="form-input" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Movimentação</label>
+                        <select id="movementType" class="form-select" required>
+                            <option value="entrada">Entrada</option>
+                            <option value="saida">Saída</option>
+                            <option value="ajuste">Ajuste</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade *</label>
+                        <input type="number" id="movementQuantity" class="form-input" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <input type="text" id="movementReason" class="form-input" placeholder="Ex: Venda, Transferência, Perda...">
+                    </div>
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="movementObs" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Confirmar</button>
+                        <button type="button" class="btn-secondary" id="closeMovementModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

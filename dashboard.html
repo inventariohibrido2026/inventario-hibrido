@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Menu de Navegação -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
@@ -21,8 +20,8 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li><a href="#relatorios">Relatórios</a></li>
-                <li><a href="#configuracoes">Configurações</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
             </ul>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -30,7 +29,6 @@
         </div>
     </nav>
 
-    <!-- Dashboard Content -->
     <main class="dashboard">
         <div class="container">
             <div class="dashboard-header">
@@ -38,39 +36,30 @@
                 <p>Visão geral do seu estoque em tempo real</p>
             </div>
 
-            <!-- Cards de KPIs -->
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-icon">
-                        <i class="fas fa-boxes"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="fas fa-boxes"></i></div>
                     <div class="kpi-info">
                         <h3>Total de Itens</h3>
                         <div class="kpi-value" id="totalItems">0</div>
                     </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
                     <div class="kpi-info">
                         <h3>Valor Total</h3>
                         <div class="kpi-value" id="totalValue">R$ 0</div>
                     </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
                     <div class="kpi-info">
                         <h3>Estoque Baixo</h3>
                         <div class="kpi-value" id="lowStock">0</div>
                     </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
+                    <div class="kpi-icon"><i class="fas fa-chart-bar"></i></div>
                     <div class="kpi-info">
                         <h3>Categorias</h3>
                         <div class="kpi-value" id="categories">0</div>
@@ -78,7 +67,6 @@
                 </div>
             </div>
 
-            <!-- Tabela de Itens Recentes -->
             <div class="table-container">
                 <div class="table-header">
                     <h2>Itens Recentes</h2>
@@ -88,26 +76,93 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="data-table" id="itemsTable">
+                    <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Quantidade</th>
-                                <th>Valor Unit.</th>
-                                <th>Total</th>
-                            </tr>
+                            <tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Quantidade</th><th>Valor Unit.</th><th>Total</th></tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Dados serão inseridos via JavaScript -->
-                        </tbody>
+                        <tbody id="tableBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // Dados mockados
+        const inventoryData = [
+            { codigo: '001', nome: 'Notebook Dell', categoria: 'Eletrônicos', quantidade: 15, valorUnit: 3500.00 },
+            { codigo: '002', nome: 'Mouse Logitech', categoria: 'Periféricos', quantidade: 50, valorUnit: 89.90 },
+            { codigo: '003', nome: 'Teclado Mecânico', categoria: 'Periféricos', quantidade: 30, valorUnit: 299.90 },
+            { codigo: '004', nome: 'Monitor LG', categoria: 'Eletrônicos', quantidade: 12, valorUnit: 1200.00 },
+            { codigo: '005', nome: 'Cadeira Gamer', categoria: 'Móveis', quantidade: 8, valorUnit: 850.00 },
+            { codigo: '006', nome: 'SSD 1TB', categoria: 'Componentes', quantidade: 25, valorUnit: 450.00 },
+            { codigo: '007', nome: 'Memória RAM 16GB', categoria: 'Componentes', quantidade: 40, valorUnit: 320.00 },
+            { codigo: '008', nome: 'Webcam HD', categoria: 'Periféricos', quantidade: 18, valorUnit: 180.00 }
+        ];
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        function updateDashboard() {
+            const totalItems = inventoryData.reduce((s, i) => s + i.quantidade, 0);
+            const totalValue = inventoryData.reduce((s, i) => s + (i.quantidade * i.valorUnit), 0);
+            const lowStock = inventoryData.filter(i => i.quantidade < 10).length;
+            const categories = [...new Set(inventoryData.map(i => i.categoria))].length;
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+            document.getElementById('lowStock').textContent = lowStock;
+            document.getElementById('categories').textContent = categories;
+
+            renderTable(inventoryData);
+        }
+
+        function renderTable(data, search = '') {
+            const filtered = data.filter(i => 
+                i.nome.toLowerCase().includes(search.toLowerCase()) ||
+                i.codigo.includes(search) ||
+                i.categoria.toLowerCase().includes(search)
+            );
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = filtered.map(i => `
+                <tr>
+                    <td>${i.codigo}</td>
+                    <td>${i.nome}</td>
+                    <td>${i.categoria}</td>
+                    <td>${i.quantidade}</td>
+                    <td>${formatCurrency(i.valorUnit)}</td>
+                    <td>${formatCurrency(i.quantidade * i.valorUnit)}</td>
+                </tr>
+            `).join('');
+
+            if (!filtered.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum item encontrado</td></tr>';
+            }
+        }
+
+        // Menu mobile
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // Busca
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            renderTable(inventoryData, e.target.value);
+        });
+
+        // Modo escuro/claro
+        const toggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        toggle?.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            toggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        updateDashboard();
+    </script>
 </body>
 </html>

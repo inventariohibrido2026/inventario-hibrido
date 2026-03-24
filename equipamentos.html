@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipamentos | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="operadores.html">Operadores</a></li>
+                <li><a href="auditoria.html">Auditoria</a></li>
+                <li><a href="setores.html">Setores</a></li>
+                <li><a href="equipamentos.html" class="active">Equipamentos</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="equipment-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Equipamentos de Coleta</h1>
+                    <p>Gerencie os dispositivos, coletores e equipamentos do inventário</p>
+                </div>
+                <button class="btn btn-primary" id="openEquipmentModal">
+                    <i class="fas fa-microchip"></i> Novo Equipamento
+                </button>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="equipment-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Equipamentos</h3>
+                        <div class="stat-value" id="totalEquipment">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Em Operação</h3>
+                        <div class="stat-value" id="activeEquipment">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Em Manutenção</h3>
+                        <div class="stat-value" id="maintenanceEquipment">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Disponibilidade</h3>
+                        <div class="stat-value" id="availabilityRate">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros e Busca -->
+            <div class="equipment-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchEquipment" placeholder="Buscar por equipamento, modelo ou operador...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterType" class="form-select">
+                        <option value="all">Todos os tipos</option>
+                        <option value="coletor">Coletor de Dados</option>
+                        <option value="tablet">Tablet</option>
+                        <option value="smartphone">Smartphone</option>
+                        <option value="impressora">Impressora</option>
+                        <option value="acessorio">Acessório</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterStatus" class="form-select">
+                        <option value="all">Todos os status</option>
+                        <option value="active">Em operação</option>
+                        <option value="maintenance">Em manutenção</option>
+                        <option value="inactive">Inativo</option>
+                        <option value="lost">Extraviado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterOperator" class="form-select">
+                        <option value="all">Todos os operadores</option>
+                        <option value="assigned">Atribuídos</option>
+                        <option value="unassigned">Não atribuídos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid de Equipamentos -->
+            <div class="equipment-grid" id="equipmentGrid">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+
+            <!-- Paginação -->
+            <div class="pagination-container">
+                <div class="pagination" id="pagination">
+                    <!-- Paginação será inserida via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Cadastro/Edição de Equipamento -->
+    <div id="equipmentModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Novo Equipamento</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="equipmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome do Equipamento *</label>
+                            <input type="text" id="equipNome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Série *</label>
+                            <input type="text" id="equipSerial" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo *</label>
+                            <select id="equipTipo" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <option value="coletor">Coletor de Dados</option>
+                                <option value="tablet">Tablet</option>
+                                <option value="smartphone">Smartphone</option>
+                                <option value="impressora">Impressora</option>
+                                <option value="acessorio">Acessório</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo</label>
+                            <input type="text" id="equipModelo" class="form-input" placeholder="Ex: TC21, MC93, X5">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fabricante</label>
+                            <input type="text" id="equipFabricante" class="form-input" placeholder="Ex: Zebra, Honeywell, Samsung">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Aquisição</label>
+                            <input type="date" id="equipAquisicao" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Status *</label>
+                            <select id="equipStatus" class="form-select" required>
+                                <option value="active">Em operação</option>
+                                <option value="maintenance">Em manutenção</option>
+                                <option value="inactive">Inativo</option>
+                                <option value="lost">Extraviado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Operador Responsável</label>
+                            <select id="equipOperador" class="form-select">
+                                <option value="">Não atribuído</option>
+                                <!-- Opções serão inseridas via JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Última Calibração</label>
+                            <input type="date" id="equipCalibracao" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Próxima Calibração</label>
+                            <input type="date" id="equipProxCalibracao" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea id="equipObservacoes" class="form-textarea" rows="3" placeholder="Histórico de manutenção, observações importantes..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar Equipamento</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico de Manutenção -->
+    <div id="maintenanceModal" class="modal">
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h3>Histórico de Manutenção</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="maintenanceContent">
+                <!-- Conteúdo será inserido via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="addMaintenanceBtn">
+                    <i class="fas fa-plus"></i> Nova Manutenção
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Atribuição de Equipamento -->
+    <div id="assignModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Atribuir Equipamento</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="assignForm">
+                    <div class="form-group">
+                        <label>Equipamento</label>
+                        <input type="text" id="assignEquipmentName" class="form-input" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Operador</label>
+                        <select id="assignOperator" class="form-select" required>
+                            <option value="">Selecione um operador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Atribuição</label>
+                        <input type="date" id="assignDate" class="form-input" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Atribuir</button>
+                        <button type="button" class="btn-secondary" id="closeAssignModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

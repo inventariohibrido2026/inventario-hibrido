@@ -38,14 +38,22 @@ if (themeToggle) {
 }
 
 // ====================
-// MENU MOBILE
+// MENU MOBILE - VERSÃO SIMPLES
 // ====================
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navMenu = document.getElementById('navMenu');
 
 if (mobileMenuBtn && navMenu) {
+    // Abrir/fechar menu
     mobileMenuBtn.addEventListener('click', () => {
         navMenu.classList.toggle('active');
+    });
+    
+    // Fechar ao clicar em qualquer link
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+        });
     });
 }
 

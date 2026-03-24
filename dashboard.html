@@ -1,65 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Inventário Híbrido</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <nav class="menu-futurista">
-    <div class="menu-logo">IH</div>
-    <ul class="menu-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="inventario.html">Inventário</a></li>
-      <li><a href="relatorios.html">Relatórios</a></li>
-    </ul>
-    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
-  </nav>
-
-  <header class="hero small-hero">
-    <div class="hero-content">
-      <h1 class="glow-title">Painel de Controle</h1>
-      <p class="glow-subtitle">Monitoramento de ativos em tempo real</p>
-    </div>
-  </header>
-
-  <section class="section">
-    <div class="grid-3">
-      <div class="card neon-card dash-card">
-        <span class="dash-number">1.250</span>
-        <p>Itens Total</p>
-        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
-      </div>
-
-      <div class="card neon-card dash-card">
-        <span class="dash-number" style="color: #00ff00;">85%</span>
-        <p>Concluído</p>
-        <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: #00ff00;"></div></div>
-      </div>
-
-      <div class="card neon-card dash-card">
-        <span class="dash-number" style="color: #ffaa00;">150</span>
-        <p>Pendências</p>
-        <div class="progress-bar"><div class="progress-fill" style="width: 25%; background: #ffaa00;"></div></div>
-      </div>
-    </div>
-
-    <div class="dashboard-charts">
-      <div class="card neon-card chart-placeholder">
-        <h3>Atividade por Setor</h3>
-        <div class="simulated-chart">
-            <div class="bar" style="height: 60%;"></div>
-            <div class="bar" style="height: 85%;"></div>
-            <div class="bar" style="height: 40%;"></div>
-            <div class="bar" style="height: 95%;"></div>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="#relatorios">Relatórios</a></li>
+                <li><a href="#configuracoes">Configurações</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
-      </div>
-    </div>
-  </section>
+    </nav>
 
-  <script src="script.js"></script>
+    <!-- Dashboard Content -->
+    <main class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Dashboard de Inventário</h1>
+                <p>Visão geral do seu estoque em tempo real</p>
+            </div>
+
+            <!-- Cards de KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h3>Total de Itens</h3>
+                        <div class="kpi-value" id="totalItems">0</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h3>Valor Total</h3>
+                        <div class="kpi-value" id="totalValue">R$ 0</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h3>Estoque Baixo</h3>
+                        <div class="kpi-value" id="lowStock">0</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <h3>Categorias</h3>
+                        <div class="kpi-value" id="categories">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Itens Recentes -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Itens Recentes</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar item...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="itemsTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Valor Unit.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>

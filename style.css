@@ -1955,4 +1955,235 @@ input:checked + .toggle-slider:before {
         grid-template-columns: 1fr;
     }
 }
+/* ====================
+   PÁGINA DE AUDITORIA
+==================== */
+.audit-page {
+    padding: 40px 0;
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Audit Stats */
+.audit-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Audit Filters */
+.audit-filters {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filters-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filters-content {
+    padding: 1.5rem;
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.filters-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.custom-date {
+    transition: all 0.3s;
+}
+
+/* Audit Table */
+.audit-table-container {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.audit-table th,
+.audit-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.audit-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+}
+
+.audit-table tbody tr:hover {
+    background: var(--bg-primary);
+}
+
+/* Event Type Badges */
+.event-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.event-login {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+}
+
+.event-logout {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 1px solid #6b7280;
+}
+
+.event-create {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.event-update {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
+.event-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+.event-export {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+    border: 1px solid #8b5cf6;
+}
+
+.event-import {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+}
+
+.event-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+/* Module Badges */
+.module-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+}
+
+/* Action Details */
+.action-details {
+    max-width: 300px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.action-details:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+}
+
+.diff-view {
+    font-family: monospace;
+    font-size: 0.8rem;
+    background: var(--bg-primary);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.diff-added {
+    color: #10b981;
+}
+
+.diff-removed {
+    color: #ef4444;
+    text-decoration: line-through;
+}
+
+/* Table Info */
+.table-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .audit-table {
+        font-size: 0.75rem;
+    }
+    
+    .audit-table th,
+    .audit-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .header-actions .btn {
+        width: 100%;
+    }
+    
+    .page-header {
+        flex-direction: column;
+    }
+}
 

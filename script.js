@@ -923,4 +923,569 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    // ====================
+// GERENCIAMENTO DE USUÁRIOS
+// ====================
+
+// Dados mockados de usuários
+let usuariosData = [
+    {
+        id: 1,
+        nome: "Vinicius Erose Américo",
+        email: "viniciuseroseamerico@outlook.com",
+        senha: "******",
+        cargo: "Administrador de Sistemas",
+        telefone: "(62) 99374-7844",
+        perfil: "admin",
+        status: "active",
+        ultimoAcesso: "24/03/2026 14:30",
+        permissoes: {
+            dashboard: { view: true, export: true },
+            inventario: { view: true, create: true, edit: true, delete: true },
+            relatorios: { view: true, export: true },
+            usuarios: { view: true, create: true, edit: true, delete: true },
+            configuracoes: { view: true, edit: true }
+        }
+    },
+    {
+        id: 2,
+        nome: "Ana Carolina Silva",
+        email: "ana.silva@inventario.com",
+        senha: "******",
+        cargo: "Gerente de Operações",
+        telefone: "(11) 98765-4321",
+        perfil: "gerente",
+        status: "active",
+        ultimoAcesso: "23/03/2026 09:15",
+        permissoes: {
+            dashboard: { view: true, export: true },
+            inventario: { view: true, create: true, edit: true, delete: false },
+            relatorios: { view: true, export: true },
+            usuarios: { view: true, create: false, edit: false, delete: false },
+            configuracoes: { view: true, edit: false }
+        }
+    },
+    {
+        id: 3,
+        nome: "Roberto Almeida",
+        email: "roberto.almeida@inventario.com",
+        senha: "******",
+        cargo: "Operador de Inventário",
+        telefone: "(21) 99876-5432",
+        perfil: "operador",
+        status: "active",
+        ultimoAcesso: "24/03/2026 08:00",
+        permissoes: {
+            dashboard: { view: true, export: false },
+            inventario: { view: true, create: true, edit: false, delete: false },
+            relatorios: { view: false, export: false },
+            usuarios: { view: false, create: false, edit: false, delete: false },
+            configuracoes: { view: false, edit: false }
+        }
+    },
+    {
+        id: 4,
+        nome: "Mariana Costa",
+        email: "mariana.costa@inventario.com",
+        senha: "******",
+        cargo: "Auditora Interna",
+        telefone: "(31) 98765-1234",
+        perfil: "auditor",
+        status: "active",
+        ultimoAcesso: "22/03/2026 16:45",
+        permissoes: {
+            dashboard: { view: true, export: true },
+            inventario: { view: true, create: false, edit: false, delete: false },
+            relatorios: { view: true, export: true },
+            usuarios: { view: true, create: false, edit: false, delete: false },
+            configuracoes: { view: true, edit: false }
+        }
+    },
+    {
+        id: 5,
+        nome: "Carlos Eduardo",
+        email: "carlos.eduardo@inventario.com",
+        senha: "******",
+        cargo: "Operador de Campo",
+        telefone: "(62) 91234-5678",
+        perfil: "operador",
+        status: "inactive",
+        ultimoAcesso: "15/03/2026 11:20",
+        permissoes: {
+            dashboard: { view: true, export: false },
+            inventario: { view: true, create: true, edit: false, delete: false },
+            relatorios: { view: false, export: false },
+            usuarios: { view: false, create: false, edit: false, delete: false },
+            configuracoes: { view: false, edit: false }
+        }
+    }
+];
+
+let currentUserId = null;
+let currentPage = 1;
+const itemsPerPage = 5;
+
+// Renderizar tabela de usuários
+function renderUsersTable() {
+    const searchTerm = document.getElementById('searchUser')?.value.toLowerCase() || '';
+    const roleFilter = document.getElementById('filterRole')?.value || 'all';
+    const statusFilter = document.getElementById('filterStatus')?.value || 'all';
+    
+    let filteredUsers = usuariosData.filter(user => {
+        const matchesSearch = user.nome.toLowerCase().includes(searchTerm) ||
+                             user.email.toLowerCase().includes(searchTerm) ||
+                             user.cargo.toLowerCase().includes(searchTerm);
+        const matchesRole = roleFilter === 'all' || user.perfil === roleFilter;
+        const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+        
+        return matchesSearch && matchesRole && matchesStatus;
+    });
+    
+    // Paginação
+    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedUsers = filteredUsers.slice(start, end);
+    
+    // Renderizar tabela
+    const tbody = document.getElementById('usersTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = paginatedUsers.map(user => `
+        <tr>
+            <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+            <td>
+                <div class="user-info">
+                    <div class="user-avatar">${getInitials(user.nome)}</div>
+                    <div class="user-details">
+                        <span class="user-name">${user.nome}</span>
+                        <span class="user-id">ID: ${user.id}</span>
+                    </div>
+                </div>
+            </td>
+            <td>${user.email}</td>
+            <td>${user.cargo}</td>
+            <td><span class="role-badge role-${user.perfil}">${getRoleName(user.perfil)}</span></td>
+            <td><span class="status-badge-${user.status}">${user.status === 'active' ? 'Ativo' : 'Inativo'}</span></td>
+            <td>${user.ultimoAcesso}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn edit-user" data-id="${user.id}" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete" data-id="${user.id}" title="Excluir">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Atualizar estatísticas
+    updateUsersStats();
+    
+    // Atualizar paginação
+    renderPagination(totalPages);
+    
+    // Adicionar eventos aos botões de ação
+    document.querySelectorAll('.edit-user').forEach(btn => {
+        btn.addEventListener('click', () => editUser(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.action-btn.delete').forEach(btn => {
+        btn.addEventListener('click', () => openDeleteModal(parseInt(btn.dataset.id)));
+    });
+}
+
+// Pegar iniciais do nome
+function getInitials(nome) {
+    return nome.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// Pegar nome do perfil
+function getRoleName(perfil) {
+    const roles = {
+        admin: 'Administrador',
+        gerente: 'Gerente',
+        operador: 'Operador',
+        auditor: 'Auditor'
+    };
+    return roles[perfil] || perfil;
+}
+
+// Atualizar estatísticas
+function updateUsersStats() {
+    const totalUsers = usuariosData.length;
+    const totalAdmins = usuariosData.filter(u => u.perfil === 'admin').length;
+    const totalActive = usuariosData.filter(u => u.status === 'active').length;
+    const lastAccess = usuariosData[0]?.ultimoAcesso || 'Nunca';
+    
+    const totalUsersEl = document.getElementById('totalUsers');
+    const totalAdminsEl = document.getElementById('totalAdmins');
+    const totalActiveEl = document.getElementById('totalActive');
+    const lastAccessEl = document.getElementById('lastAccess');
+    
+    if (totalUsersEl) totalUsersEl.textContent = totalUsers;
+    if (totalAdminsEl) totalAdminsEl.textContent = totalAdmins;
+    if (totalActiveEl) totalActiveEl.textContent = totalActive;
+    if (lastAccessEl) lastAccessEl.textContent = lastAccess;
+}
+
+// Renderizar paginação
+function renderPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentPage && page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderUsersTable();
+            }
+        });
+    });
+}
+
+// Abrir modal de usuário
+function openUserModal(userId = null) {
+    const modal = document.getElementById('userModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const form = document.getElementById('userForm');
+    
+    if (!modal) return;
+    
+    currentUserId = userId;
+    
+    if (userId) {
+        modalTitle.textContent = 'Editar Usuário';
+        const user = usuariosData.find(u => u.id === userId);
+        if (user) {
+            document.getElementById('userNome').value = user.nome;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userCargo').value = user.cargo;
+            document.getElementById('userTelefone').value = user.telefone;
+            document.getElementById('userPerfil').value = user.perfil;
+            document.getElementById('userStatus').value = user.status;
+            
+            // Preencher permissões
+            Object.keys(user.permissoes).forEach(perm => {
+                const permCheck = document.querySelector(`.permission-check[data-perm="${perm}"]`);
+                if (permCheck) {
+                    permCheck.checked = true;
+                    const subPermissions = permCheck.closest('.permission-group').querySelectorAll('.sub-permissions input');
+                    subPermissions.forEach(sub => {
+                        const subPerm = sub.dataset.sub;
+                        if (subPerm && user.permissoes[perm][subPerm.split('_')[1]]) {
+                            sub.checked = true;
+                        }
+                    });
+                }
+            });
+            
+            document.getElementById('userSenha').required = false;
+            document.getElementById('userConfirmSenha').required = false;
+        }
+    } else {
+        modalTitle.textContent = 'Novo Usuário';
+        form.reset();
+        document.getElementById('userSenha').required = true;
+        document.getElementById('userConfirmSenha').required = true;
+        document.getElementById('userStatus').value = 'active';
+        
+        // Resetar permissões
+        document.querySelectorAll('.permission-check').forEach(checkbox => {
+            checkbox.checked = false;
+            const subPermissions = checkbox.closest('.permission-group').querySelectorAll('.sub-permissions input');
+            subPermissions.forEach(sub => sub.checked = false);
+        });
+    }
+    
+    modal.classList.add('active');
+}
+
+// Fechar modal
+function closeModal() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.classList.remove('active');
+    });
+    currentUserId = null;
+}
+
+// Salvar usuário
+function saveUser(event) {
+    event.preventDefault();
+    
+    const nome = document.getElementById('userNome').value;
+    const email = document.getElementById('userEmail').value;
+    const senha = document.getElementById('userSenha').value;
+    const confirmSenha = document.getElementById('userConfirmSenha').value;
+    const cargo = document.getElementById('userCargo').value;
+    const telefone = document.getElementById('userTelefone').value;
+    const perfil = document.getElementById('userPerfil').value;
+    const status = document.getElementById('userStatus').value;
+    
+    if (!nome || !email || !perfil) {
+        showNotification('Preencha todos os campos obrigatórios', 'error');
+        return;
+    }
+    
+    if (!currentUserId && (!senha || senha !== confirmSenha)) {
+        showNotification('Senhas não conferem', 'error');
+        return;
+    }
+    
+    if (senha && senha.length < 6) {
+        showNotification('A senha deve ter no mínimo 6 caracteres', 'error');
+        return;
+    }
+    
+    // Coletar permissões
+    const permissoes = {
+        dashboard: { view: false, export: false },
+        inventario: { view: false, create: false, edit: false, delete: false },
+        relatorios: { view: false, export: false },
+        usuarios: { view: false, create: false, edit: false, delete: false },
+        configuracoes: { view: false, edit: false }
+    };
+    
+    document.querySelectorAll('.permission-check').forEach(permCheck => {
+        const perm = permCheck.dataset.per;
+        if (permCheck.checked && permissoes[perm]) {
+            const subPermissions = permCheck.closest('.permission-group').querySelectorAll('.sub-permissions input');
+            subPermissions.forEach(sub => {
+                const subPerm = sub.dataset.sub;
+                if (subPerm) {
+                    const action = subPerm.split('_')[1];
+                    if (permissoes[perm][action] !== undefined) {
+                        permissoes[perm][action] = sub.checked;
+                    } else {
+                        permissoes[perm][subPerm] = sub.checked;
+                    }
+                }
+            });
+        }
+    });
+    
+    if (currentUserId) {
+        // Editar usuário existente
+        const userIndex = usuariosData.findIndex(u => u.id === currentUserId);
+        if (userIndex !== -1) {
+            usuariosData[userIndex] = {
+                ...usuariosData[userIndex],
+                nome,
+                email,
+                cargo,
+                telefone,
+                perfil,
+                status,
+                permissoes
+            };
+            showNotification('Usuário atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Criar novo usuário
+        const newId = Math.max(...usuariosData.map(u => u.id), 0) + 1;
+        const newUser = {
+            id: newId,
+            nome,
+            email,
+            senha: '******',
+            cargo,
+            telefone,
+            perfil,
+            status,
+            ultimoAcesso: 'Nunca',
+            permissoes
+        };
+        usuariosData.push(newUser);
+        showNotification('Usuário criado com sucesso!', 'success');
+    }
+    
+    closeModal();
+    renderUsersTable();
+}
+
+// Editar usuário
+function editUser(id) {
+    openUserModal(id);
+}
+
+// Abrir modal de exclusão
+let deleteUserId = null;
+function openDeleteModal(id) {
+    const modal = document.getElementById('deleteModal');
+    const userName = usuariosData.find(u => u.id === id)?.nome;
+    const deleteUserName = document.getElementById('deleteUserName');
+    
+    if (deleteUserName) deleteUserName.textContent = userName;
+    deleteUserId = id;
+    modal.classList.add('active');
+}
+
+// Confirmar exclusão
+function confirmDelete() {
+    if (deleteUserId) {
+        usuariosData = usuariosData.filter(u => u.id !== deleteUserId);
+        showNotification('Usuário excluído com sucesso!', 'success');
+        closeModal();
+        renderUsersTable();
+        deleteUserId = null;
+    }
+}
+
+// Exportar usuários para CSV
+function exportUsers() {
+    const headers = ['ID', 'Nome', 'E-mail', 'Cargo', 'Telefone', 'Perfil', 'Status', 'Último Acesso'];
+    const rows = usuariosData.map(user => [
+        user.id,
+        user.nome,
+        user.email,
+        user.cargo,
+        user.telefone,
+        getRoleName(user.perfil),
+        user.status === 'active' ? 'Ativo' : 'Inativo',
+        user.ultimoAcesso
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.join(','))
+        .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `usuarios_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showNotification('Usuários exportados com sucesso!', 'success');
+}
+
+// Selecionar todos os usuários
+function initSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    if (!selectAll) return;
+    
+    selectAll.addEventListener('change', (e) => {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+    });
+}
+
+// Eventos de permissões
+function initPermissionsEvents() {
+    document.querySelectorAll('.permission-check').forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+            const subPermissions = checkbox.closest('.permission-group').querySelectorAll('.sub-permissions input');
+            subPermissions.forEach(sub => {
+                sub.checked = e.target.checked;
+            });
+        });
+    });
+}
+
+// Inicializar eventos de usuários
+function initUsersEvents() {
+    const openModalBtn = document.getElementById('openUserModal');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', () => openUserModal());
+    }
+    
+    const closeModalBtns = document.querySelectorAll('.modal-close, #closeModal, #cancelDelete');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    
+    const userForm = document.getElementById('userForm');
+    if (userForm) {
+        userForm.addEventListener('submit', saveUser);
+    }
+    
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', confirmDelete);
+    }
+    
+    const exportUsersBtn = document.getElementById('exportUsersBtn');
+    if (exportUsersBtn) {
+        exportUsersBtn.addEventListener('click', exportUsers);
+    }
+    
+    const refreshUsersBtn = document.getElementById('refreshUsersBtn');
+    if (refreshUsersBtn) {
+        refreshUsersBtn.addEventListener('click', () => {
+            renderUsersTable();
+            showNotification('Lista atualizada!', 'success');
+        });
+    }
+    
+    const searchUser = document.getElementById('searchUser');
+    const filterRole = document.getElementById('filterRole');
+    const filterStatus = document.getElementById('filterStatus');
+    
+    if (searchUser) searchUser.addEventListener('input', () => {
+        currentPage = 1;
+        renderUsersTable();
+    });
+    if (filterRole) filterRole.addEventListener('change', () => {
+        currentPage = 1;
+        renderUsersTable();
+    });
+    if (filterStatus) filterStatus.addEventListener('change', () => {
+        currentPage = 1;
+        renderUsersTable();
+    });
+    
+    initSelectAll();
+    initPermissionsEvents();
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+// Adicionar ao DOMContentLoaded existente
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});
 });

@@ -2137,3 +2137,695 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 });
+// ====================
+// SISTEMA DE AUDITORIA
+// ====================
+
+// Dados mockados de logs de auditoria
+let auditLogs = [
+    {
+        id: 1,
+        dataHora: "2026-03-24 08:15:23",
+        usuario: "Vinicius Erose",
+        tipo: "login",
+        modulo: "dashboard",
+        acao: "Login realizado com sucesso",
+        detalhes: { ip: "192.168.1.100", dispositivo: "Chrome/Windows" },
+        ip: "192.168.1.100"
+    },
+    {
+        id: 2,
+        dataHora: "2026-03-24 08:30:45",
+        usuario: "Ana Carolina",
+        tipo: "update",
+        modulo: "inventario",
+        acao: "Atualizou quantidade do item 'Notebook Dell' de 12 para 15",
+        detalhes: { 
+            item: "Notebook Dell",
+            campo: "quantidade",
+            valorAnterior: 12,
+            valorNovo: 15
+        },
+        ip: "192.168.1.101"
+    },
+    {
+        id: 3,
+        dataHora: "2026-03-24 09:00:12",
+        usuario: "Roberto Almeida",
+        tipo: "create",
+        modulo: "operadores",
+        acao: "Cadastrou novo operador: João Paulo Santos",
+        detalhes: {
+            operador: "João Paulo Santos",
+            matricula: "OP001",
+            funcao: "Coletor"
+        },
+        ip: "192.168.1.102"
+    },
+    {
+        id: 4,
+        dataHora: "2026-03-24 09:45:33",
+        usuario: "Mariana Costa",
+        tipo: "export",
+        modulo: "relatorios",
+        acao: "Exportou relatório de inventário para PDF",
+        detalhes: {
+            tipoRelatorio: "Completo",
+            periodo: "Março/2026"
+        },
+        ip: "192.168.1.103"
+    },
+    {
+        id: 5,
+        dataHora: "2026-03-24 10:20:18",
+        usuario: "Carlos Eduardo",
+        tipo: "error",
+        modulo: "inventario",
+        acao: "Erro ao sincronizar dados do coletor",
+        detalhes: {
+            erro: "Timeout de conexão",
+            dispositivo: "Coletor TC21"
+        },
+        ip: "192.168.1.104"
+    },
+    {
+        id: 6,
+        dataHora: "2026-03-24 11:05:47",
+        usuario: "Vinicius Erose",
+        tipo: "delete",
+        modulo: "usuarios",
+        acao: "Excluiu usuário: Teste Silva",
+        detalhes: {
+            usuarioId: 99,
+            motivo: "Usuário inativo"
+        },
+        ip: "192.168.1.100"
+    },
+    {
+        id: 7,
+        dataHora: "2026-03-24 11:30:22",
+        usuario: "Ana Carolina",
+        tipo: "login",
+        modulo: "dashboard",
+        acao: "Login realizado com sucesso",
+        detalhes: { ip: "192.168.1.101", dispositivo: "Firefox/Windows" },
+        ip: "192.168.1.101"
+    },
+    {
+        id: 8,
+        dataHora: "2026-03-24 12:15:09",
+        usuario: "Roberto Almeida",
+        tipo: "update",
+        modulo: "configuracoes",
+        acao: "Alterou configurações de notificações",
+        detalhes: {
+            configuracoes: {
+                notifEstoque: "ativado",
+                notifRelatorios: "desativado"
+            }
+        },
+        ip: "192.168.1.102"
+    },
+    {
+        id: 9,
+        dataHora: "2026-03-24 14:20:35",
+        usuario: "Mariana Costa",
+        tipo: "import",
+        modulo: "inventario",
+        acao: "Importou 150 itens via planilha",
+        detalhes: {
+            arquivo: "inventario_marco.xlsx",
+            quantidade: 150
+        },
+        ip: "192.168.1.103"
+    },
+    {
+        id: 10,
+        dataHora: "2026-03-24 15:45:51",
+        usuario: "Carlos Eduardo",
+        tipo: "logout",
+        modulo: "dashboard",
+        acao: "Logout realizado",
+        detalhes: { duracao: "5h 25min" },
+        ip: "192.168.1.104"
+    },
+    {
+        id: 11,
+        dataHora: "2026-03-23 10:30:12",
+        usuario: "Vinicius Erose",
+        tipo: "create",
+        modulo: "operadores",
+        acao: "Cadastrou novo operador: Maria Oliveira",
+        detalhes: {
+            operador: "Maria Oliveira",
+            matricula: "OP002",
+            funcao: "Conferente"
+        },
+        ip: "192.168.1.100"
+    },
+    {
+        id: 12,
+        dataHora: "2026-03-23 14:15:45",
+        usuario: "Ana Carolina",
+        tipo: "update",
+        modulo: "inventario",
+        acao: "Atualizou preço do item 'Mouse Logitech' de R$ 79,90 para R$ 89,90",
+        detalhes: {
+            item: "Mouse Logitech",
+            campo: "preco",
+            valorAnterior: 79.90,
+            valorNovo: 89.90
+        },
+        ip: "192.168.1.101"
+    },
+    {
+        id: 13,
+        dataHora: "2026-03-22 09:00:00",
+        usuario: "Roberto Almeida",
+        tipo: "login",
+        modulo: "dashboard",
+        acao: "Login realizado com sucesso",
+        detalhes: { ip: "192.168.1.102", dispositivo: "Chrome/Windows" },
+        ip: "192.168.1.102"
+    },
+    {
+        id: 14,
+        dataHora: "2026-03-22 11:30:22",
+        usuario: "Roberto Almeida",
+        tipo: "error",
+        modulo: "relatorios",
+        acao: "Erro ao gerar gráfico",
+        detalhes: {
+            erro: "Dados inconsistentes",
+            relatorio: "Gráfico de Vendas"
+        },
+        ip: "192.168.1.102"
+    },
+    {
+        id: 15,
+        dataHora: "2026-03-21 16:20:10",
+        usuario: "Mariana Costa",
+        tipo: "export",
+        modulo: "relatorios",
+        acao: "Exportou relatório de operadores para CSV",
+        detalhes: {
+            tipoRelatorio: "Operadores",
+            formato: "CSV"
+        },
+        ip: "192.168.1.103"
+    }
+];
+
+let currentAuditPage = 1;
+const auditItemsPerPage = 10;
+let activitiesChart = null;
+let typeChart = null;
+
+// Renderizar tabela de auditoria
+function renderAuditTable() {
+    const filteredLogs = getFilteredAuditLogs();
+    const totalPages = Math.ceil(filteredLogs.length / auditItemsPerPage);
+    const start = (currentAuditPage - 1) * auditItemsPerPage;
+    const end = start + auditItemsPerPage;
+    const paginatedLogs = filteredLogs.slice(start, end);
+    
+    const tbody = document.getElementById('auditTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = paginatedLogs.map(log => `
+        <tr>
+            <td>${log.dataHora}</td>
+            <td><strong>${log.usuario}</strong></td>
+            <td><span class="event-badge event-${log.tipo}">${getEventTypeName(log.tipo)}</span></td>
+            <td><span class="module-badge">${getModuleName(log.modulo)}</span></td>
+            <td>
+                <div class="action-details" onclick="showEventDetails(${log.id})">
+                    ${truncateText(log.acao, 50)}
+                    <i class="fas fa-info-circle" style="font-size: 0.7rem;"></i>
+                </div>
+            </td>
+            <td>${log.ip}</td>
+        </tr>
+    `).join('');
+    
+    // Atualizar contador
+    const recordsCount = document.getElementById('recordsCount');
+    if (recordsCount) {
+        recordsCount.textContent = `Mostrando ${paginatedLogs.length} de ${filteredLogs.length} registros`;
+    }
+    
+    // Atualizar estatísticas
+    updateAuditStats();
+    updateAuditCharts(filteredLogs);
+    
+    // Atualizar paginação
+    renderAuditPagination(totalPages);
+}
+
+// Obter logs filtrados
+function getFilteredAuditLogs() {
+    let logs = [...auditLogs];
+    
+    const period = document.getElementById('periodFilter')?.value;
+    const eventType = document.getElementById('eventTypeFilter')?.value;
+    const module = document.getElementById('moduleFilter')?.value;
+    const user = document.getElementById('userFilter')?.value.toLowerCase();
+    const ip = document.getElementById('ipFilter')?.value.toLowerCase();
+    const startDate = document.getElementById('startDate')?.value;
+    const endDate = document.getElementById('endDate')?.value;
+    
+    // Filtrar por período
+    if (period === 'today') {
+        const today = new Date().toISOString().split('T')[0];
+        logs = logs.filter(log => log.dataHora.split(' ')[0] === today);
+    } else if (period === 'yesterday') {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        logs = logs.filter(log => log.dataHora.split(' ')[0] === yesterdayStr);
+    } else if (period === 'last7') {
+        const last7 = new Date();
+        last7.setDate(last7.getDate() - 7);
+        logs = logs.filter(log => new Date(log.dataHora) >= last7);
+    } else if (period === 'last30') {
+        const last30 = new Date();
+        last30.setDate(last30.getDate() - 30);
+        logs = logs.filter(log => new Date(log.dataHora) >= last30);
+    } else if (period === 'custom' && startDate && endDate) {
+        logs = logs.filter(log => {
+            const logDate = log.dataHora.split(' ')[0];
+            return logDate >= startDate && logDate <= endDate;
+        });
+    }
+    
+    // Filtrar por tipo de evento
+    if (eventType !== 'all') {
+        logs = logs.filter(log => log.tipo === eventType);
+    }
+    
+    // Filtrar por módulo
+    if (module !== 'all') {
+        logs = logs.filter(log => log.modulo === module);
+    }
+    
+    // Filtrar por usuário
+    if (user) {
+        logs = logs.filter(log => log.usuario.toLowerCase().includes(user));
+    }
+    
+    // Filtrar por IP
+    if (ip) {
+        logs = logs.filter(log => log.ip.toLowerCase().includes(ip));
+    }
+    
+    // Ordenar por data (mais recente primeiro)
+    logs.sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
+    
+    return logs;
+}
+
+// Nome do tipo de evento
+function getEventTypeName(tipo) {
+    const types = {
+        login: 'Login',
+        logout: 'Logout',
+        create: 'Criação',
+        update: 'Atualização',
+        delete: 'Exclusão',
+        export: 'Exportação',
+        import: 'Importação',
+        error: 'Erro'
+    };
+    return types[tipo] || tipo;
+}
+
+// Nome do módulo
+function getModuleName(modulo) {
+    const modules = {
+        dashboard: 'Dashboard',
+        inventario: 'Inventário',
+        relatorios: 'Relatórios',
+        usuarios: 'Usuários',
+        operadores: 'Operadores',
+        configuracoes: 'Configurações'
+    };
+    return modules[modulo] || modulo;
+}
+
+// Truncar texto
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+}
+
+// Atualizar estatísticas
+function updateAuditStats() {
+    const filteredLogs = getFilteredAuditLogs();
+    const totalEvents = filteredLogs.length;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const activeUsersToday = [...new Set(filteredLogs
+        .filter(log => log.dataHora.split(' ')[0] === today && log.tipo === 'login')
+        .map(log => log.usuario))].length;
+    
+    const changesToday = filteredLogs.filter(log => 
+        log.dataHora.split(' ')[0] === today && 
+        (log.tipo === 'create' || log.tipo === 'update' || log.tipo === 'delete')
+    ).length;
+    
+    const criticalAlerts = filteredLogs.filter(log => log.tipo === 'error').length;
+    
+    const totalEventsEl = document.getElementById('totalEvents');
+    const activeUsersTodayEl = document.getElementById('activeUsersToday');
+    const changesTodayEl = document.getElementById('changesToday');
+    const criticalAlertsEl = document.getElementById('criticalAlerts');
+    
+    if (totalEventsEl) totalEventsEl.textContent = totalEvents;
+    if (activeUsersTodayEl) activeUsersTodayEl.textContent = activeUsersToday;
+    if (changesTodayEl) changesTodayEl.textContent = changesToday;
+    if (criticalAlertsEl) criticalAlertsEl.textContent = criticalAlerts;
+}
+
+// Atualizar gráficos
+function updateAuditCharts(logs) {
+    // Gráfico de atividades por dia
+    const last7Days = [];
+    const activityCount = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        last7Days.push(dateStr.substring(5));
+        
+        const count = logs.filter(log => log.dataHora.split(' ')[0] === dateStr).length;
+        activityCount.push(count);
+    }
+    
+    const ctxLine = document.getElementById('activitiesChart');
+    if (ctxLine) {
+        if (activitiesChart) activitiesChart.destroy();
+        activitiesChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: last7Days,
+                datasets: [{
+                    label: 'Atividades',
+                    data: activityCount,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            stepSize: 1,
+                            color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                        },
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                        },
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Gráfico de pizza por tipo
+    const typeCount = {};
+    logs.forEach(log => {
+        typeCount[log.tipo] = (typeCount[log.tipo] || 0) + 1;
+    });
+    
+    const typeLabels = Object.keys(typeCount).map(t => getEventTypeName(t));
+    const typeData = Object.values(typeCount);
+    const typeColors = {
+        login: '#3b82f6',
+        logout: '#6b7280',
+        create: '#10b981',
+        update: '#f59e0b',
+        delete: '#ef4444',
+        export: '#8b5cf6',
+        import: '#3b82f6',
+        error: '#ef4444'
+    };
+    
+    const ctxPie = document.getElementById('typeChart');
+    if (ctxPie) {
+        if (typeChart) typeChart.destroy();
+        typeChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    data: typeData,
+                    backgroundColor: Object.keys(typeCount).map(t => typeColors[t] || '#3b82f6')
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Renderizar paginação
+function renderAuditPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentAuditPage === 1 ? 'disabled' : ''} data-page="${currentAuditPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    const startPage = Math.max(1, currentAuditPage - 2);
+    const endPage = Math.min(totalPages, currentAuditPage + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="${i === currentAuditPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentAuditPage === totalPages ? 'disabled' : ''} data-page="${currentAuditPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentAuditPage && page >= 1 && page <= totalPages) {
+                currentAuditPage = page;
+                renderAuditTable();
+            }
+        });
+    });
+}
+
+// Mostrar detalhes do evento
+function showEventDetails(eventId) {
+    const event = auditLogs.find(log => log.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailModal');
+    const content = document.getElementById('eventDetailContent');
+    
+    content.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+            <strong>Data/Hora:</strong> ${event.dataHora}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Usuário:</strong> ${event.usuario}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Tipo:</strong> <span class="event-badge event-${event.tipo}">${getEventTypeName(event.tipo)}</span>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Módulo:</strong> ${getModuleName(event.modulo)}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Ação:</strong> ${event.acao}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>IP:</strong> ${event.ip}
+        </div>
+        ${event.detalhes ? `
+            <div style="margin-bottom: 1rem;">
+                <strong>Detalhes:</strong>
+                <pre class="diff-view">${JSON.stringify(event.detalhes, null, 2)}</pre>
+            </div>
+        ` : ''}
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Exportar log de auditoria
+function exportAuditLog() {
+    const filteredLogs = getFilteredAuditLogs();
+    const headers = ['Data/Hora', 'Usuário', 'Tipo', 'Módulo', 'Ação', 'IP', 'Detalhes'];
+    
+    const rows = filteredLogs.map(log => [
+        log.dataHora,
+        log.usuario,
+        getEventTypeName(log.tipo),
+        getModuleName(log.modulo),
+        log.acao,
+        log.ip,
+        JSON.stringify(log.detalhes)
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `auditoria_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showNotification('Log de auditoria exportado com sucesso!', 'success');
+}
+
+// Inicializar eventos de auditoria
+function initAuditEvents() {
+    // Filtros
+    const periodFilter = document.getElementById('periodFilter');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    
+    if (periodFilter) {
+        periodFilter.addEventListener('change', () => {
+            const customDates = document.querySelectorAll('.custom-date');
+            if (periodFilter.value === 'custom') {
+                customDates.forEach(el => el.style.display = 'block');
+            } else {
+                customDates.forEach(el => el.style.display = 'none');
+            }
+        });
+    }
+    
+    const applyFilters = document.getElementById('applyFilters');
+    const clearFilters = document.getElementById('clearFilters');
+    const refreshLog = document.getElementById('refreshLog');
+    const exportAudit = document.getElementById('exportAuditLog');
+    const toggleFilters = document.getElementById('toggleFilters');
+    
+    if (applyFilters) {
+        applyFilters.addEventListener('click', () => {
+            currentAuditPage = 1;
+            renderAuditTable();
+            showNotification('Filtros aplicados', 'success');
+        });
+    }
+    
+    if (clearFilters) {
+        clearFilters.addEventListener('click', () => {
+            if (periodFilter) periodFilter.value = 'today';
+            if (startDate) startDate.value = '';
+            if (endDate) endDate.value = '';
+            const eventTypeFilter = document.getElementById('eventTypeFilter');
+            const moduleFilter = document.getElementById('moduleFilter');
+            const userFilter = document.getElementById('userFilter');
+            const ipFilter = document.getElementById('ipFilter');
+            
+            if (eventTypeFilter) eventTypeFilter.value = 'all';
+            if (moduleFilter) moduleFilter.value = 'all';
+            if (userFilter) userFilter.value = '';
+            if (ipFilter) ipFilter.value = '';
+            
+            const customDates = document.querySelectorAll('.custom-date');
+            customDates.forEach(el => el.style.display = 'none');
+            
+            currentAuditPage = 1;
+            renderAuditTable();
+            showNotification('Filtros limpos', 'info');
+        });
+    }
+    
+    if (refreshLog) {
+        refreshLog.addEventListener('click', () => {
+            renderAuditTable();
+            showNotification('Log atualizado', 'success');
+        });
+    }
+    
+    if (exportAudit) {
+        exportAudit.addEventListener('click', exportAuditLog);
+    }
+    
+    if (toggleFilters) {
+        const filtersContent = document.getElementById('filtersContent');
+        let filtersVisible = true;
+        toggleFilters.addEventListener('click', () => {
+            filtersVisible = !filtersVisible;
+            filtersContent.style.display = filtersVisible ? 'block' : 'none';
+            toggleFilters.innerHTML = filtersVisible ? 
+                '<i class="fas fa-chevron-up"></i>' : 
+                '<i class="fas fa-chevron-down"></i>';
+        });
+    }
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    initOperatorsEvents();
+    renderOperatorsGrid();
+    initAuditEvents();
+    renderAuditTable();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});

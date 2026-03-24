@@ -3458,3 +3458,666 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// ====================
+// GERENCIAMENTO DE EQUIPAMENTOS
+// ====================
+
+// Dados mockados de equipamentos
+let equipamentosData = [
+    {
+        id: 1,
+        nome: "Coletor TC21",
+        serial: "TC21-2024-001",
+        tipo: "coletor",
+        modelo: "TC21",
+        fabricante: "Zebra",
+        aquisicao: "2024-01-15",
+        status: "active",
+        operadorId: 1,
+        operadorNome: "João Paulo Santos",
+        ultimaCalibracao: "2026-01-15",
+        proximaCalibracao: "2026-07-15",
+        observacoes: "Coletor principal da equipe Alpha",
+        manutencoes: [
+            { data: "2025-12-10", tipo: "Calibração", descricao: "Calibração de leitor de código de barras" },
+            { data: "2025-08-22", tipo: "Revisão", descricao: "Revisão geral e limpeza" }
+        ]
+    },
+    {
+        id: 2,
+        nome: "Coletor MC93",
+        serial: "MC93-2024-002",
+        tipo: "coletor",
+        modelo: "MC93",
+        fabricante: "Honeywell",
+        aquisicao: "2024-02-20",
+        status: "active",
+        operadorId: 2,
+        operadorNome: "Maria Oliveira",
+        ultimaCalibracao: "2026-02-20",
+        proximaCalibracao: "2026-08-20",
+        observacoes: "Coletor com leitor de alta performance",
+        manutencoes: [
+            { data: "2026-02-20", tipo: "Calibração", descricao: "Calibração padrão" }
+        ]
+    },
+    {
+        id: 3,
+        nome: "Tablet Pro X5",
+        serial: "TAB-2024-003",
+        tipo: "tablet",
+        modelo: "X5 Pro",
+        fabricante: "Samsung",
+        aquisicao: "2024-03-10",
+        status: "maintenance",
+        operadorId: null,
+        operadorNome: null,
+        ultimaCalibracao: "2025-10-15",
+        proximaCalibracao: "2026-04-15",
+        observacoes: "Em manutenção - Tela danificada",
+        manutencoes: [
+            { data: "2026-03-15", tipo: "Manutenção", descricao: "Substituição de tela" },
+            { data: "2025-10-15", tipo: "Calibração", descricao: "Calibração de bateria" }
+        ]
+    },
+    {
+        id: 4,
+        nome: "Smartphone X5",
+        serial: "SMP-2024-004",
+        tipo: "smartphone",
+        modelo: "X5",
+        fabricante: "Motorola",
+        aquisicao: "2024-04-05",
+        status: "active",
+        operadorId: 4,
+        operadorNome: "Ana Paula Souza",
+        ultimaCalibracao: "2026-01-10",
+        proximaCalibracao: "2026-07-10",
+        observacoes: "Aplicativo de coleta instalado",
+        manutencoes: [
+            { data: "2026-01-10", tipo: "Calibração", descricao: "Calibração de sensores" }
+        ]
+    },
+    {
+        id: 5,
+        nome: "Impressora Zebra",
+        serial: "IMP-2024-005",
+        tipo: "impressora",
+        modelo: "ZD420",
+        fabricante: "Zebra",
+        aquisicao: "2024-05-12",
+        status: "inactive",
+        operadorId: null,
+        operadorNome: null,
+        ultimaCalibracao: "2025-11-20",
+        proximaCalibracao: "2026-05-20",
+        observacoes: "Aguardando reposição de cabeçote",
+        manutencoes: [
+            { data: "2025-11-20", tipo: "Manutenção", descricao: "Limpeza de cabeçote" }
+        ]
+    },
+    {
+        id: 6,
+        nome: "Coletor TC21",
+        serial: "TC21-2024-006",
+        tipo: "coletor",
+        modelo: "TC21",
+        fabricante: "Zebra",
+        aquisicao: "2024-06-18",
+        status: "active",
+        operadorId: 5,
+        operadorNome: "Roberto Silva",
+        ultimaCalibracao: "2026-02-28",
+        proximaCalibracao: "2026-08-28",
+        observacoes: "Coletor reserva",
+        manutencoes: []
+    },
+    {
+        id: 7,
+        nome: "Smartphone A15",
+        serial: "SMP-2024-007",
+        tipo: "smartphone",
+        modelo: "A15",
+        fabricante: "Samsung",
+        aquisicao: "2024-07-22",
+        status: "lost",
+        operadorId: null,
+        operadorNome: null,
+        ultimaCalibracao: "2025-12-01",
+        proximaCalibracao: "2026-06-01",
+        observacoes: "Equipamento extraviado - Busca em andamento",
+        manutencoes: []
+    }
+];
+
+let currentEquipmentId = null;
+let currentEquipmentPage = 1;
+const equipmentPerPage = 6;
+
+// Renderizar grid de equipamentos
+function renderEquipmentGrid() {
+    const searchTerm = document.getElementById('searchEquipment')?.value.toLowerCase() || '';
+    const typeFilter = document.getElementById('filterType')?.value || 'all';
+    const statusFilter = document.getElementById('filterStatus')?.value || 'all';
+    const operatorFilter = document.getElementById('filterOperator')?.value || 'all';
+    
+    let filteredEquipment = equipamentosData.filter(equip => {
+        const matchesSearch = equip.nome.toLowerCase().includes(searchTerm) ||
+                             equip.serial.toLowerCase().includes(searchTerm) ||
+                             (equip.operadorNome && equip.operadorNome.toLowerCase().includes(searchTerm));
+        const matchesType = typeFilter === 'all' || equip.tipo === typeFilter;
+        const matchesStatus = statusFilter === 'all' || equip.status === statusFilter;
+        const matchesOperator = operatorFilter === 'all' || 
+                               (operatorFilter === 'assigned' && equip.operadorId) ||
+                               (operatorFilter === 'unassigned' && !equip.operadorId);
+        
+        return matchesSearch && matchesType && matchesStatus && matchesOperator;
+    });
+    
+    // Paginação
+    const totalPages = Math.ceil(filteredEquipment.length / equipmentPerPage);
+    const start = (currentEquipmentPage - 1) * equipmentPerPage;
+    const end = start + equipmentPerPage;
+    const paginatedEquipment = filteredEquipment.slice(start, end);
+    
+    // Renderizar grid
+    const grid = document.getElementById('equipmentGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = paginatedEquipment.map(equip => {
+        // Verificar alerta de calibração
+        let calibrationAlert = '';
+        const hoje = new Date();
+        const proxCalibracao = new Date(equip.proximaCalibracao);
+        const diasRestantes = Math.ceil((proxCalibracao - hoje) / (1000 * 60 * 60 * 24));
+        
+        if (equip.status === 'active') {
+            if (diasRestantes <= 0) {
+                calibrationAlert = '<div class="calibration-alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Calibração vencida!</div>';
+            } else if (diasRestantes <= 30) {
+                calibrationAlert = `<div class="calibration-alert alert-warning"><i class="fas fa-clock"></i> Calibração em ${diasRestantes} dias</div>`;
+            } else {
+                calibrationAlert = '<div class="calibration-alert alert-success"><i class="fas fa-check-circle"></i> Calibração em dia</div>';
+            }
+        }
+        
+        return `
+            <div class="equipment-card" data-id="${equip.id}">
+                <div class="equipment-header">
+                    <div class="equipment-icon">
+                        <i class="fas ${getEquipmentIcon(equip.tipo)}"></i>
+                    </div>
+                    <span class="equipment-serial">${equip.serial}</span>
+                </div>
+                <div class="equipment-body">
+                    <div class="equipment-name">
+                        ${equip.nome}
+                        <span class="equipment-type type-${equip.tipo}">${getTipoEquipamentoNome(equip.tipo)}</span>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="info-item">
+                            <div class="info-label">Modelo</div>
+                            <div class="info-value">${equip.modelo || '-'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Fabricante</div>
+                            <div class="info-value">${equip.fabricante || '-'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Aquisição</div>
+                            <div class="info-value">${formatarData(equip.aquisicao)}</div>
+                        </div>
+                    </div>
+                    <div class="equipment-info">
+                        <div class="info-item">
+                            <div class="info-label">Operador</div>
+                            <div class="info-value">${equip.operadorNome || '<span style="color: var(--warning);">Não atribuído</span>'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Última Calibração</div>
+                            <div class="info-value">${formatarData(equip.ultimaCalibracao)}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Próxima Calibração</div>
+                            <div class="info-value">${formatarData(equip.proximaCalibracao)}</div>
+                        </div>
+                    </div>
+                    ${calibrationAlert}
+                </div>
+                <div class="equipment-footer">
+                    <div class="equipment-status status-${equip.status}">
+                        <i class="fas ${getStatusIcon(equip.status)}"></i>
+                        ${getStatusNome(equip.status)}
+                    </div>
+                    <div class="equipment-actions">
+                        <button class="action-btn view-maintenance" data-id="${equip.id}" title="Histórico de Manutenção">
+                            <i class="fas fa-history"></i>
+                        </button>
+                        ${equip.status !== 'lost' && !equip.operadorId ? `
+                            <button class="action-btn assign-equipment" data-id="${equip.id}" title="Atribuir a Operador">
+                                <i class="fas fa-user-plus"></i>
+                            </button>
+                        ` : ''}
+                        <button class="action-btn edit-equipment" data-id="${equip.id}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-equipment" data-id="${equip.id}" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Atualizar estatísticas
+    updateEquipmentStats();
+    
+    // Atualizar paginação
+    renderEquipmentPagination(totalPages);
+    
+    // Adicionar eventos
+    document.querySelectorAll('.edit-equipment').forEach(btn => {
+        btn.addEventListener('click', () => editEquipment(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.view-maintenance').forEach(btn => {
+        btn.addEventListener('click', () => showMaintenanceHistory(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.assign-equipment').forEach(btn => {
+        btn.addEventListener('click', () => openAssignModal(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.delete-equipment').forEach(btn => {
+        btn.addEventListener('click', () => deleteEquipment(parseInt(btn.dataset.id)));
+    });
+}
+
+// Ícone do equipamento
+function getEquipmentIcon(tipo) {
+    const icons = {
+        coletor: 'fa-barcode',
+        tablet: 'fa-tablet-alt',
+        smartphone: 'fa-mobile-alt',
+        impressora: 'fa-print',
+        acessorio: 'fa-plug'
+    };
+    return icons[tipo] || 'fa-microchip';
+}
+
+// Nome do tipo de equipamento
+function getTipoEquipamentoNome(tipo) {
+    const tipos = {
+        coletor: 'Coletor',
+        tablet: 'Tablet',
+        smartphone: 'Smartphone',
+        impressora: 'Impressora',
+        acessorio: 'Acessório'
+    };
+    return tipos[tipo] || tipo;
+}
+
+// Ícone do status
+function getStatusIcon(status) {
+    const icons = {
+        active: 'fa-check-circle',
+        maintenance: 'fa-tools',
+        inactive: 'fa-circle',
+        lost: 'fa-search'
+    };
+    return icons[status] || 'fa-question-circle';
+}
+
+// Nome do status
+function getStatusNome(status) {
+    const nomes = {
+        active: 'Em operação',
+        maintenance: 'Em manutenção',
+        inactive: 'Inativo',
+        lost: 'Extraviado'
+    };
+    return nomes[status] || status;
+}
+
+// Atualizar estatísticas
+function updateEquipmentStats() {
+    const total = equipamentosData.length;
+    const active = equipamentosData.filter(e => e.status === 'active').length;
+    const maintenance = equipamentosData.filter(e => e.status === 'maintenance').length;
+    const availabilityRate = total > 0 ? Math.round((active / total) * 100) : 0;
+    
+    const totalEl = document.getElementById('totalEquipment');
+    const activeEl = document.getElementById('activeEquipment');
+    const maintenanceEl = document.getElementById('maintenanceEquipment');
+    const availabilityEl = document.getElementById('availabilityRate');
+    
+    if (totalEl) totalEl.textContent = total;
+    if (activeEl) activeEl.textContent = active;
+    if (maintenanceEl) maintenanceEl.textContent = maintenance;
+    if (availabilityEl) availabilityEl.textContent = availabilityRate;
+}
+
+// Renderizar paginação
+function renderEquipmentPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentEquipmentPage === 1 ? 'disabled' : ''} data-page="${currentEquipmentPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    const startPage = Math.max(1, currentEquipmentPage - 2);
+    const endPage = Math.min(totalPages, currentEquipmentPage + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="${i === currentEquipmentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentEquipmentPage === totalPages ? 'disabled' : ''} data-page="${currentEquipmentPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentEquipmentPage && page >= 1 && page <= totalPages) {
+                currentEquipmentPage = page;
+                renderEquipmentGrid();
+            }
+        });
+    });
+}
+
+// Abrir modal de equipamento
+function openEquipmentModal(equipmentId = null) {
+    const modal = document.getElementById('equipmentModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    if (!modal) return;
+    
+    currentEquipmentId = equipmentId;
+    
+    // Popular operadores
+    const operadorSelect = document.getElementById('equipOperador');
+    if (operadorSelect && operadoresData) {
+        operadorSelect.innerHTML = '<option value="">Não atribuído</option>';
+        operadoresData.filter(op => op.status === 'active').forEach(op => {
+            operadorSelect.innerHTML += `<option value="${op.id}">${op.nome} (${op.matricula})</option>`;
+        });
+    }
+    
+    if (equipmentId) {
+        modalTitle.textContent = 'Editar Equipamento';
+        const equip = equipamentosData.find(e => e.id === equipmentId);
+        if (equip) {
+            document.getElementById('equipNome').value = equip.nome;
+            document.getElementById('equipSerial').value = equip.serial;
+            document.getElementById('equipTipo').value = equip.tipo;
+            document.getElementById('equipModelo').value = equip.modelo;
+            document.getElementById('equipFabricante').value = equip.fabricante;
+            document.getElementById('equipAquisicao').value = equip.aquisicao;
+            document.getElementById('equipStatus').value = equip.status;
+            document.getElementById('equipOperador').value = equip.operadorId || '';
+            document.getElementById('equipCalibracao').value = equip.ultimaCalibracao;
+            document.getElementById('equipProxCalibracao').value = equip.proximaCalibracao;
+            document.getElementById('equipObservacoes').value = equip.observacoes;
+        }
+    } else {
+        modalTitle.textContent = 'Novo Equipamento';
+        document.getElementById('equipmentForm').reset();
+        document.getElementById('equipStatus').value = 'active';
+    }
+    
+    modal.classList.add('active');
+}
+
+// Salvar equipamento
+function saveEquipment(event) {
+    event.preventDefault();
+    
+    const nome = document.getElementById('equipNome').value;
+    const serial = document.getElementById('equipSerial').value;
+    const tipo = document.getElementById('equipTipo').value;
+    const modelo = document.getElementById('equipModelo').value;
+    const fabricante = document.getElementById('equipFabricante').value;
+    const aquisicao = document.getElementById('equipAquisicao').value;
+    const status = document.getElementById('equipStatus').value;
+    const operadorId = document.getElementById('equipOperador').value;
+    const ultimaCalibracao = document.getElementById('equipCalibracao').value;
+    const proximaCalibracao = document.getElementById('equipProxCalibracao').value;
+    const observacoes = document.getElementById('equipObservacoes').value;
+    
+    if (!nome || !serial || !tipo) {
+        showNotification('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+    
+    const operadorNome = operadorId ? operadoresData.find(op => op.id == operadorId)?.nome : null;
+    
+    if (currentEquipmentId) {
+        // Editar equipamento existente
+        const equipIndex = equipamentosData.findIndex(e => e.id === currentEquipmentId);
+        if (equipIndex !== -1) {
+            equipamentosData[equipIndex] = {
+                ...equipamentosData[equipIndex],
+                nome,
+                serial,
+                tipo,
+                modelo,
+                fabricante,
+                aquisicao,
+                status,
+                operadorId: operadorId || null,
+                operadorNome: operadorNome || null,
+                ultimaCalibracao,
+                proximaCalibracao,
+                observacoes
+            };
+            showNotification('Equipamento atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Criar novo equipamento
+        const newId = Math.max(...equipamentosData.map(e => e.id), 0) + 1;
+        const newEquipment = {
+            id: newId,
+            nome,
+            serial,
+            tipo,
+            modelo,
+            fabricante,
+            aquisicao,
+            status,
+            operadorId: operadorId || null,
+            operadorNome: operadorNome || null,
+            ultimaCalibracao,
+            proximaCalibracao,
+            observacoes,
+            manutencoes: []
+        };
+        equipamentosData.push(newEquipment);
+        showNotification('Equipamento criado com sucesso!', 'success');
+    }
+    
+    closeModal();
+    renderEquipmentGrid();
+}
+
+// Editar equipamento
+function editEquipment(id) {
+    openEquipmentModal(id);
+}
+
+// Mostrar histórico de manutenção
+function showMaintenanceHistory(id) {
+    const equip = equipamentosData.find(e => e.id === id);
+    if (!equip) return;
+    
+    const modal = document.getElementById('maintenanceModal');
+    const content = document.getElementById('maintenanceContent');
+    
+    content.innerHTML = `
+        <div class="maintenance-timeline">
+            ${equip.manutencoes.length > 0 ? equip.manutencoes.map(m => `
+                <div class="maintenance-item">
+                    <div class="maintenance-date">${formatarData(m.data)}</div>
+                    <div class="maintenance-title">${m.tipo}</div>
+                    <div class="maintenance-description">${m.descricao}</div>
+                </div>
+            `).join('') : '<p style="text-align: center; padding: 2rem;">Nenhuma manutenção registrada</p>'}
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Abrir modal de atribuição
+let assignEquipmentId = null;
+function openAssignModal(equipmentId) {
+    const equip = equipamentosData.find(e => e.id === equipmentId);
+    if (!equip) return;
+    
+    assignEquipmentId = equipmentId;
+    const modal = document.getElementById('assignModal');
+    const assignEquipmentName = document.getElementById('assignEquipmentName');
+    const assignOperator = document.getElementById('assignOperator');
+    
+    assignEquipmentName.value = `${equip.nome} (${equip.serial})`;
+    
+    // Popular operadores disponíveis
+    assignOperator.innerHTML = '<option value="">Selecione um operador</option>';
+    operadoresData.filter(op => op.status === 'active' && op.situacao !== 'field').forEach(op => {
+        assignOperator.innerHTML += `<option value="${op.id}">${op.nome} (${op.matricula})</option>`;
+    });
+    
+    document.getElementById('assignDate').value = new Date().toISOString().split('T')[0];
+    
+    modal.classList.add('active');
+}
+
+// Salvar atribuição
+function saveAssignment(event) {
+    event.preventDefault();
+    
+    const operatorId = document.getElementById('assignOperator').value;
+    const assignDate = document.getElementById('assignDate').value;
+    
+    if (!operatorId) {
+        showNotification('Selecione um operador', 'error');
+        return;
+    }
+    
+    const operator = operadoresData.find(op => op.id == operatorId);
+    const equipIndex = equipamentosData.findIndex(e => e.id === assignEquipmentId);
+    
+    if (equipIndex !== -1) {
+        equipamentosData[equipIndex].operadorId = operator.id;
+        equipamentosData[equipIndex].operadorNome = operator.nome;
+        
+        // Registrar auditoria
+        showNotification(`Equipamento atribuído a ${operator.nome}`, 'success');
+        renderEquipmentGrid();
+    }
+    
+    closeModal();
+}
+
+// Excluir equipamento
+function deleteEquipment(id) {
+    if (confirm('Tem certeza que deseja excluir este equipamento?')) {
+        equipamentosData = equipamentosData.filter(e => e.id !== id);
+        showNotification('Equipamento excluído com sucesso!', 'success');
+        renderEquipmentGrid();
+    }
+}
+
+// Inicializar eventos de equipamentos
+function initEquipmentEvents() {
+    const openModalBtn = document.getElementById('openEquipmentModal');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', () => openEquipmentModal());
+    }
+    
+    const closeModalBtns = document.querySelectorAll('.modal-close, #closeModal, #closeAssignModal');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    
+    const equipmentForm = document.getElementById('equipmentForm');
+    if (equipmentForm) {
+        equipmentForm.addEventListener('submit', saveEquipment);
+    }
+    
+    const assignForm = document.getElementById('assignForm');
+    if (assignForm) {
+        assignForm.addEventListener('submit', saveAssignment);
+    }
+    
+    const addMaintenanceBtn = document.getElementById('addMaintenanceBtn');
+    if (addMaintenanceBtn) {
+        addMaintenanceBtn.addEventListener('click', () => {
+            closeModal();
+            showNotification('Funcionalidade em desenvolvimento', 'info');
+        });
+    }
+    
+    const searchEquipment = document.getElementById('searchEquipment');
+    const filterType = document.getElementById('filterType');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterOperator = document.getElementById('filterOperator');
+    
+    if (searchEquipment) searchEquipment.addEventListener('input', () => {
+        currentEquipmentPage = 1;
+        renderEquipmentGrid();
+    });
+    if (filterType) filterType.addEventListener('change', () => {
+        currentEquipmentPage = 1;
+        renderEquipmentGrid();
+    });
+    if (filterStatus) filterStatus.addEventListener('change', () => {
+        currentEquipmentPage = 1;
+        renderEquipmentGrid();
+    });
+    if (filterOperator) filterOperator.addEventListener('change', () => {
+        currentEquipmentPage = 1;
+        renderEquipmentGrid();
+    });
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    initOperatorsEvents();
+    renderOperatorsGrid();
+    initAuditEvents();
+    renderAuditTable();
+    initSectorsEvents();
+    renderSectorsGrid();
+    initEquipmentEvents();
+    renderEquipmentGrid();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});

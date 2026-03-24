@@ -2974,4 +2974,37 @@ input:checked + .toggle-slider:before {
         width: 100%;
     }
 }
+/* Menu Mobile */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-secondary);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        z-index: 1000;
+    }
+    
+    .nav-menu.active {
+        display: flex;
+    }
+}
 

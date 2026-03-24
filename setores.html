@@ -2,159 +2,51 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Setores – Inventário Híbrido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setores - Inventário Híbrido</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Biblioteca de gráficos -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <nav class="menu-futurista">
+    <div class="menu-logo">IH</div>
+    <ul class="menu-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="setores.html">Setores</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+  </nav>
 
-  <!-- BOTÃO TEMA -->
-  <button id="theme-toggle" class="theme-btn">🌙</button>
-
-  <!-- HERO REDUZIDO -->
   <header class="hero small-hero">
     <div class="hero-content">
       <h1 class="glow-title">Setores</h1>
-      <p class="glow-subtitle">Indicadores e desempenho por setor</p>
-      <a href="index.html" class="btn-neon">Voltar ao Início</a>
+      <p class="glow-subtitle">Gerenciamento de áreas e locais de estoque</p>
     </div>
   </header>
 
-  <!-- CARDS DE SETORES -->
-  <section class="section dark-section">
-    <h2 class="section-title">Indicadores Gerais</h2>
-
+  <section class="section">
     <div class="grid-3">
-
-      <div class="neon-card setor-card">
-        <h3>TI</h3>
-        <p>Itens: <strong>1.240</strong></p>
-        <p>Divergências: <strong>12</strong></p>
+      <div class="card neon-card setor-card">
+        <h3>📦 Almoxarifado Central</h3>
+        <p>Itens: 450</p>
+        <p>Status: <span style="color: #00ff00;">Auditado</span></p>
+        <button class="btn-neon">Detalhes</button>
       </div>
-
-      <div class="neon-card setor-card">
-        <h3>Financeiro</h3>
-        <p>Itens: <strong>980</strong></p>
-        <p>Divergências: <strong>25</strong></p>
+      <div class="card neon-card setor-card">
+        <h3>💻 TI / Hardware</h3>
+        <p>Itens: 120</p>
+        <p>Status: <span style="color: #ffff00;">Pendente</span></p>
+        <button class="btn-neon">Detalhes</button>
       </div>
-
-      <div class="neon-card setor-card">
-        <h3>Compras</h3>
-        <p>Itens: <strong>760</strong></p>
-        <p>Divergências: <strong>8</strong></p>
+      <div class="card neon-card setor-card">
+        <h3>🏢 Escritório Administrativo</h3>
+        <p>Itens: 85</p>
+        <p>Status: <span style="color: #00ff00;">Auditado</span></p>
+        <button class="btn-neon">Detalhes</button>
       </div>
-
     </div>
   </section>
 
-  <!-- GRÁFICO DE ITENS POR SETOR -->
-  <section class="section">
-    <h2 class="section-title">Itens por Setor</h2>
-    <canvas id="graficoItens" class="chart"></canvas>
-  </section>
-
-  <!-- GRÁFICO DE DIVERGÊNCIAS -->
-  <section class="section dark-section">
-    <h2 class="section-title">Divergências por Setor</h2>
-    <canvas id="graficoDivergencias" class="chart"></canvas>
-  </section>
-
-  <!-- TABELA DETALHADA -->
-  <section class="section">
-    <h2 class="section-title">Tabela de Setores</h2>
-
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>Setor</th>
-          <th>Total de Itens</th>
-          <th>Divergências</th>
-          <th>Responsável</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr>
-          <td>TI</td>
-          <td>1.240</td>
-          <td>12</td>
-          <td>João Silva</td>
-        </tr>
-
-        <tr>
-          <td>Financeiro</td>
-          <td>980</td>
-          <td>25</td>
-          <td>Maria Santos</td>
-        </tr>
-
-        <tr>
-          <td>Compras</td>
-          <td>760</td>
-          <td>8</td>
-          <td>Carlos Almeida</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <footer class="footer">
-    <p>© 2026 Inventário Híbrido – Setores</p>
-  </footer>
-
   <script src="script.js"></script>
-
-  <script>
-    /* ============================
-       GRÁFICO DE ITENS POR SETOR
-    ============================ */
-    new Chart(document.getElementById("graficoItens"), {
-      type: "bar",
-      data: {
-        labels: ["TI", "Financeiro", "Compras"],
-        datasets: [{
-          label: "Itens",
-          data: [1240, 980, 760],
-          backgroundColor: ["#00aaff", "#00ffff", "#0077ff"]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } },
-        scales: {
-          x: { ticks: { color: "#fff" } },
-          y: { ticks: { color: "#fff" } }
-        }
-      }
-    });
-
-    /* ============================
-       GRÁFICO DE DIVERGÊNCIAS
-    ============================ */
-    new Chart(document.getElementById("graficoDivergencias"), {
-      type: "line",
-      data: {
-        labels: ["TI", "Financeiro", "Compras"],
-        datasets: [{
-          label: "Divergências",
-          data: [12, 25, 8],
-          borderColor: "#00ffff",
-          borderWidth: 3,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } },
-        scales: {
-          x: { ticks: { color: "#fff" } },
-          y: { ticks: { color: "#fff" } }
-        }
-      }
-    });
-  </script>
-
 </body>
 </html>

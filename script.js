@@ -2829,3 +2829,632 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// ====================
+// GERENCIAMENTO DE SETORES
+// ====================
+
+// Dados mockados de setores
+let setoresData = [
+    {
+        id: 1,
+        nome: "Almoxarifado Central",
+        codigo: "ALM-001",
+        tipo: "almoxarifado",
+        responsavel: "Carlos Silva",
+        capacidade: 2000,
+        status: "active",
+        localizacao: "Prédio A, Térreo",
+        descricao: "Almoxarifado principal da empresa",
+        coordenadas: { lat: "-23.5505", lng: "-46.6333" },
+        estatisticas: {
+            itensAtuais: 1520,
+            ultimaContagem: "2026-03-24",
+            contagensAno: 12,
+            ocupacao: 76
+        },
+        itens: [
+            { codigo: "PROD-001", nome: "Parafusos", quantidade: 500, localizacao: "Prateleira A1", ultimaContagem: "2026-03-24" },
+            { codigo: "PROD-002", nome: "Porcas", quantidade: 450, localizacao: "Prateleira A2", ultimaContagem: "2026-03-24" },
+            { codigo: "PROD-003", nome: "Arruelas", quantidade: 570, localizacao: "Prateleira A3", ultimaContagem: "2026-03-23" }
+        ]
+    },
+    {
+        id: 2,
+        nome: "Setor de Produção",
+        codigo: "PRO-002",
+        tipo: "producao",
+        responsavel: "Mariana Oliveira",
+        capacidade: 1500,
+        status: "active",
+        localizacao: "Prédio B, 1º andar",
+        descricao: "Linha de produção principal",
+        coordenadas: { lat: "-23.5510", lng: "-46.6340" },
+        estatisticas: {
+            itensAtuais: 980,
+            ultimaContagem: "2026-03-23",
+            contagensAno: 8,
+            ocupacao: 65
+        },
+        itens: [
+            { codigo: "PROD-004", nome: "Componente X", quantidade: 320, localizacao: "Esteira 1", ultimaContagem: "2026-03-23" },
+            { codigo: "PROD-005", nome: "Componente Y", quantidade: 280, localizacao: "Esteira 2", ultimaContagem: "2026-03-23" },
+            { codigo: "PROD-006", nome: "Componente Z", quantidade: 380, localizacao: "Esteira 3", ultimaContagem: "2026-03-22" }
+        ]
+    },
+    {
+        id: 3,
+        nome: "Expedição",
+        codigo: "EXP-003",
+        tipo: "expedicao",
+        responsavel: "Roberto Almeida",
+        capacidade: 800,
+        status: "active",
+        localizacao: "Prédio C, Térreo",
+        descricao: "Área de expedição e carregamento",
+        coordenadas: { lat: "-23.5520", lng: "-46.6350" },
+        estatisticas: {
+            itensAtuais: 430,
+            ultimaContagem: "2026-03-24",
+            contagensAno: 15,
+            ocupacao: 54
+        },
+        itens: [
+            { codigo: "PROD-007", nome: "Produto Acabado A", quantidade: 150, localizacao: "Docas 1-2", ultimaContagem: "2026-03-24" },
+            { codigo: "PROD-008", nome: "Produto Acabado B", quantidade: 280, localizacao: "Docas 3-4", ultimaContagem: "2026-03-24" }
+        ]
+    },
+    {
+        id: 4,
+        nome: "Estoque de Matéria Prima",
+        codigo: "EMP-004",
+        tipo: "estoque",
+        responsavel: "Ana Paula Souza",
+        capacidade: 3000,
+        status: "active",
+        localizacao: "Prédio D, Galpão 2",
+        descricao: "Armazenamento de matérias-primas",
+        coordenadas: { lat: "-23.5530", lng: "-46.6360" },
+        estatisticas: {
+            itensAtuais: 2450,
+            ultimaContagem: "2026-03-22",
+            contagensAno: 10,
+            ocupacao: 82
+        },
+        itens: [
+            { codigo: "MP-001", nome: "Aço Inox", quantidade: 1200, localizacao: "Pátio A", ultimaContagem: "2026-03-22" },
+            { codigo: "MP-002", nome: "Alumínio", quantidade: 800, localizacao: "Pátio B", ultimaContagem: "2026-03-22" },
+            { codigo: "MP-003", nome: "Plástico", quantidade: 450, localizacao: "Silo 1", ultimaContagem: "2026-03-21" }
+        ]
+    },
+    {
+        id: 5,
+        nome: "Área Administrativa",
+        codigo: "ADM-005",
+        tipo: "administrativo",
+        responsavel: "Patrícia Lima",
+        capacidade: 300,
+        status: "active",
+        localizacao: "Prédio A, 2º andar",
+        descricao: "Materiais de escritório e administrativos",
+        coordenadas: { lat: "-23.5508", lng: "-46.6338" },
+        estatisticas: {
+            itensAtuais: 180,
+            ultimaContagem: "2026-03-20",
+            contagensAno: 6,
+            ocupacao: 60
+        },
+        itens: [
+            { codigo: "ADM-001", nome: "Papel A4", quantidade: 50, localizacao: "Armário 1", ultimaContagem: "2026-03-20" },
+            { codigo: "ADM-002", nome: "Canetas", quantidade: 80, localizacao: "Armário 2", ultimaContagem: "2026-03-20" },
+            { codigo: "ADM-003", nome: "Pastas", quantidade: 50, localizacao: "Armário 3", ultimaContagem: "2026-03-19" }
+        ]
+    },
+    {
+        id: 6,
+        nome: "Almoxarifado Secundário",
+        codigo: "ALM-006",
+        tipo: "almoxarifado",
+        responsavel: "João Paulo Santos",
+        capacidade: 1000,
+        status: "inactive",
+        localizacao: "Prédio E, Galpão 1",
+        descricao: "Almoxarifado auxiliar (em reforma)",
+        coordenadas: { lat: "-23.5540", lng: "-46.6370" },
+        estatisticas: {
+            itensAtuais: 0,
+            ultimaContagem: "2026-03-15",
+            contagensAno: 3,
+            ocupacao: 0
+        },
+        itens: []
+    }
+];
+
+let currentSectorId = null;
+let currentSectorPage = 1;
+const sectorsPerPage = 6;
+
+// Renderizar grid de setores
+function renderSectorsGrid() {
+    const searchTerm = document.getElementById('searchSector')?.value.toLowerCase() || '';
+    const statusFilter = document.getElementById('filterStatus')?.value || 'all';
+    const typeFilter = document.getElementById('filterType')?.value || 'all';
+    
+    let filteredSectors = setoresData.filter(sector => {
+        const matchesSearch = sector.nome.toLowerCase().includes(searchTerm) ||
+                             sector.codigo.toLowerCase().includes(searchTerm) ||
+                             sector.responsavel.toLowerCase().includes(searchTerm);
+        const matchesStatus = statusFilter === 'all' || sector.status === statusFilter;
+        const matchesType = typeFilter === 'all' || sector.tipo === typeFilter;
+        
+        return matchesSearch && matchesStatus && matchesType;
+    });
+    
+    // Paginação
+    const totalPages = Math.ceil(filteredSectors.length / sectorsPerPage);
+    const start = (currentSectorPage - 1) * sectorsPerPage;
+    const end = start + sectorsPerPage;
+    const paginatedSectors = filteredSectors.slice(start, end);
+    
+    // Renderizar grid
+    const grid = document.getElementById('sectorsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = paginatedSectors.map(sector => {
+        const ocupacao = sector.estatisticas.ocupacao;
+        const ocupacaoClass = ocupacao >= 80 ? 'danger' : ocupacao >= 60 ? 'warning' : 'success';
+        
+        return `
+            <div class="sector-card" data-id="${sector.id}">
+                <div class="sector-header">
+                    <span><i class="fas fa-map-marker-alt"></i> ${sector.codigo}</span>
+                    <span class="sector-code">${sector.tipo.toUpperCase()}</span>
+                </div>
+                <div class="sector-body">
+                    <div class="sector-name">
+                        ${sector.nome}
+                        <span class="sector-type type-${sector.tipo}">${getTipoNome(sector.tipo)}</span>
+                    </div>
+                    <div class="sector-info">
+                        <div class="info-item">
+                            <div class="info-label">Responsável</div>
+                            <div class="info-value">${sector.responsavel || '-'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Capacidade</div>
+                            <div class="info-value">${sector.capacidade} itens</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Localização</div>
+                            <div class="info-value">${sector.localizacao || '-'}</div>
+                        </div>
+                    </div>
+                    <div class="sector-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Itens Atuais</div>
+                            <div class="stat-number ${ocupacaoClass}">${sector.estatisticas.itensAtuais}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Ocupação</div>
+                            <div class="stat-number">${ocupacao}%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Última Contagem</div>
+                            <div class="stat-number">${formatarData(sector.estatisticas.ultimaContagem)}</div>
+                        </div>
+                    </div>
+                    <div class="occupancy-bar">
+                        <div class="occupancy-fill" style="width: ${ocupacao}%; background: ${ocupacao >= 80 ? '#ef4444' : ocupacao >= 60 ? '#f59e0b' : '#10b981'}"></div>
+                    </div>
+                </div>
+                <div class="sector-footer">
+                    <div class="sector-status status-${sector.status}">
+                        <i class="fas ${sector.status === 'active' ? 'fa-check-circle' : 'fa-circle'}"></i>
+                        ${sector.status === 'active' ? 'Ativo' : 'Inativo'}
+                    </div>
+                    <div class="sector-actions">
+                        <button class="action-btn view-inventory" data-id="${sector.id}" title="Ver Inventário">
+                            <i class="fas fa-boxes"></i>
+                        </button>
+                        <button class="action-btn view-details" data-id="${sector.id}" title="Detalhes">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="action-btn edit-sector" data-id="${sector.id}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-sector" data-id="${sector.id}" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Atualizar estatísticas
+    updateSectorsStats();
+    
+    // Atualizar paginação
+    renderSectorPagination(totalPages);
+    
+    // Adicionar eventos
+    document.querySelectorAll('.edit-sector').forEach(btn => {
+        btn.addEventListener('click', () => editSector(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.view-details').forEach(btn => {
+        btn.addEventListener('click', () => showSectorDetails(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.view-inventory').forEach(btn => {
+        btn.addEventListener('click', () => showSectorInventory(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.delete-sector').forEach(btn => {
+        btn.addEventListener('click', () => deleteSector(parseInt(btn.dataset.id)));
+    });
+}
+
+// Nome do tipo de setor
+function getTipoNome(tipo) {
+    const tipos = {
+        almoxarifado: 'Almoxarifado',
+        producao: 'Produção',
+        expedicao: 'Expedição',
+        estoque: 'Estoque',
+        administrativo: 'Administrativo'
+    };
+    return tipos[tipo] || tipo;
+}
+
+// Formatar data
+function formatarData(dataString) {
+    if (!dataString) return '-';
+    const data = new Date(dataString);
+    return data.toLocaleDateString('pt-BR');
+}
+
+// Atualizar estatísticas dos setores
+function updateSectorsStats() {
+    const totalSectors = setoresData.length;
+    const totalItems = setoresData.reduce((sum, sector) => sum + sector.estatisticas.itensAtuais, 0);
+    const avgOccupancy = setoresData.filter(s => s.status === 'active').reduce((sum, sector) => sum + sector.estatisticas.ocupacao, 0) / 
+                         setoresData.filter(s => s.status === 'active').length || 0;
+    
+    const lastCount = setoresData
+        .filter(s => s.status === 'active')
+        .sort((a, b) => new Date(b.estatisticas.ultimaContagem) - new Date(a.estatisticas.ultimaContagem))[0]?.estatisticas.ultimaContagem || 'Hoje';
+    
+    const totalSectorsEl = document.getElementById('totalSectors');
+    const totalItemsEl = document.getElementById('totalItems');
+    const avgOccupancyEl = document.getElementById('avgOccupancy');
+    const lastCountEl = document.getElementById('lastCount');
+    
+    if (totalSectorsEl) totalSectorsEl.textContent = totalSectors;
+    if (totalItemsEl) totalItemsEl.textContent = totalItems;
+    if (avgOccupancyEl) avgOccupancyEl.textContent = Math.round(avgOccupancy);
+    if (lastCountEl) lastCountEl.textContent = formatarData(lastCount);
+}
+
+// Renderizar paginação
+function renderSectorPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentSectorPage === 1 ? 'disabled' : ''} data-page="${currentSectorPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    const startPage = Math.max(1, currentSectorPage - 2);
+    const endPage = Math.min(totalPages, currentSectorPage + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="${i === currentSectorPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentSectorPage === totalPages ? 'disabled' : ''} data-page="${currentSectorPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentSectorPage && page >= 1 && page <= totalPages) {
+                currentSectorPage = page;
+                renderSectorsGrid();
+            }
+        });
+    });
+}
+
+// Abrir modal de setor
+function openSectorModal(sectorId = null) {
+    const modal = document.getElementById('sectorModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    if (!modal) return;
+    
+    currentSectorId = sectorId;
+    
+    if (sectorId) {
+        modalTitle.textContent = 'Editar Setor';
+        const sector = setoresData.find(s => s.id === sectorId);
+        if (sector) {
+            document.getElementById('sectorNome').value = sector.nome;
+            document.getElementById('sectorCodigo').value = sector.codigo;
+            document.getElementById('sectorTipo').value = sector.tipo;
+            document.getElementById('sectorResponsavel').value = sector.responsavel;
+            document.getElementById('sectorCapacidade').value = sector.capacidade;
+            document.getElementById('sectorStatus').value = sector.status;
+            document.getElementById('sectorLocalizacao').value = sector.localizacao;
+            document.getElementById('sectorDescricao').value = sector.descricao;
+            document.getElementById('sectorLat').value = sector.coordenadas?.lat || '';
+            document.getElementById('sectorLng').value = sector.coordenadas?.lng || '';
+        }
+    } else {
+        modalTitle.textContent = 'Novo Setor';
+        document.getElementById('sectorForm').reset();
+        document.getElementById('sectorStatus').value = 'active';
+        document.getElementById('sectorCapacidade').value = '500';
+    }
+    
+    modal.classList.add('active');
+}
+
+// Salvar setor
+function saveSector(event) {
+    event.preventDefault();
+    
+    const nome = document.getElementById('sectorNome').value;
+    const codigo = document.getElementById('sectorCodigo').value;
+    const tipo = document.getElementById('sectorTipo').value;
+    const responsavel = document.getElementById('sectorResponsavel').value;
+    const capacidade = parseInt(document.getElementById('sectorCapacidade').value);
+    const status = document.getElementById('sectorStatus').value;
+    const localizacao = document.getElementById('sectorLocalizacao').value;
+    const descricao = document.getElementById('sectorDescricao').value;
+    const lat = document.getElementById('sectorLat').value;
+    const lng = document.getElementById('sectorLng').value;
+    
+    if (!nome || !codigo || !tipo) {
+        showNotification('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+    
+    if (currentSectorId) {
+        // Editar setor existente
+        const sectorIndex = setoresData.findIndex(s => s.id === currentSectorId);
+        if (sectorIndex !== -1) {
+            setoresData[sectorIndex] = {
+                ...setoresData[sectorIndex],
+                nome,
+                codigo,
+                tipo,
+                responsavel,
+                capacidade,
+                status,
+                localizacao,
+                descricao,
+                coordenadas: { lat, lng }
+            };
+            showNotification('Setor atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Criar novo setor
+        const newId = Math.max(...setoresData.map(s => s.id), 0) + 1;
+        const newSector = {
+            id: newId,
+            nome,
+            codigo,
+            tipo,
+            responsavel,
+            capacidade,
+            status,
+            localizacao,
+            descricao,
+            coordenadas: { lat, lng },
+            estatisticas: {
+                itensAtuais: 0,
+                ultimaContagem: new Date().toISOString().split('T')[0],
+                contagensAno: 0,
+                ocupacao: 0
+            },
+            itens: []
+        };
+        setoresData.push(newSector);
+        showNotification('Setor criado com sucesso!', 'success');
+    }
+    
+    closeModal();
+    renderSectorsGrid();
+}
+
+// Editar setor
+function editSector(id) {
+    openSectorModal(id);
+}
+
+// Mostrar detalhes do setor
+function showSectorDetails(id) {
+    const sector = setoresData.find(s => s.id === id);
+    if (!sector) return;
+    
+    const modal = document.getElementById('sectorDetailModal');
+    const content = document.getElementById('sectorDetailContent');
+    
+    content.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+            <strong>Código:</strong> ${sector.codigo}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Tipo:</strong> <span class="sector-type type-${sector.tipo}">${getTipoNome(sector.tipo)}</span>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Responsável:</strong> ${sector.responsavel || '-'}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Capacidade:</strong> ${sector.capacidade} itens
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Itens Atuais:</strong> ${sector.estatisticas.itensAtuais}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Ocupação:</strong> ${sector.estatisticas.ocupacao}%
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Localização:</strong> ${sector.localizacao || '-'}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Descrição:</strong><br>${sector.descricao || '-'}
+        </div>
+        ${sector.coordenadas.lat && sector.coordenadas.lng ? `
+            <div style="margin-bottom: 1rem;">
+                <strong>Coordenadas:</strong><br>
+                Lat: ${sector.coordenadas.lat}<br>
+                Lng: ${sector.coordenadas.lng}
+            </div>
+        ` : ''}
+        <div style="margin-bottom: 1rem;">
+            <strong>Última Contagem:</strong> ${formatarData(sector.estatisticas.ultimaContagem)}
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <strong>Contagens no Ano:</strong> ${sector.estatisticas.contagensAno}
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Mostrar inventário do setor
+function showSectorInventory(id) {
+    const sector = setoresData.find(s => s.id === id);
+    if (!sector) return;
+    
+    const modal = document.getElementById('inventoryModal');
+    const statsContainer = document.getElementById('inventoryStats');
+    const tableBody = document.getElementById('inventoryTableBody');
+    
+    // Estatísticas
+    statsContainer.innerHTML = `
+        <div class="inventory-stat">
+            <div class="inventory-stat-value">${sector.estatisticas.itensAtuais}</div>
+            <div class="inventory-stat-label">Total de Itens</div>
+        </div>
+        <div class="inventory-stat">
+            <div class="inventory-stat-value">${sector.itens.length}</div>
+            <div class="inventory-stat-label">Itens Cadastrados</div>
+        </div>
+        <div class="inventory-stat">
+            <div class="inventory-stat-value">${sector.estatisticas.ocupacao}%</div>
+            <div class="inventory-stat-label">Ocupação</div>
+        </div>
+        <div class="inventory-stat">
+            <div class="inventory-stat-value">${formatarData(sector.estatisticas.ultimaContagem)}</div>
+            <div class="inventory-stat-label">Última Contagem</div>
+        </div>
+    `;
+    
+    // Tabela de itens
+    tableBody.innerHTML = sector.itens.map(item => `
+        <tr>
+            <td>${item.codigo}</td>
+            <td><strong>${item.nome}</strong></td>
+            <td>${item.quantidade}</td>
+            <td>${item.localizacao}</td>
+            <td>${formatarData(item.ultimaContagem)}</td>
+        </tr>
+    `).join('');
+    
+    if (sector.itens.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-box-open" style="font-size: 2rem; opacity: 0.5;"></i>
+                    <p>Nenhum item cadastrado neste setor</p>
+                </td>
+            </tr>
+        `;
+    }
+    
+    modal.classList.add('active');
+}
+
+// Excluir setor
+function deleteSector(id) {
+    if (confirm('Tem certeza que deseja excluir este setor? Todos os itens serão movidos para um setor padrão.')) {
+        setoresData = setoresData.filter(s => s.id !== id);
+        showNotification('Setor excluído com sucesso!', 'success');
+        renderSectorsGrid();
+    }
+}
+
+// Inicializar eventos de setores
+function initSectorsEvents() {
+    const openModalBtn = document.getElementById('openSectorModal');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', () => openSectorModal());
+    }
+    
+    const closeModalBtns = document.querySelectorAll('.modal-close, #closeModal');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    
+    const sectorForm = document.getElementById('sectorForm');
+    if (sectorForm) {
+        sectorForm.addEventListener('submit', saveSector);
+    }
+    
+    const searchSector = document.getElementById('searchSector');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterType = document.getElementById('filterType');
+    
+    if (searchSector) searchSector.addEventListener('input', () => {
+        currentSectorPage = 1;
+        renderSectorsGrid();
+    });
+    if (filterStatus) filterStatus.addEventListener('change', () => {
+        currentSectorPage = 1;
+        renderSectorsGrid();
+    });
+    if (filterType) filterType.addEventListener('change', () => {
+        currentSectorPage = 1;
+        renderSectorsGrid();
+    });
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    initOperatorsEvents();
+    renderOperatorsGrid();
+    initAuditEvents();
+    renderAuditTable();
+    initSectorsEvents();
+    renderSectorsGrid();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});

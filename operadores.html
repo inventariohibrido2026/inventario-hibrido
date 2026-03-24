@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuários | Inventário Híbrido</title>
+    <title>Operadores | Inventário Híbrido</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -23,7 +23,8 @@
                 <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="relatorios.html">Relatórios</a></li>
                 <li><a href="configuracoes.html">Configurações</a></li>
-                <li><a href="usuarios.html" class="active">Usuários</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="operadores.html" class="active">Operadores</a></li>
             </ul>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -32,246 +33,196 @@
     </nav>
 
     <!-- Conteúdo Principal -->
-    <main class="users-page">
+    <main class="operators-page">
         <div class="container">
             <!-- Header -->
             <div class="page-header">
                 <div>
-                    <h1>Gerenciamento de Usuários</h1>
-                    <p>Controle de acesso, permissões e perfis de usuários</p>
+                    <h1>Operadores de Campo</h1>
+                    <p>Gerencie os colaboradores responsáveis pela coleta de inventário</p>
                 </div>
-                <button class="btn btn-primary" id="openUserModal">
-                    <i class="fas fa-user-plus"></i> Novo Usuário
+                <button class="btn btn-primary" id="openOperatorModal">
+                    <i class="fas fa-user-plus"></i> Novo Operador
                 </button>
             </div>
 
+            <!-- Cards de Estatísticas -->
+            <div class="operators-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Operadores</h3>
+                        <div class="stat-value" id="totalOperators">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Ativos</h3>
+                        <div class="stat-value" id="activeOperators">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Produtividade Média</h3>
+                        <div class="stat-value" id="avgProductivity">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Em Campo</h3>
+                        <div class="stat-value" id="fieldOperators">0</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Filtros e Busca -->
-            <div class="users-filters">
+            <div class="operators-filters">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchUser" placeholder="Buscar por nome, e-mail ou cargo...">
-                </div>
-                <div class="filter-group">
-                    <select id="filterRole" class="form-select">
-                        <option value="all">Todos os perfis</option>
-                        <option value="admin">Administrador</option>
-                        <option value="gerente">Gerente</option>
-                        <option value="operador">Operador</option>
-                        <option value="auditor">Auditor</option>
-                    </select>
+                    <input type="text" id="searchOperator" placeholder="Buscar por nome, matrícula ou equipe...">
                 </div>
                 <div class="filter-group">
                     <select id="filterStatus" class="form-select">
                         <option value="all">Todos os status</option>
                         <option value="active">Ativos</option>
                         <option value="inactive">Inativos</option>
+                        <option value="field">Em campo</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterTeam" class="form-select">
+                        <option value="all">Todas as equipes</option>
+                        <option value="Equipe Alpha">Equipe Alpha</option>
+                        <option value="Equipe Beta">Equipe Beta</option>
+                        <option value="Equipe Gamma">Equipe Gamma</option>
+                        <option value="Equipe Delta">Equipe Delta</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterFunction" class="form-select">
+                        <option value="all">Todas as funções</option>
+                        <option value="Coletor">Coletor</option>
+                        <option value="Conferente">Conferente</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Auxiliar">Auxiliar</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Cards de Estatísticas -->
-            <div class="users-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Total de Usuários</h3>
-                        <div class="stat-value" id="totalUsers">0</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Administradores</h3>
-                        <div class="stat-value" id="totalAdmins">0</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Usuários Ativos</h3>
-                        <div class="stat-value" id="totalActive">0</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Último Acesso</h3>
-                        <div class="stat-value" id="lastAccess">Hoje</div>
-                    </div>
-                </div>
+            <!-- Lista de Operadores -->
+            <div class="operators-grid" id="operatorsGrid">
+                <!-- Cards serão inseridos via JavaScript -->
             </div>
 
-            <!-- Tabela de Usuários -->
-            <div class="users-table-container">
-                <div class="table-header">
-                    <h3><i class="fas fa-list"></i> Lista de Usuários</h3>
-                    <div class="table-actions">
-                        <button class="btn-icon" id="exportUsersBtn" title="Exportar usuários">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button class="btn-icon" id="refreshUsersBtn" title="Atualizar">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="selectAll"></th>
-                                <th>Usuário</th>
-                                <th>E-mail</th>
-                                <th>Cargo</th>
-                                <th>Perfil</th>
-                                <th>Status</th>
-                                <th>Último Acesso</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <!-- Dados serão inseridos via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-footer">
-                    <div class="pagination" id="pagination">
-                        <!-- Paginação será inserida via JavaScript -->
-                    </div>
+            <!-- Paginação -->
+            <div class="pagination-container">
+                <div class="pagination" id="pagination">
+                    <!-- Paginação será inserida via JavaScript -->
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal de Cadastro/Edição de Usuário -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
+    <!-- Modal de Cadastro/Edição de Operador -->
+    <div id="operatorModal" class="modal">
+        <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3 id="modalTitle">Novo Usuário</h3>
+                <h3 id="modalTitle">Novo Operador</h3>
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="userForm">
+                <form id="operatorForm">
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nome Completo *</label>
-                            <input type="text" id="userNome" class="form-input" required>
+                            <input type="text" id="opNome" class="form-input" required>
                         </div>
                         <div class="form-group">
-                            <label>E-mail *</label>
-                            <input type="email" id="userEmail" class="form-input" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Senha *</label>
-                            <input type="password" id="userSenha" class="form-input">
-                            <small class="form-hint">Mínimo 6 caracteres</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Confirmar Senha</label>
-                            <input type="password" id="userConfirmSenha" class="form-input">
+                            <label>Matrícula *</label>
+                            <input type="text" id="opMatricula" class="form-input" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Cargo</label>
-                            <input type="text" id="userCargo" class="form-input" placeholder="Ex: Analista de Inventário">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="tel" id="userTelefone" class="form-input" placeholder="(00) 00000-0000">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Perfil de Acesso *</label>
-                            <select id="userPerfil" class="form-select" required>
+                            <label>Função *</label>
+                            <select id="opFuncao" class="form-select" required>
                                 <option value="">Selecione...</option>
-                                <option value="admin">Administrador</option>
-                                <option value="gerente">Gerente</option>
-                                <option value="operador">Operador</option>
-                                <option value="auditor">Auditor</option>
+                                <option value="Coletor">Coletor</option>
+                                <option value="Conferente">Conferente</option>
+                                <option value="Supervisor">Supervisor</option>
+                                <option value="Auxiliar">Auxiliar</option>
                             </select>
                         </div>
                         <div class="form-group">
+                            <label>Equipe</label>
+                            <select id="opEquipe" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="Equipe Alpha">Equipe Alpha</option>
+                                <option value="Equipe Beta">Equipe Beta</option>
+                                <option value="Equipe Gamma">Equipe Gamma</option>
+                                <option value="Equipe Delta">Equipe Delta</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="opEmail" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="tel" id="opTelefone" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Data de Admissão</label>
+                            <input type="date" id="opAdmissao" class="form-input">
+                        </div>
+                        <div class="form-group">
                             <label>Status</label>
-                            <select id="userStatus" class="form-select">
+                            <select id="opStatus" class="form-select">
                                 <option value="active">Ativo</option>
                                 <option value="inactive">Inativo</option>
                             </select>
                         </div>
                     </div>
                     
-                    <div class="permissions-section">
-                        <h4>Permissões Específicas</h4>
-                        <div class="permissions-grid">
-                            <div class="permission-group">
-                                <label class="permission-label">
-                                    <input type="checkbox" class="permission-check" data-perm="dashboard">
-                                    <span>Dashboard</span>
-                                </label>
-                                <div class="sub-permissions">
-                                    <label><input type="checkbox" data-sub="dashboard_view"> Visualizar</label>
-                                    <label><input type="checkbox" data-sub="dashboard_export"> Exportar</label>
-                                </div>
-                            </div>
-                            <div class="permission-group">
-                                <label class="permission-label">
-                                    <input type="checkbox" class="permission-check" data-perm="inventario">
-                                    <span>Inventário</span>
-                                </label>
-                                <div class="sub-permissions">
-                                    <label><input type="checkbox" data-sub="inventario_view"> Visualizar</label>
-                                    <label><input type="checkbox" data-sub="inventario_create"> Criar</label>
-                                    <label><input type="checkbox" data-sub="inventario_edit"> Editar</label>
-                                    <label><input type="checkbox" data-sub="inventario_delete"> Excluir</label>
-                                </div>
-                            </div>
-                            <div class="permission-group">
-                                <label class="permission-label">
-                                    <input type="checkbox" class="permission-check" data-perm="relatorios">
-                                    <span>Relatórios</span>
-                                </label>
-                                <div class="sub-permissions">
-                                    <label><input type="checkbox" data-sub="relatorios_view"> Visualizar</label>
-                                    <label><input type="checkbox" data-sub="relatorios_export"> Exportar</label>
-                                </div>
-                            </div>
-                            <div class="permission-group">
-                                <label class="permission-label">
-                                    <input type="checkbox" class="permission-check" data-perm="usuarios">
-                                    <span>Usuários</span>
-                                </label>
-                                <div class="sub-permissions">
-                                    <label><input type="checkbox" data-sub="usuarios_view"> Visualizar</label>
-                                    <label><input type="checkbox" data-sub="usuarios_create"> Criar</label>
-                                    <label><input type="checkbox" data-sub="usuarios_edit"> Editar</label>
-                                    <label><input type="checkbox" data-sub="usuarios_delete"> Excluir</label>
-                                </div>
-                            </div>
-                            <div class="permission-group">
-                                <label class="permission-label">
-                                    <input type="checkbox" class="permission-check" data-perm="configuracoes">
-                                    <span>Configurações</span>
-                                </label>
-                                <div class="sub-permissions">
-                                    <label><input type="checkbox" data-sub="configuracoes_view"> Visualizar</label>
-                                    <label><input type="checkbox" data-sub="configuracoes_edit"> Editar</label>
-                                </div>
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Meta Diária (itens)</label>
+                            <input type="number" id="opMeta" class="form-input" value="200">
+                        </div>
+                        <div class="form-group">
+                            <label>Equipamento</label>
+                            <select id="opEquipamento" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="Coletor TC21">Coletor TC21</option>
+                                <option value="Coletor MC93">Coletor MC93</option>
+                                <option value="Smartphone X5">Smartphone X5</option>
+                                <option value="Tablet Pro">Tablet Pro</option>
+                            </select>
                         </div>
                     </div>
                     
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea id="opObservacoes" class="form-textarea" rows="3" placeholder="Informações adicionais sobre o operador..."></textarea>
+                    </div>
+                    
                     <div class="form-actions">
-                        <button type="submit" class="btn-primary">Salvar Usuário</button>
+                        <button type="submit" class="btn-primary">Salvar Operador</button>
                         <button type="button" class="btn-secondary" id="closeModal">Cancelar</button>
                     </div>
                 </form>
@@ -279,20 +230,55 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content modal-small">
+    <!-- Modal de Desempenho -->
+    <div id="performanceModal" class="modal">
+        <div class="modal-content modal-medium">
             <div class="modal-header">
-                <h3>Confirmar Exclusão</h3>
+                <h3>Desempenho do Operador</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="performanceContent">
+                <!-- Conteúdo será inserido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Atribuir Tarefa -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h3>Atribuir Tarefa</h3>
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Tem certeza que deseja excluir o usuário <strong id="deleteUserName"></strong>?</p>
-                <p class="text-warning">Esta ação não pode ser desfeita.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-danger" id="confirmDelete">Excluir</button>
-                <button class="btn-secondary" id="cancelDelete">Cancelar</button>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label>Operador</label>
+                        <input type="text" id="taskOperatorName" class="form-input" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Setor</label>
+                        <select id="taskSetor" class="form-select" required>
+                            <option value="">Selecione um setor</option>
+                            <option value="Setor A - Almoxarifado">Setor A - Almoxarifado</option>
+                            <option value="Setor B - Produção">Setor B - Produção</option>
+                            <option value="Setor C - Expedição">Setor C - Expedição</option>
+                            <option value="Setor D - Matéria Prima">Setor D - Matéria Prima</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade Estimada</label>
+                        <input type="number" id="taskQuantity" class="form-input" value="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo</label>
+                        <input type="datetime-local" id="taskDeadline" class="form-input">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Atribuir Tarefa</button>
+                        <button type="button" class="btn-secondary" id="closeTaskModal">Cancelar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

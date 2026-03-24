@@ -1599,5 +1599,360 @@ input:checked + .toggle-slider:before {
     .permissions-grid {
         grid-template-columns: 1fr;
     }
-}            
+} 
+/* ====================
+   PÁGINA DE OPERADORES
+==================== */
+.operators-page {
+    padding: 40px 0;
+}
+
+/* Cards de Operadores */
+.operators-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Filtros */
+.operators-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.operators-filters .search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.operators-filters .filter-group {
+    width: auto;
+    min-width: 150px;
+}
+
+/* Grid de Operadores */
+.operators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card de Operador */
+.operator-card {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.operator-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.operator-header {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.operator-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.operator-body {
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.operator-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    flex-shrink: 0;
+}
+
+.operator-info {
+    flex: 1;
+}
+
+.operator-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.operator-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.operator-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.operator-meta i {
+    width: 16px;
+}
+
+.operator-stats {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat-item {
+    flex: 1;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-number {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.stat-number.success {
+    color: var(--success);
+}
+
+.stat-number.warning {
+    color: var(--warning);
+}
+
+.operator-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.operator-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.status-inactive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.status-field {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.operator-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.operator-actions .action-btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Progress Bar */
+.progress-bar {
+    background: var(--bg-primary);
+    border-radius: 0.5rem;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-fill {
+    background: var(--accent-primary);
+    height: 100%;
+    border-radius: 0.5rem;
+    transition: width 0.3s;
+}
+
+/* Performance Modal */
+.performance-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.performance-card {
+    background: var(--bg-primary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.performance-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.performance-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.performance-chart {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: 0.5rem;
+}
+
+.chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chart-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.chart-bar-label {
+    width: 80px;
+}
+
+.chart-bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--border-color);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.chart-bar-fill {
+    height: 100%;
+    background: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* Modal Large */
+.modal-large {
+    max-width: 700px;
+}
+
+.modal-medium {
+    max-width: 550px;
+}
+
+/* Form Textarea */
+.form-textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-family: inherit;
+    resize: vertical;
+    width: 100%;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+/* Paginação */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .operators-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .operator-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .operator-meta {
+        justify-content: center;
+    }
+    
+    .operator-footer {
+        flex-direction: column;
+    }
+    
+    .operator-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .operators-filters {
+        flex-direction: column;
+    }
+    
+    .operators-filters .filter-group {
+        width: 100%;
+    }
+    
+    .performance-stats {
+        grid-template-columns: 1fr;
+    }
+}
 

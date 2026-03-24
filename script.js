@@ -1488,4 +1488,652 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+    // ====================
+// GERENCIAMENTO DE OPERADORES
+// ====================
+
+// Dados mockados de operadores
+let operadoresData = [
+    {
+        id: 1,
+        nome: "João Paulo Santos",
+        matricula: "OP001",
+        funcao: "Coletor",
+        equipe: "Equipe Alpha",
+        email: "joao.santos@inventario.com",
+        telefone: "(11) 98765-4321",
+        admissao: "2024-01-15",
+        status: "active",
+        situacao: "field",
+        meta: 200,
+        equipamento: "Coletor TC21",
+        observacoes: "Especialista em códigos de barras",
+        produtividade: {
+            itensColetados: 185,
+            ultimos7Dias: [178, 192, 185, 201, 194, 188, 185],
+            precisao: 98.5,
+            tempoMedio: 12.3
+        },
+        tarefaAtual: {
+            setor: "Setor A - Almoxarifado",
+            itens: 150,
+            progresso: 65,
+            inicio: "2026-03-24T08:00",
+            prazo: "2026-03-24T17:00"
+        }
+    },
+    {
+        id: 2,
+        nome: "Maria Oliveira",
+        matricula: "OP002",
+        funcao: "Conferente",
+        equipe: "Equipe Alpha",
+        email: "maria.oliveira@inventario.com",
+        telefone: "(11) 98765-4322",
+        admissao: "2024-02-20",
+        status: "active",
+        situacao: "field",
+        meta: 250,
+        equipamento: "Coletor MC93",
+        observacoes: "",
+        produtividade: {
+            itensColetados: 242,
+            ultimos7Dias: [235, 240, 238, 245, 250, 248, 242],
+            precisao: 99.2,
+            tempoMedio: 10.5
+        },
+        tarefaAtual: {
+            setor: "Setor B - Produção",
+            itens: 200,
+            progresso: 85,
+            inicio: "2026-03-24T08:00",
+            prazo: "2026-03-24T17:00"
+        }
+    },
+    {
+        id: 3,
+        nome: "Carlos Mendes",
+        matricula: "OP003",
+        funcao: "Supervisor",
+        equipe: "Equipe Beta",
+        email: "carlos.mendes@inventario.com",
+        telefone: "(11) 98765-4323",
+        admissao: "2023-10-10",
+        status: "active",
+        situacao: "active",
+        meta: 0,
+        equipamento: "Tablet Pro",
+        observacoes: "Supervisor de equipe",
+        produtividade: {
+            itensColetados: 0,
+            ultimos7Dias: [0, 0, 0, 0, 0, 0, 0],
+            precisao: 0,
+            tempoMedio: 0
+        },
+        tarefaAtual: null
+    },
+    {
+        id: 4,
+        nome: "Ana Paula Souza",
+        matricula: "OP004",
+        funcao: "Coletor",
+        equipe: "Equipe Beta",
+        email: "ana.souza@inventario.com",
+        telefone: "(11) 98765-4324",
+        admissao: "2024-03-01",
+        status: "active",
+        situacao: "field",
+        meta: 180,
+        equipamento: "Smartphone X5",
+        observacoes: "Boa performance em coletas rápidas",
+        produtividade: {
+            itensColetados: 175,
+            ultimos7Dias: [168, 172, 170, 178, 180, 175, 175],
+            precisao: 97.8,
+            tempoMedio: 13.2
+        },
+        tarefaAtual: {
+            setor: "Setor C - Expedição",
+            itens: 120,
+            progresso: 45,
+            inicio: "2026-03-24T08:00",
+            prazo: "2026-03-24T17:00"
+        }
+    },
+    {
+        id: 5,
+        nome: "Roberto Silva",
+        matricula: "OP005",
+        funcao: "Auxiliar",
+        equipe: "Equipe Gamma",
+        email: "roberto.silva@inventario.com",
+        telefone: "(11) 98765-4325",
+        admissao: "2024-02-10",
+        status: "active",
+        situacao: "active",
+        meta: 100,
+        equipamento: "Coletor TC21",
+        observacoes: "Auxiliar de inventário",
+        produtividade: {
+            itensColetados: 95,
+            ultimos7Dias: [88, 92, 90, 95, 98, 96, 95],
+            precisao: 96.5,
+            tempoMedio: 15.8
+        },
+        tarefaAtual: null
+    },
+    {
+        id: 6,
+        nome: "Patrícia Lima",
+        matricula: "OP006",
+        funcao: "Conferente",
+        equipe: "Equipe Gamma",
+        email: "patricia.lima@inventario.com",
+        telefone: "(11) 98765-4326",
+        admissao: "2023-12-05",
+        status: "inactive",
+        situacao: "inactive",
+        meta: 220,
+        equipamento: "Coletor MC93",
+        observacoes: "Licença médica",
+        produtividade: {
+            itensColetados: 0,
+            ultimos7Dias: [0, 0, 0, 0, 0, 0, 0],
+            precisao: 0,
+            tempoMedio: 0
+        },
+        tarefaAtual: null
+    }
+];
+
+let currentOperatorId = null;
+let currentOperatorPage = 1;
+const operatorsPerPage = 6;
+
+// Renderizar grid de operadores
+function renderOperatorsGrid() {
+    const searchTerm = document.getElementById('searchOperator')?.value.toLowerCase() || '';
+    const statusFilter = document.getElementById('filterStatus')?.value || 'all';
+    const teamFilter = document.getElementById('filterTeam')?.value || 'all';
+    const functionFilter = document.getElementById('filterFunction')?.value || 'all';
+    
+    let filteredOperators = operadoresData.filter(op => {
+        const matchesSearch = op.nome.toLowerCase().includes(searchTerm) ||
+                             op.matricula.toLowerCase().includes(searchTerm) ||
+                             op.equipe.toLowerCase().includes(searchTerm);
+        const matchesStatus = statusFilter === 'all' || 
+                              (statusFilter === 'field' ? op.situacao === 'field' : op.status === statusFilter);
+        const matchesTeam = teamFilter === 'all' || op.equipe === teamFilter;
+        const matchesFunction = functionFilter === 'all' || op.funcao === functionFilter;
+        
+        return matchesSearch && matchesStatus && matchesTeam && matchesFunction;
+    });
+    
+    // Paginação
+    const totalPages = Math.ceil(filteredOperators.length / operatorsPerPage);
+    const start = (currentOperatorPage - 1) * operatorsPerPage;
+    const end = start + operatorsPerPage;
+    const paginatedOperators = filteredOperators.slice(start, end);
+    
+    // Renderizar grid
+    const grid = document.getElementById('operatorsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = paginatedOperators.map(op => `
+        <div class="operator-card" data-id="${op.id}">
+            <div class="operator-header">
+                <span><i class="fas fa-id-card"></i> ${op.matricula}</span>
+                <span class="operator-badge">${op.funcao}</span>
+            </div>
+            <div class="operator-body">
+                <div class="operator-avatar">${getInitials(op.nome)}</div>
+                <div class="operator-info">
+                    <div class="operator-name">${op.nome}</div>
+                    <div class="operator-meta">
+                        <span><i class="fas fa-users"></i> ${op.equipe}</span>
+                        <span><i class="fas fa-calendar-alt"></i> Admissão: ${formatDate(op.admissao)}</span>
+                    </div>
+                    <div class="operator-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Meta Diária</div>
+                            <div class="stat-number">${op.meta || '-'}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Coletados Hoje</div>
+                            <div class="stat-number ${op.produtividade.itensColetados >= op.meta ? 'success' : 'warning'}">
+                                ${op.produtividade.itensColetados}
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Precisão</div>
+                            <div class="stat-number success">${op.produtividade.precisao}%</div>
+                        </div>
+                    </div>
+                    ${op.tarefaAtual ? `
+                        <div class="current-task">
+                            <div class="stat-label">Tarefa Atual: ${op.tarefaAtual.setor}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${op.tarefaAtual.progresso}%"></div>
+                            </div>
+                            <div class="stat-label" style="font-size: 0.7rem; margin-top: 0.25rem;">
+                                ${op.tarefaAtual.progresso}% concluído
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="current-task">
+                            <div class="stat-label" style="color: var(--warning);">
+                                <i class="fas fa-clock"></i> Aguardando tarefa
+                            </div>
+                        </div>
+                    `}
+                </div>
+            </div>
+            <div class="operator-footer">
+                <div class="operator-status status-${op.situacao === 'field' ? 'field' : op.status}">
+                    <i class="fas ${op.situacao === 'field' ? 'fa-running' : op.status === 'active' ? 'fa-check-circle' : 'fa-circle'}"></i>
+                    ${op.situacao === 'field' ? 'Em campo' : op.status === 'active' ? 'Ativo' : 'Inativo'}
+                </div>
+                <div class="operator-actions">
+                    <button class="action-btn edit-operator" data-id="${op.id}" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn performance-operator" data-id="${op.id}" title="Desempenho">
+                        <i class="fas fa-chart-line"></i>
+                    </button>
+                    ${op.status === 'active' && op.situacao !== 'field' ? `
+                        <button class="action-btn assign-task" data-id="${op.id}" title="Atribuir Tarefa">
+                            <i class="fas fa-tasks"></i>
+                        </button>
+                    ` : ''}
+                    <button class="action-btn delete-operator" data-id="${op.id}" title="Excluir">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Atualizar estatísticas
+    updateOperatorsStats();
+    
+    // Atualizar paginação
+    renderOperatorPagination(totalPages);
+    
+    // Adicionar eventos
+    document.querySelectorAll('.edit-operator').forEach(btn => {
+        btn.addEventListener('click', () => editOperator(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.performance-operator').forEach(btn => {
+        btn.addEventListener('click', () => showPerformance(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.assign-task').forEach(btn => {
+        btn.addEventListener('click', () => openTaskModal(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.delete-operator').forEach(btn => {
+        btn.addEventListener('click', () => deleteOperator(parseInt(btn.dataset.id)));
+    });
+}
+
+// Atualizar estatísticas
+function updateOperatorsStats() {
+    const total = operadoresData.length;
+    const active = operadoresData.filter(op => op.status === 'active').length;
+    const field = operadoresData.filter(op => op.situacao === 'field').length;
+    
+    const produtividadeMedia = operadoresData
+        .filter(op => op.produtividade.itensColetados > 0)
+        .reduce((sum, op) => sum + op.produtividade.itensColetados, 0) / 
+        operadoresData.filter(op => op.produtividade.itensColetados > 0).length || 0;
+    
+    const totalOperatorsEl = document.getElementById('totalOperators');
+    const activeOperatorsEl = document.getElementById('activeOperators');
+    const avgProductivityEl = document.getElementById('avgProductivity');
+    const fieldOperatorsEl = document.getElementById('fieldOperators');
+    
+    if (totalOperatorsEl) totalOperatorsEl.textContent = total;
+    if (activeOperatorsEl) activeOperatorsEl.textContent = active;
+    if (avgProductivityEl) avgProductivityEl.textContent = Math.round(produtividadeMedia);
+    if (fieldOperatorsEl) fieldOperatorsEl.textContent = field;
+}
+
+// Renderizar paginação
+function renderOperatorPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentOperatorPage === 1 ? 'disabled' : ''} data-page="${currentOperatorPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="${i === currentOperatorPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentOperatorPage === totalPages ? 'disabled' : ''} data-page="${currentOperatorPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentOperatorPage && page >= 1 && page <= totalPages) {
+                currentOperatorPage = page;
+                renderOperatorsGrid();
+            }
+        });
+    });
+}
+
+// Abrir modal de operador
+function openOperatorModal(operatorId = null) {
+    const modal = document.getElementById('operatorModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    if (!modal) return;
+    
+    currentOperatorId = operatorId;
+    
+    if (operatorId) {
+        modalTitle.textContent = 'Editar Operador';
+        const operator = operadoresData.find(op => op.id === operatorId);
+        if (operator) {
+            document.getElementById('opNome').value = operator.nome;
+            document.getElementById('opMatricula').value = operator.matricula;
+            document.getElementById('opFuncao').value = operator.funcao;
+            document.getElementById('opEquipe').value = operator.equipe;
+            document.getElementById('opEmail').value = operator.email;
+            document.getElementById('opTelefone').value = operator.telefone;
+            document.getElementById('opAdmissao').value = operator.admissao;
+            document.getElementById('opStatus').value = operator.status;
+            document.getElementById('opMeta').value = operator.meta;
+            document.getElementById('opEquipamento').value = operator.equipamento;
+            document.getElementById('opObservacoes').value = operator.observacoes;
+        }
+    } else {
+        modalTitle.textContent = 'Novo Operador';
+        document.getElementById('operatorForm').reset();
+        document.getElementById('opStatus').value = 'active';
+        document.getElementById('opMeta').value = '200';
+    }
+    
+    modal.classList.add('active');
+}
+
+// Salvar operador
+function saveOperator(event) {
+    event.preventDefault();
+    
+    const nome = document.getElementById('opNome').value;
+    const matricula = document.getElementById('opMatricula').value;
+    const funcao = document.getElementById('opFuncao').value;
+    const equipe = document.getElementById('opEquipe').value;
+    const email = document.getElementById('opEmail').value;
+    const telefone = document.getElementById('opTelefone').value;
+    const admissao = document.getElementById('opAdmissao').value;
+    const status = document.getElementById('opStatus').value;
+    const meta = parseInt(document.getElementById('opMeta').value);
+    const equipamento = document.getElementById('opEquipamento').value;
+    const observacoes = document.getElementById('opObservacoes').value;
+    
+    if (!nome || !matricula || !funcao) {
+        showNotification('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+    
+    if (currentOperatorId) {
+        // Editar operador existente
+        const operatorIndex = operadoresData.findIndex(op => op.id === currentOperatorId);
+        if (operatorIndex !== -1) {
+            operadoresData[operatorIndex] = {
+                ...operadoresData[operatorIndex],
+                nome,
+                matricula,
+                funcao,
+                equipe,
+                email,
+                telefone,
+                admissao,
+                status,
+                meta,
+                equipamento,
+                observacoes
+            };
+            showNotification('Operador atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Criar novo operador
+        const newId = Math.max(...operadoresData.map(op => op.id), 0) + 1;
+        const newOperator = {
+            id: newId,
+            nome,
+            matricula,
+            funcao,
+            equipe,
+            email,
+            telefone,
+            admissao,
+            status,
+            situacao: status === 'active' ? 'active' : 'inactive',
+            meta,
+            equipamento,
+            observacoes,
+            produtividade: {
+                itensColetados: 0,
+                ultimos7Dias: [0, 0, 0, 0, 0, 0, 0],
+                precisao: 0,
+                tempoMedio: 0
+            },
+            tarefaAtual: null
+        };
+        operadoresData.push(newOperator);
+        showNotification('Operador criado com sucesso!', 'success');
+    }
+    
+    closeModal();
+    renderOperatorsGrid();
+}
+
+// Editar operador
+function editOperator(id) {
+    openOperatorModal(id);
+}
+
+// Mostrar desempenho
+function showPerformance(id) {
+    const operator = operadoresData.find(op => op.id === id);
+    if (!operator) return;
+    
+    const modal = document.getElementById('performanceModal');
+    const content = document.getElementById('performanceContent');
+    
+    const diasSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    const produtividade = operator.produtividade.ultimos7Dias;
+    
+    content.innerHTML = `
+        <div class="performance-stats">
+            <div class="performance-card">
+                <div class="performance-label">Itens Coletados (Hoje)</div>
+                <div class="performance-value ${operator.produtividade.itensColetados >= operator.meta ? 'success' : 'warning'}">
+                    ${operator.produtividade.itensColetados}
+                </div>
+                <div class="performance-label">Meta: ${operator.meta}</div>
+            </div>
+            <div class="performance-card">
+                <div class="performance-label">Taxa de Precisão</div>
+                <div class="performance-value success">${operator.produtividade.precisao}%</div>
+                <div class="performance-label">Tempo médio: ${operator.produtividade.tempoMedio}s/item</div>
+            </div>
+        </div>
+        <div class="performance-chart">
+            <h4>Produtividade Últimos 7 Dias</h4>
+            <div class="chart-bars">
+                ${produtividade.map((valor, index) => {
+                    const percentual = (valor / operator.meta) * 100;
+                    return `
+                        <div class="chart-bar-item">
+                            <span class="chart-bar-label">${diasSemana[index]}</span>
+                            <div class="chart-bar-track">
+                                <div class="chart-bar-fill" style="width: ${percentual}%; background: ${percentual >= 100 ? '#10b981' : '#f59e0b'}">
+                                    ${valor}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Abrir modal de tarefa
+let taskOperatorId = null;
+function openTaskModal(operatorId) {
+    const operator = operadoresData.find(op => op.id === operatorId);
+    if (!operator) return;
+    
+    taskOperatorId = operatorId;
+    const modal = document.getElementById('taskModal');
+    const taskOperatorName = document.getElementById('taskOperatorName');
+    
+    taskOperatorName.value = operator.nome;
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskDeadline').value = getDefaultDeadline();
+    
+    modal.classList.add('active');
+}
+
+// Salvar tarefa
+function saveTask(event) {
+    event.preventDefault();
+    
+    const setor = document.getElementById('taskSetor').value;
+    const quantity = parseInt(document.getElementById('taskQuantity').value);
+    const deadline = document.getElementById('taskDeadline').value;
+    
+    if (!setor) {
+        showNotification('Selecione um setor', 'error');
+        return;
+    }
+    
+    const operatorIndex = operadoresData.findIndex(op => op.id === taskOperatorId);
+    if (operatorIndex !== -1) {
+        operadoresData[operatorIndex].situacao = 'field';
+        operadoresData[operatorIndex].tarefaAtual = {
+            setor,
+            itens: quantity,
+            progresso: 0,
+            inicio: new Date().toISOString(),
+            prazo: deadline
+        };
+        showNotification('Tarefa atribuída com sucesso!', 'success');
+        renderOperatorsGrid();
+    }
+    
+    closeModal();
+}
+
+// Excluir operador
+function deleteOperator(id) {
+    if (confirm('Tem certeza que deseja excluir este operador?')) {
+        operadoresData = operadoresData.filter(op => op.id !== id);
+        showNotification('Operador excluído com sucesso!', 'success');
+        renderOperatorsGrid();
+    }
+}
+
+// Formatar data
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+}
+
+// Data padrão para prazo (hoje 17:00)
+function getDefaultDeadline() {
+    const date = new Date();
+    date.setHours(17, 0, 0, 0);
+    return date.toISOString().slice(0, 16);
+}
+
+// Inicializar eventos de operadores
+function initOperatorsEvents() {
+    const openModalBtn = document.getElementById('openOperatorModal');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', () => openOperatorModal());
+    }
+    
+    const closeModalBtns = document.querySelectorAll('.modal-close, #closeModal, #closeTaskModal');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    
+    const operatorForm = document.getElementById('operatorForm');
+    if (operatorForm) {
+        operatorForm.addEventListener('submit', saveOperator);
+    }
+    
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+        taskForm.addEventListener('submit', saveTask);
+    }
+    
+    const searchOperator = document.getElementById('searchOperator');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterTeam = document.getElementById('filterTeam');
+    const filterFunction = document.getElementById('filterFunction');
+    
+    if (searchOperator) searchOperator.addEventListener('input', () => {
+        currentOperatorPage = 1;
+        renderOperatorsGrid();
+    });
+    if (filterStatus) filterStatus.addEventListener('change', () => {
+        currentOperatorPage = 1;
+        renderOperatorsGrid();
+    });
+    if (filterTeam) filterTeam.addEventListener('change', () => {
+        currentOperatorPage = 1;
+        renderOperatorsGrid();
+    });
+    if (filterFunction) filterFunction.addEventListener('change', () => {
+        currentOperatorPage = 1;
+        renderOperatorsGrid();
+    });
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    initOperatorsEvents();
+    renderOperatorsGrid();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});
 });

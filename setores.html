@@ -1,52 +1,269 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Setores - Inventário Híbrido</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setores | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="menu-futurista">
-    <div class="menu-logo">IH</div>
-    <ul class="menu-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="setores.html">Setores</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-    </ul>
-    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
-  </nav>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="operadores.html">Operadores</a></li>
+                <li><a href="auditoria.html">Auditoria</a></li>
+                <li><a href="setores.html" class="active">Setores</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
 
-  <header class="hero small-hero">
-    <div class="hero-content">
-      <h1 class="glow-title">Setores</h1>
-      <p class="glow-subtitle">Gerenciamento de áreas e locais de estoque</p>
+    <!-- Conteúdo Principal -->
+    <main class="sectors-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Setores e Localizações</h1>
+                    <p>Gerencie os setores, áreas e localizações do seu inventário</p>
+                </div>
+                <button class="btn btn-primary" id="openSectorModal">
+                    <i class="fas fa-plus-circle"></i> Novo Setor
+                </button>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="sectors-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Setores</h3>
+                        <div class="stat-value" id="totalSectors">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Itens em Estoque</h3>
+                        <div class="stat-value" id="totalItems">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Ocupação Média</h3>
+                        <div class="stat-value" id="avgOccupancy">0%</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Última Contagem</h3>
+                        <div class="stat-value" id="lastCount">Hoje</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros e Busca -->
+            <div class="sectors-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchSector" placeholder="Buscar por setor, código ou responsável...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterStatus" class="form-select">
+                        <option value="all">Todos os status</option>
+                        <option value="active">Ativos</option>
+                        <option value="inactive">Inativos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterType" class="form-select">
+                        <option value="all">Todos os tipos</option>
+                        <option value="almoxarifado">Almoxarifado</option>
+                        <option value="producao">Produção</option>
+                        <option value="expedicao">Expedição</option>
+                        <option value="estoque">Estoque</option>
+                        <option value="administrativo">Administrativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid de Setores -->
+            <div class="sectors-grid" id="sectorsGrid">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+
+            <!-- Paginação -->
+            <div class="pagination-container">
+                <div class="pagination" id="pagination">
+                    <!-- Paginação será inserida via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Cadastro/Edição de Setor -->
+    <div id="sectorModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">Novo Setor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="sectorForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome do Setor *</label>
+                            <input type="text" id="sectorNome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Código do Setor *</label>
+                            <input type="text" id="sectorCodigo" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Setor *</label>
+                            <select id="sectorTipo" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <option value="almoxarifado">Almoxarifado</option>
+                                <option value="producao">Produção</option>
+                                <option value="expedicao">Expedição</option>
+                                <option value="estoque">Estoque</option>
+                                <option value="administrativo">Administrativo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Responsável</label>
+                            <input type="text" id="sectorResponsavel" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Capacidade Máxima (itens)</label>
+                            <input type="number" id="sectorCapacidade" class="form-input" value="500">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="sectorStatus" class="form-select">
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Localização/Endereço</label>
+                        <input type="text" id="sectorLocalizacao" class="form-input" placeholder="Ex: Prédio A, 2º andar, Sala 205">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea id="sectorDescricao" class="form-textarea" rows="3" placeholder="Descrição do setor..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Coordenadas (opcional)</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" id="sectorLat" class="form-input" placeholder="Latitude">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="sectorLng" class="form-input" placeholder="Longitude">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar Setor</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <section class="section">
-    <div class="grid-3">
-      <div class="card neon-card setor-card">
-        <h3>📦 Almoxarifado Central</h3>
-        <p>Itens: 450</p>
-        <p>Status: <span style="color: #00ff00;">Auditado</span></p>
-        <button class="btn-neon">Detalhes</button>
-      </div>
-      <div class="card neon-card setor-card">
-        <h3>💻 TI / Hardware</h3>
-        <p>Itens: 120</p>
-        <p>Status: <span style="color: #ffff00;">Pendente</span></p>
-        <button class="btn-neon">Detalhes</button>
-      </div>
-      <div class="card neon-card setor-card">
-        <h3>🏢 Escritório Administrativo</h3>
-        <p>Itens: 85</p>
-        <p>Status: <span style="color: #00ff00;">Auditado</span></p>
-        <button class="btn-neon">Detalhes</button>
-      </div>
+    <!-- Modal de Detalhes do Setor -->
+    <div id="sectorDetailModal" class="modal">
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h3>Detalhes do Setor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="sectorDetailContent">
+                <!-- Conteúdo será inserido via JavaScript -->
+            </div>
+        </div>
     </div>
-  </section>
 
-  <script src="script.js"></script>
+    <!-- Modal de Inventário do Setor -->
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Inventário do Setor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="inventory-stats" id="inventoryStats">
+                    <!-- Estatísticas do inventário -->
+                </div>
+                <div class="table-responsive">
+                    <table class="inventory-table" id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Item</th>
+                                <th>Quantidade</th>
+                                <th>Localização</th>
+                                <th>Última Contagem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Itens serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

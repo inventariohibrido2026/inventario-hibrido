@@ -1,117 +1,65 @@
-<a href="dashboard.html" class="btn-neon">Ver Dashboard</a>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard – Inventário Híbrido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Inventário Híbrido</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Biblioteca de gráficos -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- BOTÃO TEMA -->
-  <button id="theme-toggle" class="theme-btn">🌙</button>
+  <nav class="menu-futurista">
+    <div class="menu-logo">IH</div>
+    <ul class="menu-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventario.html">Inventário</a></li>
+      <li><a href="relatorios.html">Relatórios</a></li>
+    </ul>
+    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+  </nav>
 
   <header class="hero small-hero">
     <div class="hero-content">
-      <h1 class="glow-title">Dashboard Futurista</h1>
-      <p class="glow-subtitle">Visualização avançada dos dados</p>
-      <a href="index.html" class="btn-neon">Voltar ao Início</a>
+      <h1 class="glow-title">Painel de Controle</h1>
+      <p class="glow-subtitle">Monitoramento de ativos em tempo real</p>
     </div>
   </header>
 
-  <!-- GRÁFICOS -->
-  <section class="section dark-section">
-    <h2 class="section-title">Gráfico de Itens Coletados</h2>
-    <canvas id="grafico1" class="chart"></canvas>
-  </section>
-
   <section class="section">
-    <h2 class="section-title">Produtividade por Operador</h2>
-    <canvas id="grafico2" class="chart"></canvas>
-  </section>
+    <div class="grid-3">
+      <div class="card neon-card dash-card">
+        <span class="dash-number">1.250</span>
+        <p>Itens Total</p>
+        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+      </div>
 
-  <section class="section dark-section">
-    <h2 class="section-title">Distribuição por Setor</h2>
-    <canvas id="grafico3" class="chart"></canvas>
-  </section>
+      <div class="card neon-card dash-card">
+        <span class="dash-number" style="color: #00ff00;">85%</span>
+        <p>Concluído</p>
+        <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: #00ff00;"></div></div>
+      </div>
 
-  <footer class="footer">
-    <p>© 2026 Inventário Híbrido – Dashboard Futurista</p>
-  </footer>
+      <div class="card neon-card dash-card">
+        <span class="dash-number" style="color: #ffaa00;">150</span>
+        <p>Pendências</p>
+        <div class="progress-bar"><div class="progress-fill" style="width: 25%; background: #ffaa00;"></div></div>
+      </div>
+    </div>
+
+    <div class="dashboard-charts">
+      <div class="card neon-card chart-placeholder">
+        <h3>Atividade por Setor</h3>
+        <div class="simulated-chart">
+            <div class="bar" style="height: 60%;"></div>
+            <div class="bar" style="height: 85%;"></div>
+            <div class="bar" style="height: 40%;"></div>
+            <div class="bar" style="height: 95%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script src="script.js"></script>
-
-  <script>
-    /* ============================
-       GRÁFICO 1 – LINHA
-    ============================ */
-    new Chart(document.getElementById("grafico1"), {
-      type: "line",
-      data: {
-        labels: ["Seg", "Ter", "Qua", "Qui", "Sex"],
-        datasets: [{
-          label: "Itens Coletados",
-          data: [120, 190, 300, 250, 400],
-          borderColor: "#00aaff",
-          borderWidth: 3,
-          tension: 0.4,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } },
-        scales: {
-          x: { ticks: { color: "#fff" } },
-          y: { ticks: { color: "#fff" } }
-        }
-      }
-    });
-
-    /* ============================
-       GRÁFICO 2 – BARRAS
-    ============================ */
-    new Chart(document.getElementById("grafico2"), {
-      type: "bar",
-      data: {
-        labels: ["João", "Maria", "Carlos", "Ana"],
-        datasets: [{
-          label: "Produtividade",
-          data: [50, 80, 60, 90],
-          backgroundColor: "#00aaff"
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } },
-        scales: {
-          x: { ticks: { color: "#fff" } },
-          y: { ticks: { color: "#fff" } }
-        }
-      }
-    });
-
-    /* ============================
-       GRÁFICO 3 – PIZZA
-    ============================ */
-    new Chart(document.getElementById("grafico3"), {
-      type: "pie",
-      data: {
-        labels: ["Estoque", "TI", "Financeiro", "Compras"],
-        datasets: [{
-          data: [40, 25, 20, 15],
-          backgroundColor: ["#00aaff", "#00ffff", "#0077ff", "#0055aa"]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } }
-      }
-    });
-  </script>
-
 </body>
 </html>

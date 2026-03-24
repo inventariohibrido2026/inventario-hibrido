@@ -1,48 +1,316 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Usuários - Inventário Híbrido</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="menu-futurista">
-    <div class="menu-logo">IH</div>
-    <ul class="menu-links">
-      <li><a href="index.html">Início</a></li>
-      <li><a href="usuarios.html">Usuários</a></li>
-      <li><a href="configuracoes.html">Configurações</a></li>
-    </ul>
-    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
-  </nav>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html">Relatórios</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="usuarios.html" class="active">Usuários</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
 
-  <section class="section">
-    <h2 class="section-title">Gestão de Usuários</h2>
-    <div style="overflow-x: auto;">
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Cargo</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Vinícius Américo</td>
-            <td>vinicius@exemplo.com</td>
-            <td>Administrador</td>
-            <td><button class="btn-neon" style="font-size: 12px; padding: 5px 10px;">Editar</button></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Conteúdo Principal -->
+    <main class="users-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Gerenciamento de Usuários</h1>
+                    <p>Controle de acesso, permissões e perfis de usuários</p>
+                </div>
+                <button class="btn btn-primary" id="openUserModal">
+                    <i class="fas fa-user-plus"></i> Novo Usuário
+                </button>
+            </div>
+
+            <!-- Filtros e Busca -->
+            <div class="users-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchUser" placeholder="Buscar por nome, e-mail ou cargo...">
+                </div>
+                <div class="filter-group">
+                    <select id="filterRole" class="form-select">
+                        <option value="all">Todos os perfis</option>
+                        <option value="admin">Administrador</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="operador">Operador</option>
+                        <option value="auditor">Auditor</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="filterStatus" class="form-select">
+                        <option value="all">Todos os status</option>
+                        <option value="active">Ativos</option>
+                        <option value="inactive">Inativos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="users-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total de Usuários</h3>
+                        <div class="stat-value" id="totalUsers">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Administradores</h3>
+                        <div class="stat-value" id="totalAdmins">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Usuários Ativos</h3>
+                        <div class="stat-value" id="totalActive">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Último Acesso</h3>
+                        <div class="stat-value" id="lastAccess">Hoje</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Usuários -->
+            <div class="users-table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-list"></i> Lista de Usuários</h3>
+                    <div class="table-actions">
+                        <button class="btn-icon" id="exportUsersBtn" title="Exportar usuários">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-icon" id="refreshUsersBtn" title="Atualizar">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>Usuário</th>
+                                <th>E-mail</th>
+                                <th>Cargo</th>
+                                <th>Perfil</th>
+                                <th>Status</th>
+                                <th>Último Acesso</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="pagination" id="pagination">
+                        <!-- Paginação será inserida via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Cadastro/Edição de Usuário -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Novo Usuário</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="userNome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail *</label>
+                            <input type="email" id="userEmail" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Senha *</label>
+                            <input type="password" id="userSenha" class="form-input">
+                            <small class="form-hint">Mínimo 6 caracteres</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Senha</label>
+                            <input type="password" id="userConfirmSenha" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cargo</label>
+                            <input type="text" id="userCargo" class="form-input" placeholder="Ex: Analista de Inventário">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="tel" id="userTelefone" class="form-input" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Perfil de Acesso *</label>
+                            <select id="userPerfil" class="form-select" required>
+                                <option value="">Selecione...</option>
+                                <option value="admin">Administrador</option>
+                                <option value="gerente">Gerente</option>
+                                <option value="operador">Operador</option>
+                                <option value="auditor">Auditor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="userStatus" class="form-select">
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="permissions-section">
+                        <h4>Permissões Específicas</h4>
+                        <div class="permissions-grid">
+                            <div class="permission-group">
+                                <label class="permission-label">
+                                    <input type="checkbox" class="permission-check" data-perm="dashboard">
+                                    <span>Dashboard</span>
+                                </label>
+                                <div class="sub-permissions">
+                                    <label><input type="checkbox" data-sub="dashboard_view"> Visualizar</label>
+                                    <label><input type="checkbox" data-sub="dashboard_export"> Exportar</label>
+                                </div>
+                            </div>
+                            <div class="permission-group">
+                                <label class="permission-label">
+                                    <input type="checkbox" class="permission-check" data-perm="inventario">
+                                    <span>Inventário</span>
+                                </label>
+                                <div class="sub-permissions">
+                                    <label><input type="checkbox" data-sub="inventario_view"> Visualizar</label>
+                                    <label><input type="checkbox" data-sub="inventario_create"> Criar</label>
+                                    <label><input type="checkbox" data-sub="inventario_edit"> Editar</label>
+                                    <label><input type="checkbox" data-sub="inventario_delete"> Excluir</label>
+                                </div>
+                            </div>
+                            <div class="permission-group">
+                                <label class="permission-label">
+                                    <input type="checkbox" class="permission-check" data-perm="relatorios">
+                                    <span>Relatórios</span>
+                                </label>
+                                <div class="sub-permissions">
+                                    <label><input type="checkbox" data-sub="relatorios_view"> Visualizar</label>
+                                    <label><input type="checkbox" data-sub="relatorios_export"> Exportar</label>
+                                </div>
+                            </div>
+                            <div class="permission-group">
+                                <label class="permission-label">
+                                    <input type="checkbox" class="permission-check" data-perm="usuarios">
+                                    <span>Usuários</span>
+                                </label>
+                                <div class="sub-permissions">
+                                    <label><input type="checkbox" data-sub="usuarios_view"> Visualizar</label>
+                                    <label><input type="checkbox" data-sub="usuarios_create"> Criar</label>
+                                    <label><input type="checkbox" data-sub="usuarios_edit"> Editar</label>
+                                    <label><input type="checkbox" data-sub="usuarios_delete"> Excluir</label>
+                                </div>
+                            </div>
+                            <div class="permission-group">
+                                <label class="permission-label">
+                                    <input type="checkbox" class="permission-check" data-perm="configuracoes">
+                                    <span>Configurações</span>
+                                </label>
+                                <div class="sub-permissions">
+                                    <label><input type="checkbox" data-sub="configuracoes_view"> Visualizar</label>
+                                    <label><input type="checkbox" data-sub="configuracoes_edit"> Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar Usuário</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <br>
-    <button class="btn-neon">+ Novo Usuário</button>
-  </section>
 
-  <script src="script.js"></script>
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Confirmar Exclusão</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o usuário <strong id="deleteUserName"></strong>?</p>
+                <p class="text-warning">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger" id="confirmDelete">Excluir</button>
+                <button class="btn-secondary" id="cancelDelete">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

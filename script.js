@@ -179,3 +179,423 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// ====================
+// VARIÁVEIS GLOBAIS
+// ====================
+let categoryChart = null;
+let topItemsChart = null;
+
+// ====================
+// FUNÇÕES DE RELATÓRIOS
+// ====================
+
+// Obter dados filtrados
+function getFilteredData() {
+    let data = [...inventoryData];
+    const reportType = document.getElementById('reportType')?.value;
+    const category = document.getElementById('categoryFilter')?.value;
+    const searchTerm = document.getElementById('searchReport')?.value.toLowerCase() || '';
+    
+    // Filtrar por tipo de relatório
+    if (reportType === 'lowStock') {
+        data = data.filter(item => item.quantidade < 10);
+    } else if (reportType === 'highValue') {
+        data = data.filter(item => (item.quantidade * item.valorUnit) > 5000);
+    } else if (reportType === 'category' && category !== 'all') {
+        data = data.filter(item => item.categoria === category);
+    }
+    
+    // Filtrar por categoria
+    if (category !== 'all' && reportType !== 'category') {
+        data = data.filter(item => item.categoria === category);
+    }
+    
+    // Filtrar por busca
+    if (searchTerm) {
+        data = data.filter(item => 
+            item.nome.toLowerCase().includes(searchTerm) ||
+            item.codigo.includes(searchTerm) ||
+            item.categoria.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Ordenar
+    const sortBy = document.getElementById('sortBy')?.value;
+    if (sortBy === 'nome') {
+        data.sort((a, b) => a.nome.localeCompare(b.nome));
+    } else if (sortBy === 'quantidade') {
+        data.sort((a, b) => b.quantidade - a.quantidade);
+    } else if (sortBy === 'valorTotal') {
+        data.sort((a, b) => (b.quantidade * b.valorUnit) - (a.quantidade * a.valorUnit));
+    }
+    
+    return data;
+}
+
+// Calcular totais
+function calculateTotals(data) {
+    const totalItems = data.reduce((sum, item) => sum + item.quantidade, 0);
+    const totalValue = data.reduce((sum, item) => sum + (item.quantidade * item.valorUnit), 0);
+    const avgTicket = data.length > 0 ? totalValue / data.length : 0;
+    const categories = [...new Set(data.map(item => item.categoria))].length;
+    
+    return { totalItems, totalValue, avgTicket, categories };
+}
+
+// Atualizar cards de resumo
+function updateSummaryCards(data) {
+    const totals = calculateTotals(data);
+    
+    const summaryTotalItems = document.getElementById('summaryTotalItems');
+    const summaryTotalValue = document.getElementById('summaryTotalValue');
+    const summaryAvgTicket = document.getElementById('summaryAvgTicket');
+    const summaryCategories = document.getElementById('summaryCategories');
+    
+    if (summaryTotalItems) summaryTotalItems.textContent = totals.totalItems;
+    if (summaryTotalValue) summaryTotalValue.textContent = formatCurrency(totals.totalValue);
+    if (summaryAvgTicket) summaryAvgTicket.textContent = formatCurrency(totals.avgTicket);
+    if (summaryCategories) summaryCategories.textContent = totals.categories;
+}
+
+// Obter status do estoque
+function getStockStatus(quantidade) {
+    if (quantidade === 0) {
+        return '<span class="status-badge status-danger"><i class="fas fa-times-circle"></i> Esgotado</span>';
+    } else if (quantidade < 10) {
+        return '<span class="status-badge status-warning"><i class="fas fa-exclamation-triangle"></i> Estoque Baixo</span>';
+    } else {
+        return '<span class="status-badge status-success"><i class="fas fa-check-circle"></i> Normal</span>';
+    }
+}
+
+// Renderizar tabela de relatório
+function renderReportTable() {
+    const tableBody = document.getElementById('reportTableBody');
+    const tableFoot = document.getElementById('reportTableFoot');
+    const data = getFilteredData();
+    
+    if (!tableBody) return;
+    
+    // Renderizar corpo da tabela
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td>${item.codigo}</td>
+            <td>${item.nome}</td>
+            <td>${item.categoria}</td>
+            <td>${item.quantidade}</td>
+            <td>${formatCurrency(item.valorUnit)}</td>
+            <td>${formatCurrency(item.quantidade * item.valorUnit)}</td>
+            <td>${getStockStatus(item.quantidade)}</td>
+        </tr>
+    `).join('');
+    
+    if (data.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.5;"></i>
+                    <p>Nenhum item encontrado</p>
+                </td>
+            </tr>
+        `;
+    }
+    
+    // Renderizar rodapé com totais
+    const totals = calculateTotals(data);
+    if (tableFoot && data.length > 0) {
+        tableFoot.innerHTML = `
+            <tr>
+                <td colspan="3"><strong>Totais:</strong></td>
+                <td><strong>${totals.totalItems}</strong></td>
+                <td></td>
+                <td><strong>${formatCurrency(totals.totalValue)}</strong></td>
+                <td></td>
+            </tr>
+        `;
+    } else if (tableFoot) {
+        tableFoot.innerHTML = '';
+    }
+    
+    updateSummaryCards(data);
+    updateCharts(data);
+}
+
+// Atualizar gráficos
+function updateCharts(data) {
+    // Gráfico de Pizza - Distribuição por Categoria
+    const categoryData = {};
+    data.forEach(item => {
+        categoryData[item.categoria] = (categoryData[item.categoria] || 0) + item.quantidade;
+    });
+    
+    const categories = Object.keys(categoryData);
+    const quantities = Object.values(categoryData);
+    
+    const ctxPie = document.getElementById('categoryChart');
+    if (ctxPie) {
+        if (categoryChart) categoryChart.destroy();
+        categoryChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: categories,
+                datasets: [{
+                    data: quantities,
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#06b6d4',
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#8b5cf6',
+                        '#ec489a'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Gráfico de Barras - Top 5 Itens por Valor
+    const topItems = [...data]
+        .sort((a, b) => (b.quantidade * b.valorUnit) - (a.quantidade * a.valorUnit))
+        .slice(0, 5);
+    
+    const ctxBar = document.getElementById('topItemsChart');
+    if (ctxBar) {
+        if (topItemsChart) topItemsChart.destroy();
+        topItemsChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: topItems.map(item => item.nome),
+                datasets: [{
+                    label: 'Valor Total (R$)',
+                    data: topItems.map(item => item.quantidade * item.valorUnit),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            },
+                            color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                        },
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                        },
+                        grid: {
+                            color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Exportar para CSV
+function exportToCSV() {
+    const data = getFilteredData();
+    const headers = ['Código', 'Nome', 'Categoria', 'Quantidade', 'Valor Unitário', 'Valor Total'];
+    
+    const rows = data.map(item => [
+        item.codigo,
+        item.nome,
+        item.categoria,
+        item.quantidade,
+        item.valorUnit.toFixed(2),
+        (item.quantidade * item.valorUnit).toFixed(2)
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.join(','))
+        .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `relatorio_inventario_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Feedback visual
+    showNotification('Relatório exportado com sucesso!', 'success');
+}
+
+// Exportar para PDF
+function exportToPDF() {
+    const element = document.querySelector('.reports-page .container');
+    const opt = {
+        margin: 0.5,
+        filename: `relatorio_inventario_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+    };
+    
+    html2pdf().set(opt).from(element).save();
+    showNotification('Gerando PDF...', 'info');
+}
+
+// Copiar tabela para área de transferência
+function copyTableToClipboard() {
+    const table = document.getElementById('reportTable');
+    const range = document.createRange();
+    range.selectNode(table);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    
+    try {
+        document.execCommand('copy');
+        showNotification('Tabela copiada para área de transferência!', 'success');
+    } catch (err) {
+        showNotification('Erro ao copiar tabela', 'error');
+    }
+    
+    window.getSelection().removeAllRanges();
+}
+
+// Imprimir relatório
+function printReport() {
+    window.print();
+}
+
+// Notificação
+function showNotification(message, type = 'info') {
+    // Criar elemento de notificação
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Estilos da notificação
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Adicionar animações para notificações
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// ====================
+// EVENTOS DOS RELATÓRIOS
+// ====================
+function initReports() {
+    // Eventos de filtro
+    const reportType = document.getElementById('reportType');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const sortBy = document.getElementById('sortBy');
+    const searchReport = document.getElementById('searchReport');
+    
+    if (reportType) reportType.addEventListener('change', renderReportTable);
+    if (categoryFilter) categoryFilter.addEventListener('change', renderReportTable);
+    if (sortBy) sortBy.addEventListener('change', renderReportTable);
+    if (searchReport) searchReport.addEventListener('input', renderReportTable);
+    
+    // Botões de ação
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const copyTableBtn = document.getElementById('copyTableBtn');
+    const printTableBtn = document.getElementById('printTableBtn');
+    
+    if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportToCSV);
+    if (exportPdfBtn) exportPdfBtn.addEventListener('click', exportToPDF);
+    if (copyTableBtn) copyTableBtn.addEventListener('click', copyTableToClipboard);
+    if (printTableBtn) printTableBtn.addEventListener('click', printReport);
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+// Substituir ou adicionar ao DOMContentLoaded existente
+const originalDOMContentLoaded = window.onload;
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    
+    // Fechar menu mobile ao clicar em um link
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});

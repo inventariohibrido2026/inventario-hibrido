@@ -1,99 +1,153 @@
-<ind<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventário Híbrido – Futurista</title>
+    <title>Inventário Híbrido | Sistema Inteligente de Gestão</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <nav class="menu-futurista">
-        <div class="menu-logo">IH</div>
-        <ul class="menu-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="inventario.html">Inventário</a></li>
-            <li><a href="setores.html">Setores</a></li>
-            <li><a href="operadores.html">Operadores</a></li>
-            <li><a href="relatorios.html">Relatórios</a></li>
-            <li><a href="usuarios.html">Usuários</a></li>
-            <li><a href="auditoria.html">Auditoria</a></li>
-            <li><a href="perfil.html">Perfil</a></li>
-            <li><a href="configuracoes.html">Configurações</a></li>
-        </ul>
-        <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="active">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
     </nav>
 
-    <button id="theme-toggle" class="theme-btn">🌙</button>
-
+    <!-- Hero Section -->
     <header class="hero">
-        <div class="hero-content">
-            <h1 class="glow-title">Inventário Híbrido</h1>
-            <p class="glow-subtitle">Tecnologia, precisão e velocidade em um sistema inteligente</p>
-            <a href="#sobre" class="btn-neon">Saiba Mais</a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Gestão de Inventário<br>
+                    <span class="highlight">Inteligente e Eficiente</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Tecnologia de ponta para controlar seu estoque com precisão, 
+                    rapidez e confiabilidade em um só lugar.
+                </p>
+                <div class="hero-buttons">
+                    <a href="dashboard.html" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> Começar Agora
+                    </a>
+                    <a href="#sobre" class="btn btn-secondary">
+                        <i class="fas fa-info-circle"></i> Saiba Mais
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <i class="fas fa-chart-pie"></i>
+            </div>
         </div>
-        <img src="card/banner.jpg" class="hero-banner" alt="Banner Futurista">
     </header>
 
+    <!-- Sobre Section -->
     <section id="sobre" class="section">
-        <h2 class="section-title">O que é o Inventário Híbrido?</h2>
-        <div class="grid-3">
-            <div class="card neon-card">
-                <h3>📱 Coleta Mobile</h3>
-                <p>Aplicativo Android com leitura rápida e coleta offline.</p>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Como Funciona?</h2>
+                <p class="section-subtitle">Três pilares para um inventário perfeito</p>
             </div>
-            <div class="card neon-card">
-                <h3>💻 Processamento Desktop</h3>
-                <p>Software Windows para importação e validação de dados.</p>
-            </div>
-            <div class="card neon-card">
-                <h3>🌐 Dashboard Web</h3>
-                <p>Visualização completa com gráficos e indicadores.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Coleta Mobile</h3>
+                    <p>Aplicativo Android com leitura de código de barras e funcionamento offline para coleta em campo.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Leitura via câmera</li>
+                        <li><i class="fas fa-check"></i> Sincronização automática</li>
+                        <li><i class="fas fa-check"></i> Trabalho offline</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3>Processamento Desktop</h3>
+                    <p>Software Windows para validação, correção e importação dos dados coletados.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Validação inteligente</li>
+                        <li><i class="fas fa-check"></i> Relatórios detalhados</li>
+                        <li><i class="fas fa-check"></i> Exportação multi-formato</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Dashboard Web</h3>
+                    <p>Visualização completa com gráficos interativos e indicadores em tempo real.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> KPIs atualizados</li>
+                        <li><i class="fas fa-check"></i> Gráficos dinâmicos</li>
+                        <li><i class="fas fa-check"></i> Exportação de dados</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="contato" class="section">
-        <h2 class="section-title">Fale Conosco</h2>
-        <div class="contact-icons">
-            <a href="https://wa.me/5562993747844" target="_blank" class="btn-neon btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> WhatsApp
-            </a>
-
-            <a href="mailto:viniciuseroseamerico@outlook.com" class="btn-neon btn-email">
-                <i class="fas fa-envelope"></i> E-mail
-            </a>
+    <!-- Contato Section -->
+    <section id="contato" class="section contact-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Fale Conosco</h2>
+                <p class="section-subtitle">Estamos prontos para atender você</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>Resposta rápida e atendimento personalizado</p>
+                    <a href="https://wa.me/5562993747844" class="btn btn-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i> (62) 99374-7844
+                    </a>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>E-mail</h3>
+                    <p>Envie sua mensagem e retornamos em até 24h</p>
+                    <a href="mailto:viniciuseroseamerico@outlook.com" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> Enviar E-mail
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <footer class="footer" style="text-align: center; padding: 40px 0; border-top: 1px solid rgba(0, 170, 255, 0.3);">
-        <p>© 2026 Inventário Híbrido – Design Futurista</p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
     </footer>
 
     <script src="script.js"></script>
-</body>
-</html></footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-</nav>
-
-<header class="hero">
-  <div class="hero-content">
-    <h1 class="glow-title"><span id="typing"></span></h1>
-    <p class="glow-subtitle">Tecnologia, precisão e velocidade em um sistema inteligente</p>
-    <a href="#sobre" class="btn-neon">Saiba Mais</a>
-  </div>
-  <img src="./card/banner.jpg" class="hero-banner" alt="Banner Futurista">
-</header>
-
-<footer class="footer">
-  <p>© 2026 Inventário Híbrido – Design Futurista</p>
-</footer>
-
-<script src="./js/script.js"></script>
 </body>
 </html>

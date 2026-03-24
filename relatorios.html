@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios | Inventário Híbrido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Inventário Híbrido</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="relatorios.html" class="active">Relatórios</a></li>
+                <li><a href="#configuracoes">Configurações</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="reports-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Relatórios de Inventário</h1>
+                    <p>Gere e exporte relatórios detalhados do seu estoque</p>
+                </div>
+                <button class="btn btn-primary" id="exportPdfBtn">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-card">
+                <h3><i class="fas fa-filter"></i> Filtros</h3>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Tipo de Relatório</label>
+                        <select id="reportType" class="form-select">
+                            <option value="all">Todos os Itens</option>
+                            <option value="lowStock">Estoque Baixo</option>
+                            <option value="highValue">Maior Valor</option>
+                            <option value="category">Por Categoria</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Categoria</label>
+                        <select id="categoryFilter" class="form-select">
+                            <option value="all">Todas</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
+                            <option value="Periféricos">Periféricos</option>
+                            <option value="Móveis">Móveis</option>
+                            <option value="Componentes">Componentes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ordenar por</label>
+                        <select id="sortBy" class="form-select">
+                            <option value="nome">Nome</option>
+                            <option value="quantidade">Quantidade</option>
+                            <option value="valorTotal">Valor Total</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Buscar</label>
+                        <input type="text" id="searchReport" placeholder="Buscar item..." class="form-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards de Resumo -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="summary-info">
+                        <h3>Total de Itens</h3>
+                        <div class="summary-value" id="summaryTotalItems">0</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="summary-info">
+                        <h3>Valor Total</h3>
+                        <div class="summary-value" id="summaryTotalValue">R$ 0</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="summary-info">
+                        <h3>Ticket Médio</h3>
+                        <div class="summary-value" id="summaryAvgTicket">R$ 0</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="summary-info">
+                        <h3>Categorias</h3>
+                        <div class="summary-value" id="summaryCategories">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Relatório -->
+            <div class="report-card">
+                <div class="report-header">
+                    <h3><i class="fas fa-table"></i> Detalhamento do Estoque</h3>
+                    <div class="report-actions">
+                        <button class="btn-icon" id="copyTableBtn" title="Copiar tabela">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="btn-icon" id="printTableBtn" title="Imprimir">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn-icon" id="exportCsvBtn" title="Exportar CSV">
+                            <i class="fas fa-file-csv"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="report-table" id="reportTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Valor Unitário</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                        <tfoot id="reportTableFoot">
+                            <!-- Totais serão inseridos via JavaScript -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Distribuição por Categoria</h3>
+                    <canvas id="categoryChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-bar"></i> Top 5 Itens por Valor</h3>
+                    <canvas id="topItemsChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Inventário Híbrido</span>
+                </div>
+                <p class="footer-copyright">
+                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

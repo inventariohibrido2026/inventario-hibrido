@@ -599,3 +599,328 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// ====================
+// CONFIGURAÇÕES
+// ====================
+
+// Inicializar configurações carregadas do localStorage
+function loadSettings() {
+    // Perfil
+    const savedNome = localStorage.getItem('config_nome');
+    const savedEmail = localStorage.getItem('config_email');
+    const savedCargo = localStorage.getItem('config_cargo');
+    const savedTelefone = localStorage.getItem('config_telefone');
+    
+    if (savedNome) document.getElementById('nomeCompleto') && (document.getElementById('nomeCompleto').value = savedNome);
+    if (savedEmail) document.getElementById('email') && (document.getElementById('email').value = savedEmail);
+    if (savedCargo) document.getElementById('cargo') && (document.getElementById('cargo').value = savedCargo);
+    if (savedTelefone) document.getElementById('telefone') && (document.getElementById('telefone').value = savedTelefone);
+    
+    // Notificações
+    const notifEstoque = localStorage.getItem('config_notif_estoque');
+    const notifInventario = localStorage.getItem('config_notif_inventario');
+    const notifBackup = localStorage.getItem('config_notif_backup');
+    
+    if (notifEstoque !== null) document.getElementById('notifEstoqueBaixo') && (document.getElementById('notifEstoqueBaixo').checked = notifEstoque === 'true');
+    if (notifInventario !== null) document.getElementById('notifInventario') && (document.getElementById('notifInventario').checked = notifInventario === 'true');
+    if (notifBackup !== null) document.getElementById('notifBackup') && (document.getElementById('notifBackup').checked = notifBackup === 'true');
+}
+
+// Salvar configurações
+function saveSettings() {
+    // Perfil
+    const nome = document.getElementById('nomeCompleto')?.value;
+    const email = document.getElementById('email')?.value;
+    const cargo = document.getElementById('cargo')?.value;
+    const telefone = document.getElementById('telefone')?.value;
+    
+    if (nome) localStorage.setItem('config_nome', nome);
+    if (email) localStorage.setItem('config_email', email);
+    if (cargo) localStorage.setItem('config_cargo', cargo);
+    if (telefone) localStorage.setItem('config_telefone', telefone);
+    
+    // Notificações
+    const notifEstoque = document.getElementById('notifEstoqueBaixo')?.checked;
+    const notifInventario = document.getElementById('notifInventario')?.checked;
+    const notifBackup = document.getElementById('notifBackup')?.checked;
+    
+    localStorage.setItem('config_notif_estoque', notifEstoque);
+    localStorage.setItem('config_notif_inventario', notifInventario);
+    localStorage.setItem('config_notif_backup', notifBackup);
+    
+    showNotification('Configurações salvas com sucesso!', 'success');
+}
+
+// Força da senha
+function checkPasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/)) strength++;
+    if (password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    const strengthEl = document.getElementById('senhaStrength');
+    if (!strengthEl) return;
+    
+    if (password.length === 0) {
+        strengthEl.textContent = '';
+        strengthEl.className = 'password-strength';
+        return;
+    }
+    
+    if (strength <= 2) {
+        strengthEl.textContent = 'Senha fraca';
+        strengthEl.className = 'password-strength strength-weak';
+    } else if (strength <= 4) {
+        strengthEl.textContent = 'Senha média';
+        strengthEl.className = 'password-strength strength-medium';
+    } else {
+        strengthEl.textContent = 'Senha forte!';
+        strengthEl.className = 'password-strength strength-strong';
+    }
+}
+
+// Tabs de configurações
+function initSettingsTabs() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = document.querySelectorAll('.tab-pane');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panes.forEach(p => p.classList.remove('active'));
+            
+            tab.classList.add('active');
+            const activePane = document.getElementById(target);
+            if (activePane) activePane.classList.add('active');
+        });
+    });
+}
+
+// Eventos de configurações
+function initSettingsEvents() {
+    // Salvar perfil
+    const perfilForm = document.getElementById('perfilForm');
+    if (perfilForm) {
+        perfilForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveSettings();
+        });
+    }
+    
+    // Cancelar perfil
+    const cancelPerfil = document.getElementById('cancelPerfil');
+    if (cancelPerfil) {
+        cancelPerfil.addEventListener('click', () => {
+            loadSettings();
+            showNotification('Alterações canceladas', 'info');
+        });
+    }
+    
+    // Salvar empresa
+    const empresaForm = document.getElementById('empresaForm');
+    if (empresaForm) {
+        empresaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Salvar dados da empresa
+            const razaoSocial = document.getElementById('razaoSocial')?.value;
+            const nomeFantasia = document.getElementById('nomeFantasia')?.value;
+            const cnpj = document.getElementById('cnpj')?.value;
+            
+            localStorage.setItem('config_razao_social', razaoSocial);
+            localStorage.setItem('config_nome_fantasia', nomeFantasia);
+            localStorage.setItem('config_cnpj', cnpj);
+            
+            showNotification('Dados da empresa salvos!', 'success');
+        });
+    }
+    
+    // Salvar financeiro
+    const financeiroForm = document.getElementById('financeiroForm');
+    if (financeiroForm) {
+        financeiroForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const moeda = document.getElementById('moeda')?.value;
+            const formatoData = document.getElementById('formatoData')?.value;
+            const imposto = document.getElementById('imposto')?.value;
+            
+            localStorage.setItem('config_moeda', moeda);
+            localStorage.setItem('config_formato_data', formatoData);
+            localStorage.setItem('config_imposto', imposto);
+            
+            showNotification('Configurações financeiras salvas!', 'success');
+        });
+    }
+    
+    // Força da senha
+    const novaSenha = document.getElementById('novaSenha');
+    if (novaSenha) {
+        novaSenha.addEventListener('input', (e) => {
+            checkPasswordStrength(e.target.value);
+        });
+    }
+    
+    // Alterar senha
+    const senhaForm = document.getElementById('senhaForm');
+    if (senhaForm) {
+        senhaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const senhaAtual = document.getElementById('senhaAtual')?.value;
+            const novaSenhaVal = document.getElementById('novaSenha')?.value;
+            const confirmarSenha = document.getElementById('confirmarSenha')?.value;
+            
+            if (!senhaAtual) {
+                showNotification('Digite sua senha atual', 'error');
+                return;
+            }
+            
+            if (novaSenhaVal !== confirmarSenha) {
+                showNotification('As senhas não coincidem', 'error');
+                return;
+            }
+            
+            if (novaSenhaVal.length < 6) {
+                showNotification('A nova senha deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            showNotification('Senha alterada com sucesso!', 'success');
+            senhaForm.reset();
+        });
+    }
+    
+    // Backup agora
+    const backupNow = document.getElementById('backupNow');
+    if (backupNow) {
+        backupNow.addEventListener('click', () => {
+            // Simular backup
+            const data = new Date().toLocaleString('pt-BR');
+            const backupList = document.getElementById('backupHistoryList');
+            if (backupList) {
+                const newBackup = document.createElement('li');
+                newBackup.innerHTML = `<i class="fas fa-check-circle"></i> ${data} - Backup completo`;
+                backupList.insertBefore(newBackup, backupList.firstChild);
+            }
+            showNotification('Backup realizado com sucesso!', 'success');
+        });
+    }
+    
+    // Restaurar backup
+    const restoreBackup = document.getElementById('restoreBackup');
+    const restoreFile = document.getElementById('restoreFile');
+    if (restoreBackup && restoreFile) {
+        restoreBackup.addEventListener('click', () => {
+            restoreFile.click();
+        });
+        restoreFile.addEventListener('change', () => {
+            if (restoreFile.files.length > 0) {
+                showNotification('Backup restaurado com sucesso!', 'success');
+            }
+        });
+    }
+    
+    // Salvar todas as configurações
+    const saveAllBtn = document.getElementById('saveAllSettings');
+    if (saveAllBtn) {
+        saveAllBtn.addEventListener('click', () => {
+            saveSettings();
+            showNotification('Todas as configurações salvas!', 'success');
+        });
+    }
+    
+    // Encerrar todas as sessões
+    const logoutAll = document.getElementById('logoutAllDevices');
+    if (logoutAll) {
+        logoutAll.addEventListener('click', () => {
+            showNotification('Todas as sessões foram encerradas!', 'success');
+        });
+    }
+    
+    // Ativar 2FA
+    const enable2FA = document.getElementById('enable2FA');
+    if (enable2FA) {
+        enable2FA.addEventListener('click', () => {
+            showNotification('Autenticação em dois fatores ativada!', 'success');
+        });
+    }
+    
+    // Testar WhatsApp
+    const testWhatsapp = document.getElementById('testWhatsapp');
+    if (testWhatsapp) {
+        testWhatsapp.addEventListener('click', () => {
+            showNotification('Mensagem de teste enviada para o WhatsApp!', 'success');
+        });
+    }
+    
+    // Copiar API Key
+    const copyApiKey = document.getElementById('copyApiKey');
+    const apiKeyInput = document.getElementById('apiKey');
+    if (copyApiKey && apiKeyInput) {
+        copyApiKey.addEventListener('click', () => {
+            apiKeyInput.select();
+            document.execCommand('copy');
+            showNotification('API Key copiada!', 'success');
+        });
+    }
+    
+    // Gerar nova API Key
+    const generateApiKey = document.getElementById('generateApiKey');
+    if (generateApiKey && apiKeyInput) {
+        generateApiKey.addEventListener('click', () => {
+            const newKey = 'ih_' + Math.random().toString(36).substr(2, 16);
+            apiKeyInput.value = newKey;
+            showNotification('Nova API Key gerada!', 'success');
+        });
+    }
+    
+    // Upload de avatar
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    if (uploadAvatarBtn && avatarInput && avatarPreview) {
+        uploadAvatarBtn.addEventListener('click', () => {
+            avatarInput.click();
+        });
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    avatarPreview.innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+                showNotification('Avatar atualizado!', 'success');
+            }
+        });
+    }
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+// Adicionar ao DOMContentLoaded existente
+const existingDOMContentLoaded = window.onload;
+window.addEventListener('DOMContentLoaded', () => {
+    if (existingDOMContentLoaded) existingDOMContentLoaded();
+    
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    
+    // Fechar menu mobile ao clicar em um link
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});

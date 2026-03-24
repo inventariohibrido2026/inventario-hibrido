@@ -2,193 +2,68 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Inventário – Inventário Híbrido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventário - Inventário Híbrido</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Biblioteca de gráficos -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- BOTÃO TEMA -->
-  <button id="theme-toggle" class="theme-btn">🌙</button>
+  <nav class="menu-futurista">
+    <div class="menu-logo">IH</div>
+    <ul class="menu-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="inventario.html">Inventário</a></li>
+      <li><a href="relatorios.html">Relatórios</a></li>
+    </ul>
+    <div class="menu-hamburguer" onclick="toggleMenu()">☰</div>
+  </nav>
 
-  <!-- HERO REDUZIDO -->
   <header class="hero small-hero">
     <div class="hero-content">
-      <h1 class="glow-title">Inventário</h1>
-      <p class="glow-subtitle">Consulta rápida e filtros avançados</p>
-      <a href="index.html" class="btn-neon">Voltar ao Início</a>
+      <h1 class="glow-title">Gestão de Ativos</h1>
+      <p class="glow-subtitle">Consulte e gira os itens em tempo real</p>
     </div>
   </header>
 
-  <!-- CARDS DE RESUMO -->
-  <section class="section dark-section">
-    <h2 class="section-title">Resumo do Inventário</h2>
-
-    <div class="grid-3">
-      <div class="neon-card">
-        <h3>Total de Itens</h3>
-        <p class="big-number">3.210</p>
-      </div>
-
-      <div class="neon-card">
-        <h3>Divergentes</h3>
-        <p class="big-number">45</p>
-      </div>
-
-      <div class="neon-card">
-        <h3>Setores Ativos</h3>
-        <p class="big-number">12</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- BUSCA E FILTROS -->
   <section class="section">
-    <h2 class="section-title">Busca e Filtros</h2>
-
     <div class="filtros-container">
+      <input type="text" class="filtro-input" placeholder="Pesquisar por nome, código ou setor...">
+      <button class="btn-neon">Scanner QR</button>
+    </div>
 
-      <input type="text" id="busca" class="filtro-input" placeholder="Buscar por código ou descrição...">
+    <div class="grid-3" id="lista-inventario">
+      
+      <div class="card neon-card">
+        <div class="badge-status" style="background: #00ff00; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; float: right;">OK</div>
+        <h3>Notebook Gamer G15</h3>
+        <p><strong>Código:</strong> #INV-001</p>
+        <p><strong>Setor:</strong> TI / Desenvolvimento</p>
+        <p><strong>Quantidade:</strong> 12 unidades</p>
+        <button class="btn-neon" style="width: 100%; margin-top: 15px;">Editar Item</button>
+      </div>
 
-      <select id="filtroSetor" class="filtro-input">
-        <option value="">Todos os Setores</option>
-        <option value="TI">TI</option>
-        <option value="Financeiro">Financeiro</option>
-        <option value="Compras">Compras</option>
-      </select>
+      <div class="card neon-card">
+        <div class="badge-status" style="background: #ffaa00; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; float: right;">MANUTENÇÃO</div>
+        <h3>Monitor UltraWide 29</h3>
+        <p><strong>Código:</strong> #INV-002</p>
+        <p><strong>Setor:</strong> Design</p>
+        <p><strong>Quantidade:</strong> 08 unidades</p>
+        <button class="btn-neon" style="width: 100%; margin-top: 15px;">Editar Item</button>
+      </div>
 
-      <select id="filtroStatus" class="filtro-input">
-        <option value="">Todos os Status</option>
-        <option value="OK">OK</option>
-        <option value="Divergente">Divergente</option>
-      </select>
+      <div class="card neon-card">
+        <div class="badge-status" style="background: #00aaff; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; float: right;">NOVO</div>
+        <h3>Cadeira Ergonômica Pro</h3>
+        <p><strong>Código:</strong> #INV-003</p>
+        <p><strong>Setor:</strong> Administrativo</p>
+        <p><strong>Quantidade:</strong> 25 unidades</p>
+        <button class="btn-neon" style="width: 100%; margin-top: 15px;">Editar Item</button>
+      </div>
 
     </div>
   </section>
-
-  <!-- TABELA DE INVENTÁRIO -->
-  <section class="section dark-section">
-    <h2 class="section-title">Itens do Inventário</h2>
-
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Descrição</th>
-          <th>Setor</th>
-          <th>Quantidade</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-
-      <tbody id="tabelaInventario">
-        <tr>
-          <td>001245</td>
-          <td>Monitor 24"</td>
-          <td>TI</td>
-          <td>12</td>
-          <td>OK</td>
-        </tr>
-
-        <tr>
-          <td>001578</td>
-          <td>Cadeira Ergonômica</td>
-          <td>Financeiro</td>
-          <td>4</td>
-          <td>Divergente</td>
-        </tr>
-
-        <tr>
-          <td>002011</td>
-          <td>Notebook Dell</td>
-          <td>Compras</td>
-          <td>7</td>
-          <td>OK</td>
-        </tr>
-
-        <tr>
-          <td>002450</td>
-          <td>Switch 24 portas</td>
-          <td>TI</td>
-          <td>3</td>
-          <td>OK</td>
-        </tr>
-
-        <tr>
-          <td>003100</td>
-          <td>Mouse sem fio</td>
-          <td>Compras</td>
-          <td>15</td>
-          <td>Divergente</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- GRÁFICO DE STATUS -->
-  <section class="section">
-    <h2 class="section-title">Status Geral</h2>
-    <canvas id="graficoStatus" class="chart"></canvas>
-  </section>
-
-  <footer class="footer">
-    <p>© 2026 Inventário Híbrido – Inventário</p>
-  </footer>
 
   <script src="script.js"></script>
-
-  <script>
-    /* ============================
-       FILTROS E BUSCA
-    ============================ */
-    const busca = document.getElementById("busca");
-    const filtroSetor = document.getElementById("filtroSetor");
-    const filtroStatus = document.getElementById("filtroStatus");
-    const tabela = document.getElementById("tabelaInventario");
-
-    function filtrar() {
-      const texto = busca.value.toLowerCase();
-      const setor = filtroSetor.value;
-      const status = filtroStatus.value;
-
-      [...tabela.rows].forEach(row => {
-        const codigo = row.cells[0].innerText.toLowerCase();
-        const desc = row.cells[1].innerText.toLowerCase();
-        const setorItem = row.cells[2].innerText;
-        const statusItem = row.cells[4].innerText;
-
-        const matchBusca = codigo.includes(texto) || desc.includes(texto);
-        const matchSetor = setor === "" || setor === setorItem;
-        const matchStatus = status === "" || status === statusItem;
-
-        row.style.display = matchBusca && matchSetor && matchStatus ? "" : "none";
-      });
-    }
-
-    busca.addEventListener("input", filtrar);
-    filtroSetor.addEventListener("change", filtrar);
-    filtroStatus.addEventListener("change", filtrar);
-
-    /* ============================
-       GRÁFICO DE STATUS
-    ============================ */
-    new Chart(document.getElementById("graficoStatus"), {
-      type: "pie",
-      data: {
-        labels: ["OK", "Divergente"],
-        datasets: [{
-          data: [2, 2],
-          backgroundColor: ["#00aaff", "#ff0044"]
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: "#fff" } } }
-      }
-    });
-  </script>
-
 </body>
 </html>

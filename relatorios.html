@@ -6,9 +6,9 @@
     <title>Relatórios | Inventário Híbrido</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <!-- Menu de Navegação -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
@@ -21,8 +21,14 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="inventario.html">Inventário</a></li>
                 <li><a href="relatorios.html" class="active">Relatórios</a></li>
-                <li><a href="#configuracoes">Configurações</a></li>
+                <li><a href="setores.html">Setores</a></li>
+                <li><a href="operadores.html">Operadores</a></li>
+                <li><a href="equipamentos.html">Equipamentos</a></li>
+                <li><a href="usuarios.html">Usuários</a></li>
+                <li><a href="auditoria.html">Auditoria</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
             </ul>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -30,10 +36,8 @@
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
     <main class="reports-page">
         <div class="container">
-            <!-- Header -->
             <div class="page-header">
                 <div>
                     <h1>Relatórios de Inventário</h1>
@@ -44,81 +48,23 @@
                 </button>
             </div>
 
-            <!-- Filtros -->
-            <div class="filters-card">
-                <h3><i class="fas fa-filter"></i> Filtros</h3>
-                <div class="filters-grid">
-                    <div class="filter-group">
-                        <label>Tipo de Relatório</label>
-                        <select id="reportType" class="form-select">
-                            <option value="all">Todos os Itens</option>
-                            <option value="lowStock">Estoque Baixo</option>
-                            <option value="highValue">Maior Valor</option>
-                            <option value="category">Por Categoria</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Categoria</label>
-                        <select id="categoryFilter" class="form-select">
-                            <option value="all">Todas</option>
-                            <option value="Eletrônicos">Eletrônicos</option>
-                            <option value="Periféricos">Periféricos</option>
-                            <option value="Móveis">Móveis</option>
-                            <option value="Componentes">Componentes</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Ordenar por</label>
-                        <select id="sortBy" class="form-select">
-                            <option value="nome">Nome</option>
-                            <option value="quantidade">Quantidade</option>
-                            <option value="valorTotal">Valor Total</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Buscar</label>
-                        <input type="text" id="searchReport" placeholder="Buscar item..." class="form-input">
-                    </div>
-                </div>
-            </div>
-
             <!-- Cards de Resumo -->
             <div class="summary-cards">
                 <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-boxes"></i>
-                    </div>
-                    <div class="summary-info">
-                        <h3>Total de Itens</h3>
-                        <div class="summary-value" id="summaryTotalItems">0</div>
-                    </div>
+                    <div class="summary-icon"><i class="fas fa-boxes"></i></div>
+                    <div class="summary-info"><h3>Total de Itens</h3><div class="summary-value" id="summaryTotalItems">0</div></div>
                 </div>
                 <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="summary-info">
-                        <h3>Valor Total</h3>
-                        <div class="summary-value" id="summaryTotalValue">R$ 0</div>
-                    </div>
+                    <div class="summary-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="summary-info"><h3>Valor Total</h3><div class="summary-value" id="summaryTotalValue">R$ 0</div></div>
                 </div>
                 <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="summary-info">
-                        <h3>Ticket Médio</h3>
-                        <div class="summary-value" id="summaryAvgTicket">R$ 0</div>
-                    </div>
+                    <div class="summary-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="summary-info"><h3>Ticket Médio</h3><div class="summary-value" id="summaryAvgTicket">R$ 0</div></div>
                 </div>
                 <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <div class="summary-info">
-                        <h3>Categorias</h3>
-                        <div class="summary-value" id="summaryCategories">0</div>
-                    </div>
+                    <div class="summary-icon"><i class="fas fa-tags"></i></div>
+                    <div class="summary-info"><h3>Categorias</h3><div class="summary-value" id="summaryCategories">0</div></div>
                 </div>
             </div>
 
@@ -127,70 +73,111 @@
                 <div class="report-header">
                     <h3><i class="fas fa-table"></i> Detalhamento do Estoque</h3>
                     <div class="report-actions">
-                        <button class="btn-icon" id="copyTableBtn" title="Copiar tabela">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <button class="btn-icon" id="printTableBtn" title="Imprimir">
-                            <i class="fas fa-print"></i>
-                        </button>
-                        <button class="btn-icon" id="exportCsvBtn" title="Exportar CSV">
-                            <i class="fas fa-file-csv"></i>
-                        </button>
+                        <button class="btn-icon" id="exportCsvBtn"><i class="fas fa-file-csv"></i></button>
+                        <button class="btn-icon" id="printTableBtn"><i class="fas fa-print"></i></button>
                     </div>
                 </div>
                 <div class="table-responsive">
                     <table class="report-table" id="reportTable">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Quantidade</th>
-                                <th>Valor Unitário</th>
-                                <th>Valor Total</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportTableBody">
-                            <!-- Dados serão inseridos via JavaScript -->
-                        </tbody>
-                        <tfoot id="reportTableFoot">
-                            <!-- Totais serão inseridos via JavaScript -->
-                        </tfoot>
+                        <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Quantidade</th><th>Valor Unitário</th><th>Valor Total</th><th>Status</th></tr></thead>
+                        <tbody id="reportTableBody"></tbody>
+                        <tfoot id="reportTableFoot"></tfoot>
                     </table>
                 </div>
             </div>
 
             <!-- Gráficos -->
             <div class="charts-grid">
-                <div class="chart-card">
-                    <h3><i class="fas fa-chart-pie"></i> Distribuição por Categoria</h3>
-                    <canvas id="categoryChart" class="chart-canvas"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3><i class="fas fa-chart-bar"></i> Top 5 Itens por Valor</h3>
-                    <canvas id="topItemsChart" class="chart-canvas"></canvas>
-                </div>
+                <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Distribuição por Categoria</h3><canvas id="categoryChart"></canvas></div>
+                <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Top 5 Itens por Valor</h3><canvas id="topItemsChart"></canvas></div>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Inventário Híbrido</span>
-                </div>
-                <p class="footer-copyright">
-                    &copy; 2026 Inventário Híbrido - Todos os direitos reservados
-                </p>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer"><div class="container"><div class="footer-content"><div class="footer-logo"><i class="fas fa-chart-line"></i><span>Inventário Híbrido</span></div><p class="footer-copyright">&copy; 2026 Inventário Híbrido</p></div></div></footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Dados mockados
+        const inventoryData = [
+            { codigo: '001', nome: 'Notebook Dell', categoria: 'Eletrônicos', quantidade: 15, valorUnit: 3500.00 },
+            { codigo: '002', nome: 'Mouse Logitech', categoria: 'Periféricos', quantidade: 50, valorUnit: 89.90 },
+            { codigo: '003', nome: 'Teclado Mecânico', categoria: 'Periféricos', quantidade: 30, valorUnit: 299.90 },
+            { codigo: '004', nome: 'Monitor LG', categoria: 'Eletrônicos', quantidade: 12, valorUnit: 1200.00 },
+            { codigo: '005', nome: 'Cadeira Gamer', categoria: 'Móveis', quantidade: 8, valorUnit: 850.00 },
+            { codigo: '006', nome: 'SSD 1TB', categoria: 'Componentes', quantidade: 25, valorUnit: 450.00 },
+            { codigo: '007', nome: 'Memória RAM 16GB', categoria: 'Componentes', quantidade: 40, valorUnit: 320.00 },
+            { codigo: '008', nome: 'Webcam HD', categoria: 'Periféricos', quantidade: 18, valorUnit: 180.00 }
+        ];
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        }
+
+        function getStockStatus(qtd) {
+            if (qtd === 0) return '<span class="status-badge status-danger">Esgotado</span>';
+            if (qtd < 10) return '<span class="status-badge status-warning">Estoque Baixo</span>';
+            return '<span class="status-badge status-success">Normal</span>';
+        }
+
+        function renderReport() {
+            const totalItems = inventoryData.reduce((s, i) => s + i.quantidade, 0);
+            const totalValue = inventoryData.reduce((s, i) => s + (i.quantidade * i.valorUnit), 0);
+            const avgTicket = totalValue / inventoryData.length;
+            const categories = [...new Set(inventoryData.map(i => i.categoria))].length;
+
+            document.getElementById('summaryTotalItems').textContent = totalItems;
+            document.getElementById('summaryTotalValue').textContent = formatCurrency(totalValue);
+            document.getElementById('summaryAvgTicket').textContent = formatCurrency(avgTicket);
+            document.getElementById('summaryCategories').textContent = categories;
+
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = inventoryData.map(i => `
+                <tr><td>${i.codigo}</td><td>${i.nome}</td><td>${i.categoria}</td><td>${i.quantidade}</td><td>${formatCurrency(i.valorUnit)}</td><td>${formatCurrency(i.quantidade * i.valorUnit)}</td><td>${getStockStatus(i.quantidade)}</td></tr>
+            `).join('');
+
+            // Gráfico de pizza
+            const catMap = {};
+            inventoryData.forEach(i => catMap[i.categoria] = (catMap[i.categoria] || 0) + i.quantidade);
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'pie',
+                data: { labels: Object.keys(catMap), datasets: [{ data: Object.values(catMap), backgroundColor: ['#3b82f6','#10b981','#f59e0b','#8b5cf6'] }] }
+            });
+
+            // Gráfico de barras - top 5
+            const top5 = [...inventoryData].sort((a,b) => (b.quantidade*b.valorUnit) - (a.quantidade*a.valorUnit)).slice(0,5);
+            new Chart(document.getElementById('topItemsChart'), {
+                type: 'bar',
+                data: { labels: top5.map(i => i.nome), datasets: [{ label: 'Valor Total (R$)', data: top5.map(i => i.quantidade * i.valorUnit), backgroundColor: '#3b82f6' }] }
+            });
+        }
+
+        function exportCSV() {
+            const headers = ['Código','Nome','Categoria','Quantidade','Valor Unitário','Valor Total'];
+            const rows = inventoryData.map(i => [i.codigo, i.nome, i.categoria, i.quantidade, i.valorUnit, i.quantidade * i.valorUnit]);
+            const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `relatorio_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Menu mobile
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // Modo escuro
+        const toggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        toggle?.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        document.getElementById('exportCsvBtn')?.addEventListener('click', exportCSV);
+        document.getElementById('printTableBtn')?.addEventListener('click', () => window.print());
+        renderReport();
+    </script>
 </body>
 </html>

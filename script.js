@@ -4121,3 +4121,671 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+// ====================
+// GERENCIAMENTO DE INVENTÁRIO
+// ====================
+
+// Dados mockados de inventário
+let inventoryData = [
+    {
+        id: 1,
+        codigo: "PROD-001",
+        nome: "Notebook Dell Inspiron",
+        categoria: "Eletrônicos",
+        setor: "Almoxarifado Central",
+        quantidade: 15,
+        minimo: 10,
+        valorUnit: 3500.00,
+        valorCusto: 2800.00,
+        fornecedor: "Dell Computadores",
+        localizacao: "Prateleira A1",
+        unidade: "UN",
+        descricao: "Notebook Dell Inspiron 15, 8GB RAM, 256GB SSD",
+        status: "normal",
+        ultimaMovimentacao: "2026-03-24",
+        historicoMov: [
+            { data: "2026-03-24", tipo: "entrada", quantidade: 5, motivo: "Compra" },
+            { data: "2026-03-20", tipo: "saida", quantidade: 2, motivo: "Venda" }
+        ]
+    },
+    {
+        id: 2,
+        codigo: "PROD-002",
+        nome: "Mouse Logitech MX Master",
+        categoria: "Periféricos",
+        setor: "Almoxarifado Central",
+        quantidade: 8,
+        minimo: 15,
+        valorUnit: 89.90,
+        valorCusto: 65.00,
+        fornecedor: "Logitech",
+        localizacao: "Prateleira B2",
+        unidade: "UN",
+        descricao: "Mouse sem fio Logitech MX Master 3",
+        status: "low",
+        ultimaMovimentacao: "2026-03-23",
+        historicoMov: [
+            { data: "2026-03-23", tipo: "saida", quantidade: 3, motivo: "Venda" },
+            { data: "2026-03-15", tipo: "entrada", quantidade: 20, motivo: "Compra" }
+        ]
+    },
+    {
+        id: 3,
+        codigo: "PROD-003",
+        nome: "Teclado Mecânico RGB",
+        categoria: "Periféricos",
+        setor: "Setor de Produção",
+        quantidade: 30,
+        minimo: 20,
+        valorUnit: 299.90,
+        valorCusto: 220.00,
+        fornecedor: "Redragon",
+        localizacao: "Prateleira C3",
+        unidade: "UN",
+        descricao: "Teclado mecânico RGB switch blue",
+        status: "normal",
+        ultimaMovimentacao: "2026-03-22",
+        historicoMov: [
+            { data: "2026-03-22", tipo: "entrada", quantidade: 30, motivo: "Compra" }
+        ]
+    },
+    {
+        id: 4,
+        codigo: "PROD-004",
+        nome: "Monitor LG 24'",
+        categoria: "Eletrônicos",
+        setor: "Almoxarifado Central",
+        quantidade: 0,
+        minimo: 5,
+        valorUnit: 1200.00,
+        valorCusto: 950.00,
+        fornecedor: "LG Electronics",
+        localizacao: "Prateleira D4",
+        unidade: "UN",
+        descricao: "Monitor LG 24 polegadas Full HD",
+        status: "out",
+        ultimaMovimentacao: "2026-03-21",
+        historicoMov: [
+            { data: "2026-03-21", tipo: "saida", quantidade: 5, motivo: "Venda" },
+            { data: "2026-03-10", tipo: "entrada", quantidade: 5, motivo: "Compra" }
+        ]
+    },
+    {
+        id: 5,
+        codigo: "PROD-005",
+        nome: "Cadeira Gamer",
+        categoria: "Móveis",
+        setor: "Expedição",
+        quantidade: 8,
+        minimo: 3,
+        valorUnit: 850.00,
+        valorCusto: 620.00,
+        fornecedor: "DT3",
+        localizacao: "Área de Paletes",
+        unidade: "UN",
+        descricao: "Cadeira gamer reclinável",
+        status: "normal",
+        ultimaMovimentacao: "2026-03-20",
+        historicoMov: [
+            { data: "2026-03-20", tipo: "saida", quantidade: 2, motivo: "Venda" },
+            { data: "2026-03-01", tipo: "entrada", quantidade: 10, motivo: "Compra" }
+        ]
+    },
+    {
+        id: 6,
+        codigo: "PROD-006",
+        nome: "SSD 1TB NVMe",
+        categoria: "Componentes",
+        setor: "Estoque Matéria Prima",
+        quantidade: 25,
+        minimo: 20,
+        valorUnit: 450.00,
+        valorCusto: 380.00,
+        fornecedor: "Kingston",
+        localizacao: "Prateleira E5",
+        unidade: "UN",
+        descricao: "SSD NVMe 1TB PCIe 4.0",
+        status: "normal",
+        ultimaMovimentacao: "2026-03-19",
+        historicoMov: [
+            { data: "2026-03-19", tipo: "entrada", quantidade: 25, motivo: "Compra" }
+        ]
+    },
+    {
+        id: 7,
+        codigo: "PROD-007",
+        nome: "Memória RAM 16GB",
+        categoria: "Componentes",
+        setor: "Estoque Matéria Prima",
+        quantidade: 12,
+        minimo: 15,
+        valorUnit: 320.00,
+        valorCusto: 260.00,
+        fornecedor: "Corsair",
+        localizacao: "Prateleira F6",
+        unidade: "UN",
+        descricao: "Memória RAM DDR4 16GB 3200MHz",
+        status: "low",
+        ultimaMovimentacao: "2026-03-18",
+        historicoMov: [
+            { data: "2026-03-18", tipo: "saida", quantidade: 8, motivo: "Produção" }
+        ]
+    },
+    {
+        id: 8,
+        codigo: "PROD-008",
+        nome: "Webcam HD 1080p",
+        categoria: "Periféricos",
+        setor: "Almoxarifado Central",
+        quantidade: 18,
+        minimo: 10,
+        valorUnit: 180.00,
+        valorCusto: 140.00,
+        fornecedor: "Logitech",
+        localizacao: "Prateleira G7",
+        unidade: "UN",
+        descricao: "Webcam Full HD com microfone",
+        status: "normal",
+        ultimaMovimentacao: "2026-03-17",
+        historicoMov: [
+            { data: "2026-03-17", tipo: "entrada", quantidade: 20, motivo: "Compra" },
+            { data: "2026-03-15", tipo: "saida", quantidade: 2, motivo: "Venda" }
+        ]
+    }
+];
+
+let currentItemId = null;
+let currentInventoryPage = 1;
+const inventoryItemsPerPage = 10;
+let movementItemId = null;
+
+// Renderizar tabela de inventário
+function renderInventoryTable() {
+    const searchTerm = document.getElementById('searchItem')?.value.toLowerCase() || '';
+    const categoryFilter = document.getElementById('filterCategory')?.value || 'all';
+    const sectorFilter = document.getElementById('filterSector')?.value || 'all';
+    const statusFilter = document.getElementById('filterStatus')?.value || 'all';
+    
+    let filteredItems = inventoryData.filter(item => {
+        const matchesSearch = item.codigo.toLowerCase().includes(searchTerm) ||
+                             item.nome.toLowerCase().includes(searchTerm) ||
+                             item.categoria.toLowerCase().includes(searchTerm);
+        const matchesCategory = categoryFilter === 'all' || item.categoria === categoryFilter;
+        const matchesSector = sectorFilter === 'all' || item.setor === sectorFilter;
+        const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+        
+        return matchesSearch && matchesCategory && matchesSector && matchesStatus;
+    });
+    
+    // Paginação
+    const totalPages = Math.ceil(filteredItems.length / inventoryItemsPerPage);
+    const start = (currentInventoryPage - 1) * inventoryItemsPerPage;
+    const end = start + inventoryItemsPerPage;
+    const paginatedItems = filteredItems.slice(start, end);
+    
+    // Renderizar tabela
+    const tbody = document.getElementById('inventoryTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = paginatedItems.map(item => `
+        <tr data-id="${item.id}">
+            <td><input type="checkbox" class="item-checkbox" data-id="${item.id}"></td>
+            <td><strong>${item.codigo}</strong></td>
+            <td>${item.nome}</td>
+            <td>${item.categoria}</td>
+            <td>${item.setor}</td>
+            <td class="${item.quantidade <= item.minimo ? 'text-warning' : ''}">${item.quantidade}</td>
+            <td>${formatCurrency(item.valorUnit)}</td>
+            <td>${formatCurrency(item.quantidade * item.valorUnit)}</td>
+            <td><span class="status-badge status-${item.status}">${getStatusText(item.status)}</span></td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn movement" data-id="${item.id}" title="Movimentar Estoque">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                    <button class="action-btn edit" data-id="${item.id}" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete" data-id="${item.id}" title="Excluir">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Atualizar rodapé com totais
+    updateInventoryFooter(filteredItems);
+    
+    // Atualizar estatísticas
+    updateInventoryStats();
+    
+    // Atualizar contador
+    const recordsCount = document.getElementById('recordsCount');
+    if (recordsCount) {
+        recordsCount.textContent = `Mostrando ${paginatedItems.length} de ${filteredItems.length} registros`;
+    }
+    
+    // Atualizar paginação
+    renderInventoryPagination(totalPages);
+    
+    // Adicionar eventos
+    document.querySelectorAll('.action-btn.movement').forEach(btn => {
+        btn.addEventListener('click', () => openMovementModal(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.action-btn.edit').forEach(btn => {
+        btn.addEventListener('click', () => editItem(parseInt(btn.dataset.id)));
+    });
+    
+    document.querySelectorAll('.action-btn.delete').forEach(btn => {
+        btn.addEventListener('click', () => deleteItem(parseInt(btn.dataset.id)));
+    });
+}
+
+// Atualizar rodapé da tabela
+function updateInventoryFooter(items) {
+    const tfoot = document.getElementById('inventoryTableFoot');
+    if (!tfoot) return;
+    
+    const totalItems = items.reduce((sum, item) => sum + item.quantidade, 0);
+    const totalValue = items.reduce((sum, item) => sum + (item.quantidade * item.valorUnit), 0);
+    
+    tfoot.innerHTML = `
+        <tr>
+            <td colspan="5"><strong>Totais:</strong></td>
+            <td><strong>${totalItems}</strong></td>
+            <td></td>
+            <td><strong>${formatCurrency(totalValue)}</strong></td>
+            <td colspan="2"></td>
+        </tr>
+    `;
+}
+
+// Atualizar estatísticas
+function updateInventoryStats() {
+    const totalItems = inventoryData.reduce((sum, item) => sum + item.quantidade, 0);
+    const totalValue = inventoryData.reduce((sum, item) => sum + (item.quantidade * item.valorUnit), 0);
+    const lowStock = inventoryData.filter(item => item.quantidade <= item.minimo && item.quantidade > 0).length;
+    const turnoverRate = (inventoryData.reduce((sum, item) => sum + item.historicoMov.filter(m => m.tipo === 'saida' && m.data >= getDateDaysAgo(30)).length, 0) / inventoryData.length).toFixed(1);
+    
+    const totalItemsEl = document.getElementById('totalItemsCount');
+    const totalValueEl = document.getElementById('totalValue');
+    const lowStockEl = document.getElementById('lowStockCount');
+    const turnoverRateEl = document.getElementById('turnoverRate');
+    
+    if (totalItemsEl) totalItemsEl.textContent = totalItems;
+    if (totalValueEl) totalValueEl.textContent = formatCurrency(totalValue);
+    if (lowStockEl) lowStockEl.textContent = lowStock;
+    if (turnoverRateEl) turnoverRateEl.textContent = turnoverRate;
+}
+
+// Data de dias atrás
+function getDateDaysAgo(days) {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString().split('T')[0];
+}
+
+// Texto do status
+function getStatusText(status) {
+    const texts = {
+        normal: 'Normal',
+        low: 'Estoque Baixo',
+        out: 'Esgotado'
+    };
+    return texts[status] || status;
+}
+
+// Renderizar paginação
+function renderInventoryPagination(totalPages) {
+    const paginationEl = document.getElementById('pagination');
+    if (!paginationEl) return;
+    
+    let html = `
+        <button ${currentInventoryPage === 1 ? 'disabled' : ''} data-page="${currentInventoryPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    const startPage = Math.max(1, currentInventoryPage - 2);
+    const endPage = Math.min(totalPages, currentInventoryPage + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="${i === currentInventoryPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    html += `
+        <button ${currentInventoryPage === totalPages ? 'disabled' : ''} data-page="${currentInventoryPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    paginationEl.innerHTML = html;
+    
+    paginationEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (!isNaN(page) && page !== currentInventoryPage && page >= 1 && page <= totalPages) {
+                currentInventoryPage = page;
+                renderInventoryTable();
+            }
+        });
+    });
+}
+
+// Abrir modal de item
+function openItemModal(itemId = null) {
+    const modal = document.getElementById('itemModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    if (!modal) return;
+    
+    currentItemId = itemId;
+    
+    if (itemId) {
+        modalTitle.textContent = 'Editar Item';
+        const item = inventoryData.find(i => i.id === itemId);
+        if (item) {
+            document.getElementById('itemCodigo').value = item.codigo;
+            document.getElementById('itemBarcode').value = item.barcode || '';
+            document.getElementById('itemNome').value = item.nome;
+            document.getElementById('itemCategoria').value = item.categoria;
+            document.getElementById('itemSetor').value = item.setor;
+            document.getElementById('itemFornecedor').value = item.fornecedor;
+            document.getElementById('itemQuantidade').value = item.quantidade;
+            document.getElementById('itemMinimo').value = item.minimo;
+            document.getElementById('itemValor').value = item.valorUnit;
+            document.getElementById('itemCusto').value = item.valorCusto;
+            document.getElementById('itemLocalizacao').value = item.localizacao;
+            document.getElementById('itemUnidade').value = item.unidade;
+            document.getElementById('itemDescricao').value = item.descricao;
+        }
+    } else {
+        modalTitle.textContent = 'Novo Item';
+        document.getElementById('itemForm').reset();
+        document.getElementById('itemQuantidade').value = '0';
+        document.getElementById('itemMinimo').value = '10';
+        document.getElementById('itemValor').value = '0';
+        document.getElementById('itemCusto').value = '0';
+        document.getElementById('itemUnidade').value = 'UN';
+    }
+    
+    modal.classList.add('active');
+}
+
+// Salvar item
+function saveItem(event) {
+    event.preventDefault();
+    
+    const codigo = document.getElementById('itemCodigo').value;
+    const nome = document.getElementById('itemNome').value;
+    const categoria = document.getElementById('itemCategoria').value;
+    const setor = document.getElementById('itemSetor').value;
+    const quantidade = parseInt(document.getElementById('itemQuantidade').value);
+    const minimo = parseInt(document.getElementById('itemMinimo').value);
+    const valorUnit = parseFloat(document.getElementById('itemValor').value);
+    const valorCusto = parseFloat(document.getElementById('itemCusto').value);
+    const fornecedor = document.getElementById('itemFornecedor').value;
+    const localizacao = document.getElementById('itemLocalizacao').value;
+    const unidade = document.getElementById('itemUnidade').value;
+    const descricao = document.getElementById('itemDescricao').value;
+    
+    if (!codigo || !nome || !categoria || !setor) {
+        showNotification('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+    
+    const status = quantidade === 0 ? 'out' : (quantidade <= minimo ? 'low' : 'normal');
+    
+    if (currentItemId) {
+        // Editar item existente
+        const itemIndex = inventoryData.findIndex(i => i.id === currentItemId);
+        if (itemIndex !== -1) {
+            inventoryData[itemIndex] = {
+                ...inventoryData[itemIndex],
+                codigo, nome, categoria, setor, quantidade, minimo,
+                valorUnit, valorCusto, fornecedor, localizacao, unidade, descricao, status
+            };
+            showNotification('Item atualizado com sucesso!', 'success');
+        }
+    } else {
+        // Criar novo item
+        const newId = Math.max(...inventoryData.map(i => i.id), 0) + 1;
+        const newItem = {
+            id: newId,
+            codigo, nome, categoria, setor, quantidade, minimo,
+            valorUnit, valorCusto, fornecedor, localizacao, unidade, descricao, status,
+            ultimaMovimentacao: new Date().toISOString().split('T')[0],
+            historicoMov: quantidade > 0 ? [{ data: new Date().toISOString().split('T')[0], tipo: 'entrada', quantidade, motivo: 'Cadastro inicial' }] : []
+        };
+        inventoryData.push(newItem);
+        showNotification('Item criado com sucesso!', 'success');
+    }
+    
+    closeModal();
+    renderInventoryTable();
+}
+
+// Editar item
+function editItem(id) {
+    openItemModal(id);
+}
+
+// Abrir modal de movimentação
+function openMovementModal(itemId) {
+    const item = inventoryData.find(i => i.id === itemId);
+    if (!item) return;
+    
+    movementItemId = itemId;
+    const modal = document.getElementById('movementModal');
+    const productName = document.getElementById('movementProductName');
+    
+    productName.value = `${item.nome} (${item.codigo}) - Estoque atual: ${item.quantidade}`;
+    document.getElementById('movementForm').reset();
+    document.getElementById('movementType').value = 'entrada';
+    
+    modal.classList.add('active');
+}
+
+// Salvar movimentação
+function saveMovement(event) {
+    event.preventDefault();
+    
+    const type = document.getElementById('movementType').value;
+    const quantity = parseInt(document.getElementById('movementQuantity').value);
+    const reason = document.getElementById('movementReason').value;
+    const obs = document.getElementById('movementObs').value;
+    
+    if (!quantity || quantity <= 0) {
+        showNotification('Informe uma quantidade válida', 'error');
+        return;
+    }
+    
+    const itemIndex = inventoryData.findIndex(i => i.id === movementItemId);
+    if (itemIndex === -1) return;
+    
+    const item = inventoryData[itemIndex];
+    let newQuantity = item.quantidade;
+    
+    if (type === 'entrada') {
+        newQuantity += quantity;
+    } else if (type === 'saida') {
+        if (quantity > item.quantidade) {
+            showNotification('Quantidade insuficiente em estoque', 'error');
+            return;
+        }
+        newQuantity -= quantity;
+    } else if (type === 'ajuste') {
+        newQuantity = quantity;
+    }
+    
+    const newStatus = newQuantity === 0 ? 'out' : (newQuantity <= item.minimo ? 'low' : 'normal');
+    
+    inventoryData[itemIndex] = {
+        ...item,
+        quantidade: newQuantity,
+        status: newStatus,
+        ultimaMovimentacao: new Date().toISOString().split('T')[0],
+        historicoMov: [{
+            data: new Date().toISOString().split('T')[0],
+            tipo: type,
+            quantidade: type === 'ajuste' ? quantity : (type === 'entrada' ? quantity : -quantity),
+            motivo: reason || (type === 'entrada' ? 'Entrada manual' : type === 'saida' ? 'Saída manual' : 'Ajuste manual'),
+            observacao: obs
+        }, ...item.historicoMov]
+    };
+    
+    showNotification(`Movimentação de ${type} realizada com sucesso!`, 'success');
+    closeModal();
+    renderInventoryTable();
+}
+
+// Excluir item
+function deleteItem(id) {
+    if (confirm('Tem certeza que deseja excluir este item?')) {
+        inventoryData = inventoryData.filter(i => i.id !== id);
+        showNotification('Item excluído com sucesso!', 'success');
+        renderInventoryTable();
+    }
+}
+
+// Exportar inventário para CSV
+function exportInventory() {
+    const headers = ['Código', 'Nome', 'Categoria', 'Setor', 'Quantidade', 'Valor Unitário', 'Valor Total', 'Status'];
+    
+    const rows = inventoryData.map(item => [
+        item.codigo,
+        item.nome,
+        item.categoria,
+        item.setor,
+        item.quantidade,
+        item.valorUnit.toFixed(2),
+        (item.quantidade * item.valorUnit).toFixed(2),
+        getStatusText(item.status)
+    ]);
+    
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `inventario_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showNotification('Inventário exportado com sucesso!', 'success');
+}
+
+// Importar inventário (simulação)
+function importInventory() {
+    showNotification('Funcionalidade de importação em desenvolvimento', 'info');
+}
+
+// Selecionar todos os itens
+function initSelectAllItems() {
+    const selectAll = document.getElementById('selectAll');
+    if (!selectAll) return;
+    
+    selectAll.addEventListener('change', (e) => {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+    });
+}
+
+// Inicializar eventos de inventário
+function initInventoryEvents() {
+    const openModalBtn = document.getElementById('openItemModal');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', () => openItemModal());
+    }
+    
+    const importBtn = document.getElementById('importItemsBtn');
+    if (importBtn) {
+        importBtn.addEventListener('click', importInventory);
+    }
+    
+    const exportBtn = document.getElementById('exportItemsBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportInventory);
+    }
+    
+    const closeModalBtns = document.querySelectorAll('.modal-close, #closeModal, #closeMovementModal');
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    
+    const itemForm = document.getElementById('itemForm');
+    if (itemForm) {
+        itemForm.addEventListener('submit', saveItem);
+    }
+    
+    const movementForm = document.getElementById('movementForm');
+    if (movementForm) {
+        movementForm.addEventListener('submit', saveMovement);
+    }
+    
+    const searchItem = document.getElementById('searchItem');
+    const filterCategory = document.getElementById('filterCategory');
+    const filterSector = document.getElementById('filterSector');
+    const filterStatus = document.getElementById('filterStatus');
+    
+    if (searchItem) searchItem.addEventListener('input', () => {
+        currentInventoryPage = 1;
+        renderInventoryTable();
+    });
+    if (filterCategory) filterCategory.addEventListener('change', () => {
+        currentInventoryPage = 1;
+        renderInventoryTable();
+    });
+    if (filterSector) filterSector.addEventListener('change', () => {
+        currentInventoryPage = 1;
+        renderInventoryTable();
+    });
+    if (filterStatus) filterStatus.addEventListener('change', () => {
+        currentInventoryPage = 1;
+        renderInventoryTable();
+    });
+    
+    initSelectAllItems();
+}
+
+// ====================
+// ATUALIZAR FUNÇÃO DOMContentLoaded
+// ====================
+window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    updateDashboard();
+    initReports();
+    renderReportTable();
+    initSettingsTabs();
+    initSettingsEvents();
+    loadSettings();
+    initUsersEvents();
+    renderUsersTable();
+    initOperatorsEvents();
+    renderOperatorsGrid();
+    initAuditEvents();
+    renderAuditTable();
+    initSectorsEvents();
+    renderSectorsGrid();
+    initEquipmentEvents();
+    renderEquipmentGrid();
+    initInventoryEvents();
+    renderInventoryTable();
+    
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+});
